@@ -22,11 +22,11 @@ public class GirlReader {
 
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NamedNodeMap list = doc.getElementsByTagName("Girl").item(0).getAttributes();
-            for (int i =0 ;i <list.getLength();i++){
+            /*for (int i =0 ;i <list.getLength();i++){
                 String stats
                 girl.addStat("Charisma",new Stat(Integer.parseInt(list.getNamedItem("Charisma").getNodeValue()));
             }
-            list.item()
+            list.item()*/
             girl.addStat(new Stat("Charisma",Integer.parseInt(list.getNamedItem("Charisma").getNodeValue())));
             girl.addStat(new Stat("Happiness",Integer.parseInt(list.getNamedItem("Happiness").getNodeValue())));
             girl.addStat(new Stat("Libido",Integer.parseInt(list.getNamedItem("Libido").getNodeValue())));
