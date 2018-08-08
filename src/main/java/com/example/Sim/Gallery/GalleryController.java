@@ -27,8 +27,7 @@ import java.util.ResourceBundle;
 @Service
 public class GalleryController implements Initializable,DialogController {
 
-    @FXML
-    private ImageView imgView;
+
     @FXML
     public Button button;
     @FXML
@@ -37,7 +36,7 @@ public class GalleryController implements Initializable,DialogController {
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
 
-    private Integer rowId = 0;
+
 
     @Resource
     FileUtility fileUtility;
@@ -65,22 +64,8 @@ public class GalleryController implements Initializable,DialogController {
 
         girlTable.getSelectionModel().selectFirst();
     }
-    public void tableRowSelected(){
-
-        rowId = girlTable.getSelectionModel().getFocusedIndex();
-        TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        if(selectedTableGirl.getFolder().equals("Present"))
-            imageHandler.setImage(imgView,selectedTableGirl.getPath(),null);
-    }
-
-    public void buttonPress(){
-        TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        imageHandler.setImage(imgView,selectedTableGirl.getPath(),null);
-
-    }
 
     public void removeFolder(){
-        imageHandler.setImage(imgView,null,null);
         TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
         try {
             fileUtility.deleteDirectoryStream(selectedTableGirl.getPath());
@@ -94,10 +79,12 @@ public class GalleryController implements Initializable,DialogController {
         removeGirlFile();
     }
     public void removeGirlFile(){
-
         TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        fileUtility.removeFile(selectedTableGirl.getPath()+".girlsx");
-
+        if(selectedTableGirl.getPath().equals(selectedTableGirl.getDisplayName())) {
+            fileUtility.removeFile(selectedTableGirl.getPath() + ".girlsx");
+        }else{
+            fileUtility.removeFile(selectedTableGirl.getDisplayName() + ".rgirlsx");
+        }
         initialize(null,null);
 
     }
