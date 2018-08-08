@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class TableGirl {
-    String rName;
-    String name;
+    String displayName;
+    String path;
     String folder;
 }

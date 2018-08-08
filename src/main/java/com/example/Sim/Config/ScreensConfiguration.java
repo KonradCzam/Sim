@@ -26,9 +26,11 @@ package com.example.Sim.Config;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.FileUtilities.FileUtility;
+import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Gallery.GalleryController;
-import com.example.Sim.FileUtilities.ImageHandler;
+import com.example.Sim.Utilities.ImageHandler;
+import com.example.Sim.Girls.GirlService;
+import com.example.Sim.Girls.GirlCreator;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -71,5 +73,15 @@ public class ScreensConfiguration {
     @Scope("prototype")
     public FileUtility girlOpener(){
         return new FileUtility();
+    }
+    @Bean
+    @Scope("prototype")
+    public GirlService girlService(){
+        return new GirlService();
+    }
+    @Bean
+    @Scope("prototype")
+    public GirlCreator girlCreator(){
+        return new GirlCreator();
     }
 }

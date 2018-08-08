@@ -7,7 +7,8 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GirlsLists {
-    private List<Girl> normalGirls;
-    private List<Girl> randomGirls;
+public class TableGirlsLists {
+    private List<TableGirl> normalTableGirls;
+    private List<TableGirl> randomTableGirls;
+
 }

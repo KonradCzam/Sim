@@ -7,12 +7,12 @@ public class Stat {
     private Integer min;
     private Integer max;
     private Integer value;
-    Stat (String name,Integer value){
+    public Stat (String name,Integer value){
         this.name = name;
         this.value = value;
 
     }
-    Stat (String name,Integer min,Integer max){
+    public Stat (String name,Integer min,Integer max){
         this.name = name;
         this.value = ThreadLocalRandom.current().nextInt(min, max + 1);
 
