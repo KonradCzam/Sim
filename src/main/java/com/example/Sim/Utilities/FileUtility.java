@@ -17,10 +17,11 @@ public class FileUtility {
     public void openImage() {
 
     }
-    @Value( "${girls.directory:./New folder/}" )
+
     private String directory  ;
 
-    public String[] getFileArray(){
+    public String[] getFileArray(String directory){
+        this.directory = directory;
         File dir = new File(directory);
         return dir.list();
     }

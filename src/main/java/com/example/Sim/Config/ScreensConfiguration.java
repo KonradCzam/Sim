@@ -46,7 +46,9 @@ public class ScreensConfiguration {
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
+    public Stage getPrimaryStage() {
+        return this.primaryStage;
+    }
     public void showScreen(Parent screen) {
         primaryStage.setScene(new Scene(screen, 777, 500));
         primaryStage.show();

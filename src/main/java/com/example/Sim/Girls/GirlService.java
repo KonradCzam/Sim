@@ -27,10 +27,11 @@ public class GirlService {
     String folderPresent;
 
 
-    public void createGirls( ){
+    public void createGirls(String directory ){
         normalGirls = new ArrayList<Girl>();
         randomGirls = new ArrayList<Girl>();
-        files = fileUtility.getFileArray();
+        files = fileUtility.getFileArray(directory);
+        girlCreator.setDirectory(directory);
         for (int i = 0; i < files.length; i++)
         {
             if(files[i].endsWith(".girlsx")) {

@@ -17,9 +17,10 @@ import java.util.List;
 
 
 public class GirlCreator {
-    @Value( "${girls.directory:./New folder/}" )
     private String directory  ;
-
+    public void setDirectory(String directory){
+        this.directory = directory;
+    }
     List<String> skillsList = Arrays.asList("Combat", "Magic", "Service", "Medicine", "Performance","Crafting","Farming","Herbalism","Brewing","AnimalHandling","Cooking","NormalSex","Anal","BDSM","Beastiality","Lesbian","Strip","Group","OralSex","TittySex","Handjob","Footjob");
     List<String> statsList = Arrays.asList("Level", "Exp", "Age", "Fame", "AskPrice","House","Health","Happiness","Tiredness","PCLove","PCFear","PCHate","Lactation","Charisma","Beauty","Refinement","Agility","Strength","Constitution","Intelligence","Mana","Morality","Dignity","Confidence","Obedience","Spirit","Libido","NPCLove");
 
