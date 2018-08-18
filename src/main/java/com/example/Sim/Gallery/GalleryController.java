@@ -134,11 +134,15 @@ public class GalleryController implements Initializable,DialogController {
         this.dialog = dialog;
     }
     public void refresh(String directory) {
-        girlService.createGirls(directory);
+        try {
+            girlService.createGirls(directory);
 
-        ObservableList data = FXCollections.observableArrayList(girlService.getNormalTableGirls());
-        data.addAll(FXCollections.observableArrayList(girlService.getRandomTableGirls()));
-        girlTable.setItems(data);
+            ObservableList data = FXCollections.observableArrayList(girlService.getNormalTableGirls());
+            data.addAll(FXCollections.observableArrayList(girlService.getRandomTableGirls()));
+            girlTable.setItems(data);
+        }catch(Exception e){
+            throwAlarm(e.getClass().toString() +"."+ e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
     private void setAutoCleanMode(Boolean bool) {
         removeTableText.setVisible(bool);
@@ -175,7 +179,7 @@ public class GalleryController implements Initializable,DialogController {
             if (girlTable.getItems().size() > 0)
                 buttonPane.setDisable(false);
             else
-                throwAlarm("No .girlsx or .rgirlsx files found in the specified folder: "+directory,Alert.AlertType.WARNING);
+                throwAlarm("No girls added, the folder you pointed to( "+directory+" ) might be not contain .girlsx or .rgirls files. If a previous error message was shown polip1337 screwed something up.",Alert.AlertType.WARNING);
         }else
             throwAlarm ("Cant open directory, dunno why",Alert.AlertType.WARNING);
     }

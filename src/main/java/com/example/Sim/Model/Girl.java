@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Setter
 @Getter
@@ -43,8 +44,13 @@ public void addStat (Stat stat){
 }
 
 public void addTrait (Trait trait) {
-    this.Traits.add(trait);
-}
+        this.Traits.add(trait);
+    }
+    public void addTrait (Trait trait,Integer percent) {
+        Integer treshold= ThreadLocalRandom.current().nextInt(0, 100);
+        if (percent > treshold)
+            this.Traits.add(trait);
+    }
     public void addSkill (Skill skill){
         this.Skills.add(skill);
     }

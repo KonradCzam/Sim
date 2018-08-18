@@ -3,6 +3,7 @@ package com.example.Sim.Girls;
 import com.example.Sim.Model.Girl;
 import com.example.Sim.Model.Skill;
 import com.example.Sim.Model.Stat;
+import com.example.Sim.Model.Trait;
 import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -33,20 +34,24 @@ public class GirlCreator {
 
         for (int i =1 ;i <list.getLength();i++){
             String nodename = list.item(i).getNodeName();
+            String nodeValue = list.getNamedItem(nodename).getNodeValue();
+            if(nodeValue.equals("")){
+                nodeValue = "0";
+            }
             if(statsList.contains(nodename))
-                girl.addStat(new Stat(nodename,Integer.parseInt(list.getNamedItem(nodename).getNodeValue())));
+                girl.addStat(new Stat(nodename,Integer.parseInt(nodeValue)));
             if(skillsList.contains(nodename))
-                girl.addSkill(new Skill(nodename,Integer.parseInt(list.getNamedItem(nodename).getNodeValue())));
+                girl.addSkill(new Skill(nodename,Integer.parseInt(nodeValue)));
             if(nodename.equals("Gold"))
-                girl.setGold(Integer.parseInt(list.getNamedItem(nodename).getNodeValue()));
+                girl.setGold(Integer.parseInt(nodeValue));
             if(nodename.equals("Desc"))
-                girl.setDesc(list.getNamedItem(nodename).getNodeValue());
+                girl.setDesc(nodeValue);
             if(nodename.equals("Name"))
-                girl.setPath(list.getNamedItem(nodename).getNodeValue());
+                girl.setPath(nodeValue);
             if(nodename.equals("Human"))
-                girl.setHuman(list.getNamedItem(nodename).getNodeValue());
+                girl.setHuman(nodeValue);
             if(nodename.equals("Catacombs"))
-                girl.setCatacomb(list.getNamedItem(nodename).getNodeValue());
+                girl.setCatacomb(nodeValue);
         }
 
         return girl;
@@ -56,26 +61,62 @@ public class GirlCreator {
         String path = directory + girlFile;
         Document doc = openDocument(path);
 
-        NamedNodeMap list = doc.getElementsByTagName("Girl").item(0).getAttributes();
+        NodeList statList = doc.getElementsByTagName("Stat");
+        NodeList traitList = doc.getElementsByTagName("Trait");
+        NodeList skillList = doc.getElementsByTagName("Skill");
 
-        for (int i =1 ;i <list.getLength();i++){
-            String nodename = list.item(i).getNodeName();
-            if(statsList.contains(nodename))
-                girl.addStat(new Stat(nodename,Integer.parseInt(list.getNamedItem(nodename).getNodeValue())));
-            if(skillsList.contains(nodename))
-                girl.addSkill(new Skill(nodename,Integer.parseInt(list.getNamedItem(nodename).getNodeValue())));
-            if(nodename.equals("Gold"))
-                girl.setGold(Integer.parseInt(list.getNamedItem(nodename).getNodeValue()));
+
+        NamedNodeMap girlNodeAttributes = doc.getElementsByTagName("Girl").item(0).getAttributes();
+
+        for (int i =1 ;i <girlNodeAttributes.getLength();i++){
+            String nodename = girlNodeAttributes.item(i).getNodeName();
+            String nodeValue = girlNodeAttributes.getNamedItem(nodename).getNodeValue();
             if(nodename.equals("Desc"))
-                girl.setDesc(list.getNamedItem(nodename).getNodeValue());
+                girl.setDesc(nodeValue);
             if(nodename.equals("Name"))
-                girl.setPath(list.getNamedItem(nodename).getNodeValue());
+                girl.setPath(nodeValue);
             if(nodename.equals("Human"))
-                girl.setHuman(list.getNamedItem(nodename).getNodeValue());
+                girl.setHuman(nodeValue);
             if(nodename.equals("Catacombs"))
-                girl.setCatacomb(list.getNamedItem(nodename).getNodeValue());
+                girl.setCatacomb(nodeValue);
+        }
+        for (int i =1 ;i <statList.getLength();i++){
+            String nodename = statList.item(i).getAttributes().getNamedItem("Name").getNodeValue();
+            String nodeValueMin = statList.item(i).getAttributes().getNamedItem("Min").getNodeValue();
+            String nodeValueMax = statList.item(i).getAttributes().getNamedItem("Max").getNodeValue();
+            if(nodeValueMin.equals("")){
+                nodeValueMin = "0";
+            }
+            if(nodeValueMax.equals("")){
+                nodeValueMax = "100";
+            }
+            girl.addStat(new Stat(nodename,Integer.parseInt(nodeValueMin),Integer.parseInt(nodeValueMax)));
+
         }
 
+        for (int i =1 ;i <skillList.getLength();i++){
+            String nodename = skillList.item(i).getAttributes().getNamedItem("Name").getNodeValue();
+            String nodeValueMin = skillList.item(i).getAttributes().getNamedItem("Min").getNodeValue();
+            String nodeValueMax = skillList.item(i).getAttributes().getNamedItem("Max").getNodeValue();
+            if(nodeValueMin.equals("")){
+                nodeValueMin = "0";
+            }
+            if(nodeValueMax.equals("")){
+                nodeValueMax = "100";
+            }
+            girl.addSkill(new Skill(nodename,Integer.parseInt(nodeValueMin),Integer.parseInt(nodeValueMax)));
+
+        }
+        for (int i =1 ;i <traitList.getLength();i++){
+            String nodename = traitList.item(i).getAttributes().getNamedItem("Name").getNodeValue();
+            String percent = traitList.item(i).getAttributes().getNamedItem("Percent").getNodeValue();
+            if(percent.equals("")){
+                percent = "0";
+            }
+
+            girl.addTrait(new Trait(nodename),Integer.parseInt(percent));
+
+        }
         return girl;
     }
     public Document openDocument(String path){
