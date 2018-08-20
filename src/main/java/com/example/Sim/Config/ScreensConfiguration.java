@@ -28,7 +28,6 @@ package com.example.Sim.Config;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Gallery.GalleryController;
-import com.example.Sim.Utilities.ImageHandler;
 import com.example.Sim.Girls.GirlService;
 import com.example.Sim.Girls.GirlCreator;
 import javafx.scene.Parent;
@@ -66,11 +65,7 @@ public class ScreensConfiguration {
     GalleryController controller() {
         return new GalleryController(this);
     }
-    @Bean
-    @Scope("prototype")
-    public ImageHandler imageHandler(){
-        return new ImageHandler();
-    }
+
     @Bean
     @Scope("prototype")
     public FileUtility girlOpener(){

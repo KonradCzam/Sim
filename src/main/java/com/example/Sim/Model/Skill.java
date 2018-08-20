@@ -14,6 +14,15 @@ public class Skill {
     }
     public Skill (String name,Integer min,Integer max){
         this.name = name;
+        if(min>max){
+            Integer temp;
+            temp  = min;
+            min = max;
+            max = temp;
+        }
+        if(max == min){
+            min -=1;
+        }
         this.value = ThreadLocalRandom.current().nextInt(min, max + 1);
 
     }

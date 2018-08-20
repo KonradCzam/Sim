@@ -27,7 +27,7 @@ public class GirlService {
     String folderPresent;
 
 
-    public void createGirls(String directory ){
+    public void createGirls(String directory )throws GirlCreationException{
         normalGirls = new ArrayList<Girl>();
         randomGirls = new ArrayList<Girl>();
         files = fileUtility.getFileArray(directory);
@@ -42,7 +42,7 @@ public class GirlService {
             }
         }
     }
-    private void addToNormalList(String filePath){
+    private void addToNormalList(String filePath) throws GirlCreationException{
         girlName = filePath.substring(0, filePath.length() - 7);
         folderPresent = setFolder( files,   girlName, true);
         Girl girl = girlCreator.createGirl(filePath);
@@ -50,7 +50,7 @@ public class GirlService {
         girl.setFolder(folderPresent);
         normalGirls.add(girl);
     }
-    private void addToRandomList(String filePath){
+    private void addToRandomList(String filePath)throws GirlCreationException{
         girlName = filePath.substring(0, filePath.length() - 8);
         folderPresent = setFolder( files,   girlName, true);
         Girl rgirl = girlCreator.createRandomGirl( filePath);

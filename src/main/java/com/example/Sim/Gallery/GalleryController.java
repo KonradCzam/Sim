@@ -3,35 +3,25 @@ package com.example.Sim.Gallery;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Config.ScreensConfiguration;
+import com.example.Sim.Girls.GirlCreationException;
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Girls.GirlService;
 import com.example.Sim.Model.TableGirl;
-import com.example.Sim.Utilities.ImageHandler;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArrayBase;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
@@ -67,8 +57,7 @@ public class GalleryController implements Initializable,DialogController {
 
     @Resource
     FileUtility fileUtility;
-    @Resource
-    ImageHandler imageHandler;
+
     @Resource
     GirlService girlService;
 
@@ -140,8 +129,8 @@ public class GalleryController implements Initializable,DialogController {
             ObservableList data = FXCollections.observableArrayList(girlService.getNormalTableGirls());
             data.addAll(FXCollections.observableArrayList(girlService.getRandomTableGirls()));
             girlTable.setItems(data);
-        }catch(Exception e){
-            throwAlarm(e.getClass().toString() +"."+ e.getMessage(), Alert.AlertType.ERROR);
+        }catch(GirlCreationException e){
+            throwAlarm(e.getTextMessage(), Alert.AlertType.ERROR);
         }
     }
     private void setAutoCleanMode(Boolean bool) {
