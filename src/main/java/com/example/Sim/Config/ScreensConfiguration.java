@@ -51,8 +51,15 @@ public class ScreensConfiguration {
         primaryStage.setScene(new Scene(screen, 777, 500));
         primaryStage.show();
     }
+    @Bean
+    public BrothelScreen brothelScreen() {
+        return new BrothelScreen(brothelController());
+    }
 
-
+    @Bean
+    BrothelController brothelController() {
+        return new BrothelController(this);
+    }
     @Bean
     @Scope("prototype")
     public FXMLDialog loginDialog() {
@@ -64,6 +71,7 @@ public class ScreensConfiguration {
     GalleryController controller() {
         return new GalleryController(this);
     }
+
     @Bean
     @Scope("prototype")
     public ImageHandler imageHandler(){

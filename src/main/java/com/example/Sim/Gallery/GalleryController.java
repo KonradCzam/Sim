@@ -1,5 +1,6 @@
 package com.example.Sim.Gallery;
 
+import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Config.ScreensConfiguration;
@@ -10,13 +11,13 @@ import com.example.Sim.Utilities.ImageHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,14 +27,18 @@ import java.util.ResourceBundle;
 
 @Service
 public class GalleryController implements Initializable,DialogController {
-
+    @FXML
+    private AnchorPane content;
     @FXML
     private ImageView imgView;
     @FXML
     public Button button;
     @FXML
     public TableView girlTable;
-
+    @FXML
+    public CheckBox gifOnly;
+    @FXML
+    public ComboBox imgType;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
 
@@ -55,6 +60,12 @@ public class GalleryController implements Initializable,DialogController {
     public void initialize(URL location, ResourceBundle resources) {
         girlService.createGirls();
 
+        initializeTable();
+        gifOnly.setDisable(true);
+
+    }
+
+    public void initializeTable(){
         ObservableList data = FXCollections.observableArrayList(girlService.getNormalTableGirls());
         data.addAll(FXCollections.observableArrayList(girlService.getRandomTableGirls()));
         girlTable.setItems(data);
@@ -65,42 +76,55 @@ public class GalleryController implements Initializable,DialogController {
 
         girlTable.getSelectionModel().selectFirst();
     }
+    public void setComboboxItems(String path){
+        ObservableList data = FXCollections.observableArrayList(fileUtility.checkGirlTypes(path));
+        imgType.setItems(data);
+        imgType.getSelectionModel().selectFirst();
+    }
     public void tableRowSelected(){
 
         rowId = girlTable.getSelectionModel().getFocusedIndex();
         TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        if(selectedTableGirl.getFolder().equals("Present"))
-            imageHandler.setImage(imgView,selectedTableGirl.getPath(),null);
+        setComboboxItems(selectedTableGirl.getPath());
+        if(selectedTableGirl.getFolder().equals("Present")){
+          try{
+              imageHandler.setImage(imgView,selectedTableGirl.getPath(),null,gifOnly.isSelected());
+          }catch (ImageNotFound e){
+              Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+              alert.showAndWait();
+          }
+        }
+
     }
 
+    public void categorySelected(){
+        if(imgType.getSelectionModel().getSelectedItem() != null){
+            gifOnly.setSelected(false);
+            TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
+            String category= imgType.getSelectionModel().getSelectedItem().toString();
+            gifOnly.setDisable(!fileUtility.checkIfGifAvailable(selectedTableGirl.getPath(),category));
+        }
+
+    }
     public void buttonPress(){
         TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        imageHandler.setImage(imgView,selectedTableGirl.getPath(),null);
-
-    }
-
-    public void removeFolder(){
-        imageHandler.setImage(imgView,null,null);
-        TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        try {
-            fileUtility.deleteDirectoryStream(selectedTableGirl.getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
+        try{
+            String category= imgType.getSelectionModel().getSelectedItem().toString();
+            imageHandler.setImage(imgView,selectedTableGirl.getPath(),category,gifOnly.isSelected());
+        }catch (ImageNotFound e){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+            alert.showAndWait();
         }
-        initialize(null,null);
-    }
-    public void removeBoth(){
-        removeFolder();
-        removeGirlFile();
-    }
-    public void removeGirlFile(){
-
-        TableGirl selectedTableGirl = (TableGirl)girlTable.getSelectionModel().getSelectedItem();
-        fileUtility.removeFile(selectedTableGirl.getPath()+".girlsx");
-
-        initialize(null,null);
 
     }
+    public void goToBrothel(){
+
+        dialog.close();
+        screens.showScreen(screens.brothelScreen());
+
+    }
+
+
 
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
