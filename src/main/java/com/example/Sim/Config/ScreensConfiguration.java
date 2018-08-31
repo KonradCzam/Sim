@@ -34,6 +34,7 @@ import com.example.Sim.screens.Gallery.GalleryController;
 import com.example.Sim.Utilities.ImageHandler;
 import com.example.Sim.Girls.GirlService;
 import com.example.Sim.Girls.GirlCreator;
+import com.example.Sim.screens.girlDetails.GirlDetailsController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -85,6 +86,20 @@ public class ScreensConfiguration {
     BrothelController brothelController() {
         return new BrothelController(this);
     }
+
+    @Bean
+    @Scope("prototype")
+    public FXMLDialog girlDetailsDialog() {
+        return new FXMLDialog(girlDetailController(), getClass().getClassLoader().getResource("girlDetails.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
+    @Bean
+    @Scope("prototype")
+    GirlDetailsController girlDetailController() {
+        return new GirlDetailsController(this);
+    }
+
+
     @Bean
     @Scope("prototype")
     public ImageHandler imageHandler(){

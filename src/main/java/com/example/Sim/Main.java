@@ -25,8 +25,9 @@ public class Main extends Application {
 
 
             screens.setPrimaryStage(stage);
-            screens.brothelDialog().show();
+            //screens.brothelDialog().show();
            // screens.loginDialog().show();
+            screens.girlDetailsDialog().show();
         }
     }
 
