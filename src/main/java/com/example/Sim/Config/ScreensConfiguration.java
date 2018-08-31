@@ -25,9 +25,12 @@ package com.example.Sim.Config;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import com.example.Sim.screens.Brothel.BrothelController;
+import com.example.Sim.screens.Brothel.BrothelService;
 import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.screens.Gallery.GalleryService;
 import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.Gallery.GalleryController;
+import com.example.Sim.screens.Gallery.GalleryController;
 import com.example.Sim.Utilities.ImageHandler;
 import com.example.Sim.Girls.GirlService;
 import com.example.Sim.Girls.GirlCreator;
@@ -51,7 +54,7 @@ public class ScreensConfiguration {
         primaryStage.setScene(new Scene(screen, 777, 500));
         primaryStage.show();
     }
-    @Bean
+    /*@Bean
     public BrothelScreen brothelScreen() {
         return new BrothelScreen(brothelController());
     }
@@ -59,7 +62,7 @@ public class ScreensConfiguration {
     @Bean
     BrothelController brothelController() {
         return new BrothelController(this);
-    }
+    }*/
     @Bean
     @Scope("prototype")
     public FXMLDialog loginDialog() {
@@ -71,7 +74,17 @@ public class ScreensConfiguration {
     GalleryController controller() {
         return new GalleryController(this);
     }
+    @Bean
+    @Scope("prototype")
+    public FXMLDialog brothelDialog() {
+        return new FXMLDialog(brothelController(), getClass().getClassLoader().getResource("brothel.fxml"), primaryStage, StageStyle.DECORATED);
+    }
 
+    @Bean
+    @Scope("prototype")
+    BrothelController brothelController() {
+        return new BrothelController(this);
+    }
     @Bean
     @Scope("prototype")
     public ImageHandler imageHandler(){
@@ -91,5 +104,15 @@ public class ScreensConfiguration {
     @Scope("prototype")
     public GirlCreator girlCreator(){
         return new GirlCreator();
+    }
+    @Bean
+    @Scope("prototype")
+    public BrothelService brothelService(){
+        return new BrothelService();
+    }
+    @Bean
+    @Scope("prototype")
+    public GalleryService galleryService(){
+        return new GalleryService();
     }
 }

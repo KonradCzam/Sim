@@ -2,7 +2,7 @@ package com.example.Sim.Girls;
 
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Model.Girl;
-import com.example.Sim.Model.TableGirl;
+import com.example.Sim.screens.Gallery.model.TableGirl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +23,7 @@ public class GirlService {
     String [] files ;
     List<Girl> normalGirls = new ArrayList<Girl>();
     List<Girl> randomGirls = new ArrayList<Girl>();
+
     String girlName;
     String folderPresent;
 

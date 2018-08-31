@@ -1,4 +1,4 @@
-package com.example.Sim.Gallery;
+package com.example.Sim.screens.Gallery;
 
 import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
@@ -6,12 +6,11 @@ import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Girls.GirlService;
-import com.example.Sim.Model.TableGirl;
+import com.example.Sim.screens.Gallery.model.TableGirl;
 import com.example.Sim.Utilities.ImageHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
@@ -21,7 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -120,7 +118,7 @@ public class GalleryController implements Initializable,DialogController {
     public void goToBrothel(){
 
         dialog.close();
-        screens.showScreen(screens.brothelScreen());
+        screens.brothelDialog().show();
 
     }
 

@@ -1,4 +1,4 @@
-package com.example.Sim.Model;
+package com.example.Sim.screens.Gallery.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

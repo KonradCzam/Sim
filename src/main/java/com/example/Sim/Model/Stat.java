@@ -1,7 +1,10 @@
 package com.example.Sim.Model;
 
+import lombok.Getter;
+
 import java.util.concurrent.ThreadLocalRandom;
 
+@Getter
 public class Stat {
     private String name;
     private Integer min;
