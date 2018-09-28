@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1299.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.NpcDetailsController">
+   <children>
+      <Pane fx:id="npcItemsPane" layoutX="374.0" layoutY="535.0" prefHeight="351.0" prefWidth="381.0">
+         <children>
+            <Label fx:id="ownerLabel" prefHeight="21.0" prefWidth="194.0" text="Dupa" />
+            <GridPane fx:id="npcEqGrid" hgap="5.0" layoutY="21.0" prefHeight="300.0" prefWidth="370.0" vgap="5.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" percentWidth="33.0" prefWidth="63.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" percentWidth="34.0" prefWidth="64.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="78.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+         </children>
+         <padding>
+            <Insets left="5.0" />
+         </padding>
+      </Pane>
+      <Pane fx:id="playerItemsPane" layoutX="884.0" layoutY="535.0" prefHeight="351.0" prefWidth="401.0">
+         <children>
+            <Label text="Your Items" />
+            <GridPane fx:id="PlayerEqGrid" hgap="5.0" layoutY="21.0" prefHeight="300.0" prefWidth="370.0" vgap="5.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" percentWidth="33.0" prefWidth="63.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" percentWidth="34.0" prefWidth="64.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="78.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </GridPane>
+         </children>
+      </Pane>
+      <Pane fx:id="equipedPane" prefHeight="900.0" prefWidth="288.0">
+         <children>
+            <Label layoutX="14.0" layoutY="534.0" text="Equipped Items" />
+            <GridPane fx:id="EqGrid" hgap="5.0" layoutX="14.0" layoutY="555.0" prefHeight="300.0" prefWidth="180.0" vgap="5.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" percentWidth="33.0" prefWidth="63.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" percentWidth="34.0" prefWidth="64.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" percentWidth="33.0" prefWidth="78.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+            <Button layoutX="14.0" layoutY="855.0" mnemonicParsing="false" onAction="#goToHub" text="Back" />
+            <ImageView fx:id="detailsImage" fitHeight="370.0" fitWidth="270.0" layoutX="15.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </Pane>
+      <Pane fx:id="npcStats" layoutX="326.0" prefHeight="528.0" prefWidth="898.0">
+         <children>
+            <TableView fx:id="skillsTable" layoutX="349.0" layoutY="35.0" prefHeight="480.0" prefWidth="297.0">
+               <columns>
+                  <TableColumn editable="false" prefWidth="110.0" resizable="false" text="Name" />
+                  <TableColumn prefWidth="70.0" resizable="false" text="Value" />
+               </columns>
+            </TableView>
+            <TableView fx:id="statsTable" layoutX="14.0" layoutY="35.0" prefHeight="480.0" prefWidth="322.0">
+               <columns>
+                  <TableColumn editable="false" prefWidth="110.0" resizable="false" text="Name" />
+                  <TableColumn editable="false" prefWidth="70.0" resizable="false" sortable="false" text="Value" />
+               </columns>
+            </TableView>
+            <Label fx:id="statsLabel" layoutX="14.0" layoutY="14.0" text="Label" />
+            <Label fx:id="skillsLabel" layoutX="349.0" layoutY="14.0" text="Label" />
+            <TableView fx:id="traitsTable" layoutX="654.0" layoutY="35.0" prefHeight="480.0" prefWidth="230.0">
+               <columns>
+                  <TableColumn editable="false" prefWidth="110.0" resizable="false" text="Name" />
+                  <TableColumn prefWidth="119.0" resizable="false" text="Effect" />
+               </columns>
+            </TableView>
+            <Label fx:id="traitsLabel" layoutX="654.0" layoutY="14.0" text="Label" />
+         </children>
+         <padding>
+            <Insets left="15.0" />
+         </padding>
+      </Pane>
+   </children>
+</AnchorPane>

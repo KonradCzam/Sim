@@ -30,10 +30,10 @@ public class FXMLDialog extends Stage {
                     return controller;
                 }
             });
-            this.setMaximized(true);
             controller.setDialog(this);
-
-            setScene(new Scene((Parent) loader.load()));
+            Scene scene = new Scene((Parent) loader.load());
+            scene.getStylesheets().add(getClass().getClassLoader().getResource("main.css").toExternalForm());
+            setScene(scene);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

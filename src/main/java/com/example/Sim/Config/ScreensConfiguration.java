@@ -25,25 +25,36 @@ package com.example.Sim.Config;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import com.example.Sim.screens.Brothel.BrothelController;
-import com.example.Sim.screens.Brothel.BrothelService;
+
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.screens.Gallery.GalleryService;
+import com.example.Sim.Model.Player;
+import com.example.Sim.Model.SaveSlot;
+import com.example.Sim.Services.DescriptionService;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.screens.Gallery.GalleryController;
 import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Girls.GirlService;
-import com.example.Sim.Girls.GirlCreator;
-import com.example.Sim.screens.girlDetails.GirlDetailsController;
+import com.example.Sim.Utilities.NpcCreator;
+import com.example.Sim.Utilities.SaveAndLoadUtility;
+import com.example.Sim.controllers.*;
+import com.example.Sim.controllers.GalleryController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.*;
 
 @Configuration
 @Lazy
 @PropertySource("application.properties")
+@EnableAspectJAutoProxy
 public class ScreensConfiguration {
     private Stage primaryStage;
 
@@ -52,82 +63,130 @@ public class ScreensConfiguration {
     }
 
     public void showScreen(Parent screen) {
-        primaryStage.setScene(new Scene(screen, 777, 500));
+        primaryStage.setScene(new Scene(screen, 1000, 800));
         primaryStage.show();
     }
-    /*@Bean
-    public BrothelScreen brothelScreen() {
-        return new BrothelScreen(brothelController());
-    }
-
     @Bean
-    BrothelController brothelController() {
-        return new BrothelController(this);
-    }*/
-    @Bean
-    @Scope("prototype")
     public FXMLDialog loginDialog() {
         return new FXMLDialog(controller(), getClass().getClassLoader().getResource("gallery.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    @Scope("prototype")
+    
     GalleryController controller() {
         return new GalleryController(this);
     }
     @Bean
-    @Scope("prototype")
-    public FXMLDialog brothelDialog() {
-        return new FXMLDialog(brothelController(), getClass().getClassLoader().getResource("brothel.fxml"), primaryStage, StageStyle.DECORATED);
+    
+    public FXMLDialog hubDialog() {
+        return new FXMLDialog(hubController(), getClass().getClassLoader().getResource("hub.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    @Scope("prototype")
-    BrothelController brothelController() {
-        return new BrothelController(this);
+    
+    HubController hubController() {
+        return new HubController(this);
     }
 
     @Bean
-    @Scope("prototype")
-    public FXMLDialog girlDetailsDialog() {
-        return new FXMLDialog(girlDetailController(), getClass().getClassLoader().getResource("girlDetails.fxml"), primaryStage, StageStyle.DECORATED);
+    public FXMLDialog npcDetailsDialog() {
+        return new FXMLDialog(npcDetailController(), getClass().getClassLoader().getResource("npcDetails.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    @Scope("prototype")
-    GirlDetailsController girlDetailController() {
-        return new GirlDetailsController(this);
+    NpcDetailsController npcDetailController() {
+        return new NpcDetailsController(this);
+    }
+
+    @Bean
+    public FXMLDialog hireDialog() {
+        return new FXMLDialog(hireController(), getClass().getClassLoader().getResource("hire.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
+    @Bean
+    HireController hireController() {
+        return new HireController(this);
+    }
+
+    @Bean
+    public FXMLDialog playerDialog() {
+        return new FXMLDialog(playerController(), getClass().getClassLoader().getResource("playerDetails.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
+    @Bean
+    PlayerDetailsController playerController() {
+        return new PlayerDetailsController(this);
+    }
+
+    @Bean
+    public FXMLDialog endTurnDialog() {
+        return new FXMLDialog(endTurnController(), getClass().getClassLoader().getResource("endTurn.fxml"), primaryStage, StageStyle.DECORATED); }
+    @Bean
+    EndTurnController endTurnController() {
+        return new EndTurnController(this);
+    }
+
+    @Bean
+    public FXMLDialog startDialog() {
+        return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED); }
+    @Bean
+    StartController startController() {
+        return new StartController(this);
+    }
+    @Bean
+    public FXMLDialog saveLoadDialog() {
+        return new FXMLDialog(saveLoadController(), getClass().getClassLoader().getResource("saveLoad.fxml"), primaryStage, StageStyle.DECORATED); }
+    @Bean
+    SaveLoadController saveLoadController() {
+        return new SaveLoadController(this);
+    }
+    @Bean
+    public FXMLDialog optionsDialog() {
+        return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED); }
+    @Bean
+    OptionsController optionsController() {
+        return new OptionsController(this);
     }
 
 
     @Bean
-    @Scope("prototype")
     public ImageHandler imageHandler(){
         return new ImageHandler();
     }
     @Bean
-    @Scope("prototype")
-    public FileUtility girlOpener(){
+    public FileUtility fileUtility(){
         return new FileUtility();
     }
     @Bean
-    @Scope("prototype")
-    public GirlService girlService(){
-        return new GirlService();
+    public NpcService npcService(){return new NpcService(); }
+    @Bean
+    public NpcCreator npcCreator(){
+        return new NpcCreator();
+    }
+    @Bean
+    public Player player(){
+        return new Player();
+    }
+    @Bean
+    public EndTurnService endTurnService(){
+        return new EndTurnService();
+    }
+    @Bean
+    public DescriptionService descriptionService(){
+        return new DescriptionService();
+    }
+    @Bean
+    public PlayerService playerService(){
+        return new PlayerService();
+    }
+    @Bean
+    public SaveAndLoadUtility saveAndLoadUtility(){
+        return new SaveAndLoadUtility();
     }
     @Bean
     @Scope("prototype")
-    public GirlCreator girlCreator(){
-        return new GirlCreator();
+    public SaveSlot saveSlot(){
+        return new SaveSlot(npcService(),playerService(),saveAndLoadUtility(),endTurnService());
     }
-    @Bean
-    @Scope("prototype")
-    public BrothelService brothelService(){
-        return new BrothelService();
-    }
-    @Bean
-    @Scope("prototype")
-    public GalleryService galleryService(){
-        return new GalleryService();
-    }
+
 }

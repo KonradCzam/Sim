@@ -33,12 +33,12 @@ public class ImageHandler {
             List<String> filteredPictures ;
             if (imgCategory != null & gifOnly) {
                 filteredPictures = pictures.stream()
-                        .filter(line -> line.contains(imgCategory))
-                        .filter(line -> line.contains(".gif"))
+                        .filter(line -> line.toLowerCase().contains(imgCategory))
+                        .filter(line -> line.toLowerCase().contains(".gif"))
                         .collect(Collectors.toList());
             } else if (imgCategory != null & !gifOnly) {
                 filteredPictures = pictures.stream()
-                        .filter(line -> line.contains(imgCategory))
+                        .filter(line -> line.toLowerCase().contains(imgCategory))
                         .collect(Collectors.toList());
             } else if (imgCategory == null & gifOnly) {
                 filteredPictures = pictures.stream()

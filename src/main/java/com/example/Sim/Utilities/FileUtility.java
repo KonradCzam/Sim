@@ -1,13 +1,10 @@
 package com.example.Sim.Utilities;
 
-import com.example.Sim.Exceptions.ImageNotFound;
-import javafx.scene.image.Image;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,22 +13,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
 @Setter
 public class FileUtility {
+
     public void openImage() {
 
     }
     @Value( "${girls.directory:./New folder/}" )
     private String directory  ;
+    @Value("#{'${categories.all}'.split(',')}")
+    private List<String> allCategories;
 
     public String[] getFileArray(){
         File dir = new File(directory);
         return dir.list();
     }
+
 
     public boolean removeFile(String filename){
         File dir = new File(directory+filename);
@@ -45,41 +45,15 @@ public class FileUtility {
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
-    public List<String> checkGirlTypes(String name){
+    public List<String> checkNpcTypes(String name){
         String dirPath = directory + name;
         List<String> possibleCategories = new ArrayList<>();
-        List<String> allCategories = Arrays.asList("anal",
-                "bdsm",
-                "bed",
-                "combat",
-                "dildo",
-                "ecchi",
-                "finger",
-                "foot",
-                "formal",
-                "group",
-                "hand",
-                "les",
-                "lick",
-                "maid",
-                "mast",
-                "milk",
-                "nude",
-                "nurse",
-                "oral",
-                "profile",
-                "security",
-                "sex",
-                "strip",
-                "suckballs",
-                "swim",
-                "titty",
-                "torture");
+
         File directory = new File(dirPath);
 
         List<String> pictures = Arrays.asList(directory.list());
         for (String category : allCategories) {
-            if(pictures.stream().filter(line -> line.contains(category)).collect(Collectors.toList()).size()>0)
+            if(pictures.stream().filter(line -> line.toLowerCase().contains(category)).collect(Collectors.toList()).size()>0)
             possibleCategories.add(category);
 
         }
@@ -91,8 +65,8 @@ public class FileUtility {
         File directory = new File(dirPath);
         List<String> pictures = Arrays.asList(directory.list());
         if(pictures.stream()
-                .filter(line -> line.contains(category))
-                .filter(line -> line.contains(".gif"))
+                .filter(line -> line.toLowerCase().contains(category))
+                .filter(line -> line.toLowerCase().contains(".gif"))
                 .collect(Collectors.toList()).size()>0)
             return true;
         else

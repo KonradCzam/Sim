@@ -1,10 +1,17 @@
 package com.example.Sim.Config;
 
-import com.example.Sim.Girls.GirlCreator;
-import com.example.Sim.Girls.GirlService;
+import com.example.Sim.Model.Player;
+import com.example.Sim.Model.SaveSlot;
+import com.example.Sim.Services.DescriptionService;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Utilities.ImageHandler;
+import com.example.Sim.Utilities.NpcCreator;
+import com.example.Sim.Utilities.SaveAndLoadUtility;
 import org.springframework.context.annotation.*;
+import org.springframework.stereotype.Component;
 
 /**
  *
@@ -14,24 +21,8 @@ import org.springframework.context.annotation.*;
 @Configuration
 @ComponentScan("com.example.Sim")
 @Import(ScreensConfiguration.class)
+@EnableAspectJAutoProxy
 public class SimConfig {
-
-    @Bean
-    public ImageHandler imageHandler(){
-        return new ImageHandler();
-    }
-    @Bean
-    public FileUtility girlOpener(){
-        return new FileUtility();
-    }
-    @Bean
-    public GirlService girlService(){
-        return new GirlService();
-    }
-    @Bean
-    public GirlCreator girlCreator(){
-        return new GirlCreator();
-    }
 
 
 
