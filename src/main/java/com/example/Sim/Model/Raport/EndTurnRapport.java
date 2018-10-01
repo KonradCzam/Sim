@@ -10,13 +10,16 @@ import java.util.List;
 public class EndTurnRapport {
     List<NpcRoot> npcRootList;
 
-    public String getPath(){
+    public String getPath() {
         return null;
     }
-    public String getCategory(){
+
+    public String getCategory() {
         return null;
     }
-    public String getDescription(){
+
+    public String getDescription() {
         return null;
     }
+
 }

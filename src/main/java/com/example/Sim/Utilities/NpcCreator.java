@@ -17,12 +17,10 @@ import java.util.List;
 
 
 public class NpcCreator {
-    @Value( "${girls.directory:./New folder/}" )
-    private String directory  ;
-
-
-    List<String> skillsList = Arrays.asList("Combat", "Magic", "Service", "Medicine", "Performance","Crafting","Farming","Herbalism","Brewing","AnimalHandling","Cooking","NormalSex","Anal","BDSM","Beastiality","Lesbian","Strip","Group","OralSex","TittySex","Handjob","Footjob");
-    List<String> statsList = Arrays.asList("Level", "Exp", "Age", "Fame", "AskPrice","House","Health","Happiness","Tiredness","PCLove","PCFear","PCHate","Lactation","Charisma","Beauty","Refinement","Agility","Strength","Constitution","Intelligence","Mana","Morality","Dignity","Confidence","Obedience","Spirit","Libido","NPCLove");
+    List<String> skillsList = Arrays.asList("Combat", "Magic", "Service", "Medicine", "Performance", "Crafting", "Farming", "Herbalism", "Brewing", "AnimalHandling", "Cooking", "NormalSex", "Anal", "BDSM", "Beastiality", "Lesbian", "Strip", "Group", "OralSex", "TittySex", "Handjob", "Footjob");
+    List<String> statsList = Arrays.asList("Level", "Exp", "Age", "Fame", "AskPrice", "House", "Health", "Happiness", "Tiredness", "PCLove", "PCFear", "PCHate", "Lactation", "Charisma", "Beauty", "Refinement", "Agility", "Strength", "Constitution", "Intelligence", "Mana", "Morality", "Dignity", "Confidence", "Obedience", "Spirit", "Libido", "NPCLove");
+    @Value("${girls.directory:./New folder/}")
+    private String directory;
 
     public Npc createNpc(String npcFile) {
         String path = directory + npcFile;
@@ -57,11 +55,12 @@ public class NpcCreator {
             }
 
 
-        }
-        catch (Exception e ){
+        } catch (Exception e) {
 
-        }return npc;
+        }
+        return npc;
     }
+
     public Npc createRandomNpc(String npcFile) {
         Npc npc = new Npc();
         String path = directory + npcFile;
@@ -129,13 +128,13 @@ public class NpcCreator {
 
             }
 
-        }
-        catch (Exception e ){
+        } catch (Exception e) {
 
         }
         return npc;
     }
-    public Document openDocument(String path){
+
+    public Document openDocument(String path) {
         try {
             File fXmlFile = new File(path);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -144,7 +143,7 @@ public class NpcCreator {
 
             doc.getDocumentElement().normalize();
             return doc;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

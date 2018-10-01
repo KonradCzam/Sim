@@ -28,27 +28,16 @@ package com.example.Sim.Config;
 
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.Player;
-import com.example.Sim.Model.SaveSlot;
-import com.example.Sim.Services.DescriptionService;
-import com.example.Sim.Services.EndTurnService;
-import com.example.Sim.Services.NpcService;
-import com.example.Sim.Services.PlayerService;
+import com.example.Sim.Services.*;
 import com.example.Sim.Utilities.FileUtility;
 import com.example.Sim.Utilities.ImageHandler;
 import com.example.Sim.Utilities.NpcCreator;
 import com.example.Sim.Utilities.SaveAndLoadUtility;
 import com.example.Sim.controllers.*;
-import com.example.Sim.controllers.GalleryController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.*;
 
 @Configuration
@@ -66,24 +55,24 @@ public class ScreensConfiguration {
         primaryStage.setScene(new Scene(screen, 1000, 800));
         primaryStage.show();
     }
+
     @Bean
     public FXMLDialog loginDialog() {
         return new FXMLDialog(controller(), getClass().getClassLoader().getResource("gallery.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    
     GalleryController controller() {
         return new GalleryController(this);
     }
+
     @Bean
-    
+
     public FXMLDialog hubDialog() {
         return new FXMLDialog(hubController(), getClass().getClassLoader().getResource("hub.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    
     HubController hubController() {
         return new HubController(this);
     }
@@ -120,7 +109,9 @@ public class ScreensConfiguration {
 
     @Bean
     public FXMLDialog endTurnDialog() {
-        return new FXMLDialog(endTurnController(), getClass().getClassLoader().getResource("endTurn.fxml"), primaryStage, StageStyle.DECORATED); }
+        return new FXMLDialog(endTurnController(), getClass().getClassLoader().getResource("endTurn.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
     @Bean
     EndTurnController endTurnController() {
         return new EndTurnController(this);
@@ -128,21 +119,29 @@ public class ScreensConfiguration {
 
     @Bean
     public FXMLDialog startDialog() {
-        return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED); }
+        return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
     @Bean
     StartController startController() {
         return new StartController(this);
     }
+
     @Bean
     public FXMLDialog saveLoadDialog() {
-        return new FXMLDialog(saveLoadController(), getClass().getClassLoader().getResource("saveLoad.fxml"), primaryStage, StageStyle.DECORATED); }
+        return new FXMLDialog(saveLoadController(), getClass().getClassLoader().getResource("saveLoad.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
     @Bean
     SaveLoadController saveLoadController() {
         return new SaveLoadController(this);
     }
+
     @Bean
     public FXMLDialog optionsDialog() {
-        return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED); }
+        return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+
     @Bean
     OptionsController optionsController() {
         return new OptionsController(this);
@@ -150,43 +149,50 @@ public class ScreensConfiguration {
 
 
     @Bean
-    public ImageHandler imageHandler(){
+    public ImageHandler imageHandler() {
         return new ImageHandler();
     }
+
     @Bean
-    public FileUtility fileUtility(){
+    public FileUtility fileUtility() {
         return new FileUtility();
     }
+
     @Bean
-    public NpcService npcService(){return new NpcService(); }
+    public NpcService npcService() {
+        return new NpcService();
+    }
+
     @Bean
-    public NpcCreator npcCreator(){
+    public NpcCreator npcCreator() {
         return new NpcCreator();
     }
+
     @Bean
-    public Player player(){
+    public Player player() {
         return new Player();
     }
+
     @Bean
-    public EndTurnService endTurnService(){
+    public EndTurnService endTurnService() {
         return new EndTurnService();
     }
+
     @Bean
-    public DescriptionService descriptionService(){
+    public DescriptionService descriptionService() {
         return new DescriptionService();
     }
+
     @Bean
-    public PlayerService playerService(){
+    public PlayerService playerService() {
         return new PlayerService();
     }
+
     @Bean
-    public SaveAndLoadUtility saveAndLoadUtility(){
+    public SaveAndLoadUtility saveAndLoadUtility() {
         return new SaveAndLoadUtility();
     }
     @Bean
-    @Scope("prototype")
-    public SaveSlot saveSlot(){
-        return new SaveSlot(npcService(),playerService(),saveAndLoadUtility(),endTurnService());
-    }
+    public TirednessService tirednessService(){return new TirednessService();}
 
 }

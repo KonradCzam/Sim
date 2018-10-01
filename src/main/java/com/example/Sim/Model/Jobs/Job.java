@@ -6,6 +6,7 @@ import com.example.Sim.Model.Stat;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -13,28 +14,30 @@ import java.util.OptionalDouble;
 
 @Getter
 @Setter
-public class Job {
+public class Job implements Serializable {
     String name;
     List<Task> tasks;
-    Task currentTask =  Task.FREE_TIME;
+    Task currentTask = Task.FREE_TIME;
+
     public static Double calculateTaskPerformance(Npc npc, Task task) {
-       return calculateTaskPerformance(npc,task,null);
+        return calculateTaskPerformance(npc, task, null);
     }
-    public static Double calculateTaskPerformance(Npc npc, Task task,String category) {
+
+    public static Double calculateTaskPerformance(Npc npc, Task task, String category) {
         OptionalDouble averageSkill;
-        if(category != null){
+        if (category != null) {
             List<String> relevantStats = new ArrayList<>();
             relevantStats.add(category);
             averageSkill = calculateAverageSkill(npc, relevantStats);
-        }else{
+        } else {
             averageSkill = calculateAverageSkill(npc, task.getRelevantSkills());
         }
 
         OptionalDouble averageStat = calculateAverageStat(npc, task.getRelevantStats());
         Double result;
-        if(averageSkill.isPresent() && averageStat.isPresent()){
-             result = (averageSkill.getAsDouble() + averageStat.getAsDouble()) / 2;
-        }else{
+        if (averageSkill.isPresent() && averageStat.isPresent()) {
+            result = (averageSkill.getAsDouble() + averageStat.getAsDouble()) / 2;
+        } else {
             result = 0.0;
         }
 
@@ -55,10 +58,10 @@ public class Job {
         List<Skill> girlRelevantSkills = new ArrayList<Skill>(npc.getSkills().values());
         //filter only the relevant skills
         List<String> tempList = new ArrayList<>();
-        if(girlRelevantSkills != null)
+        if (girlRelevantSkills != null)
             girlRelevantSkills.stream().forEach(skill -> tempList.add(skill.getName()));
         else {
-            Double zero = 0.0 ;
+            Double zero = 0.0;
             return OptionalDouble.of(zero);
         }
         tempList.retainAll(relevantSkills);

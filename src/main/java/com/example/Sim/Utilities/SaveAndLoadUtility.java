@@ -1,55 +1,62 @@
 package com.example.Sim.Utilities;
 
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-
 import com.example.Sim.Model.SaveData;
 import com.example.Sim.Model.SaveSlot;
+import com.example.Sim.Services.EndTurnService;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;
 import javafx.concurrent.Task;
 
 import javax.annotation.Resource;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class SaveAndLoadUtility {
 
-    @Resource
-    NpcService npcService;
-    @Resource
-    PlayerService playerService;
-
     private final String DIRECTORY_NAME = "Saves" + File.separator;
-
     /**
      * Directory where the game files are located!
      */
     private final String PATH_ROOT = "." + File.separator + DIRECTORY_NAME;
     private final String SAVE_FILE = "gameData.saveSlot";
     private final String SAVE_FILE_PATH = PATH_ROOT + SAVE_FILE;
+    @Resource
+    NpcService npcService;
+    @Resource
+    PlayerService playerService;
+    @Resource
+    EndTurnService endTurnService;
 
-
-
-    public SaveSlot createSaveSlot() {
-
-        SaveSlot saveData = new SaveSlot("gameData.saveSlot", npcService.getHiredNpcs(), npcService.getHirableNpcs(), playerService.getPlayer());
+    public SaveSlot createSaveSlot(Optional<String> name) {
+        Services services = new Services(npcService, playerService, this, endTurnService);
+        SaveSlot saveData;
+        if (name.isPresent()) {
+            saveData = new SaveSlot(name.get(), npcService.getHiredNpcs(), npcService.getHirableNpcs(), playerService.getPlayer(), services);
+        } else {
+            saveData = new SaveSlot(npcService.getHiredNpcs(), npcService.getHirableNpcs(), playerService.getPlayer(), services);
+        }
         return saveData;
 
     }
+
     public SaveSlot createEmptySlot() {
-
-        SaveSlot saveData = new SaveSlot(true);
+        Services services = new Services(npcService, playerService, this, endTurnService);
+        SaveSlot saveData = new SaveSlot(true, services);
         return saveData;
 
     }
+
     public List<SaveSlot> getSavedGames() {
+        Services services = new Services(npcService, playerService, this, endTurnService);
+
         List<SaveSlot> saveSlots = new ArrayList<>();
         File dir = new File(DIRECTORY_NAME);
         String[] list = dir.list();
         for (int i = 0; i < list.length; i++) {
-            saveSlots.add(new SaveSlot(readSaveFile(list[i])));
+            saveSlots.add(new SaveSlot(readSaveFile(list[i]), services));
         }
         return saveSlots;
     }
@@ -68,7 +75,7 @@ public class SaveAndLoadUtility {
                 ObjectInputStream inputStream = new ObjectInputStream(fileIn);
 
                 savedData = (SaveData) inputStream.readObject();
-
+                processSavedData(savedData);
 
                 inputStream.close();
                 fileIn.close();
@@ -106,7 +113,7 @@ public class SaveAndLoadUtility {
                 try {
                     root.mkdirs();
 
-                    FileOutputStream fileOut = new FileOutputStream(SAVE_FILE_PATH);
+                    FileOutputStream fileOut = new FileOutputStream(PATH_ROOT + saveSlot.getSaveData().getName());
                     BufferedOutputStream bufferedStream = new BufferedOutputStream(fileOut);
                     ObjectOutputStream outputStream = new ObjectOutputStream(bufferedStream);
 

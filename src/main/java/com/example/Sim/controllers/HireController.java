@@ -58,7 +58,22 @@ public class HireController implements Initializable, DialogController {
     private FXMLDialog dialog;
 
     private Npc currentNpc;
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    setHiraTableData();
+                    if (hireTable.getItems().isEmpty()) {
+                        hireBuy.setDisable(true);
+                    } else {
+                        hireBuy.setDisable(false);
+                        hireTable.getSelectionModel().selectFirst();
+                        currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
+                        tableRowSelected();
+                    }
 
+                }
+            };
 
     public HireController(ScreensConfiguration screens) {
         this.screens = screens;
@@ -71,28 +86,14 @@ public class HireController implements Initializable, DialogController {
         dialog.setOnShown(onShownEventHandler);
 
     }
-    EventHandler<WindowEvent> onShownEventHandler =
-            new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-                    setHiraTableData();
-                    if(hireTable.getItems().isEmpty()){
-                        hireBuy.setDisable(true);
-                    }else {
-                        hireBuy.setDisable(false);
-                        hireTable.getSelectionModel().selectFirst();
-                        currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
-                        tableRowSelected();
-                    }
 
-                }
-            };
     public void initializeTables() {
         initializeHireTable();
         initializeSkillsTable();
         initializeStatsTable();
         initializeTraitsTable();
     }
+
     public void initializeHireTable() {
 
         TableColumn tableColumn = (TableColumn) hireTable.getColumns().get(0);
@@ -102,18 +103,21 @@ public class HireController implements Initializable, DialogController {
 
         hireTable.getSelectionModel().selectFirst();
     }
+
     public void initializeSkillsTable() {
         TableColumn tableColumn = (TableColumn) hireSkillsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
         tableColumn = (TableColumn) hireSkillsTable.getColumns().get(1);
         tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
     }
+
     public void initializeStatsTable() {
         TableColumn tableColumn = (TableColumn) hireStatsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
         tableColumn = (TableColumn) hireStatsTable.getColumns().get(1);
         tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
     }
+
     public void initializeTraitsTable() {
         TableColumn tableColumn = (TableColumn) hireTraitsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
@@ -124,17 +128,19 @@ public class HireController implements Initializable, DialogController {
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    public void setHiraTableData(){
+
+    public void setHiraTableData() {
 
         ObservableList data = FXCollections.observableArrayList(npcService.getHirableNpcsList(5));
         hireTable.setItems(data);
     }
+
     public void buy() {
         npcService.hireNpc(currentNpc);
         hireTable.getItems().remove(currentNpc);
-        if(hireTable.getItems().isEmpty()){
+        if (hireTable.getItems().isEmpty()) {
             hireBuy.setDisable(true);
-        }else {
+        } else {
             hireBuy.setDisable(false);
             hireTable.getSelectionModel().selectFirst();
             currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
@@ -152,7 +158,8 @@ public class HireController implements Initializable, DialogController {
         }
         refreshNpcSelect(currentNpc);
     }
-    public void refreshNpcSelect(Npc npc){
+
+    public void refreshNpcSelect(Npc npc) {
         currentNpc = npc;
         hireSkillsLabel.setText(currentNpc.getName() + "'s skills");
         hireStatsLabel.setText(currentNpc.getName() + "'s stats");
@@ -164,6 +171,7 @@ public class HireController implements Initializable, DialogController {
         hireTraitsTable.setItems(data);
 
     }
+
     public void goToHub() {
         dialog.close();
         screens.hubDialog().show();

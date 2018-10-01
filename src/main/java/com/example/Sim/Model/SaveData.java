@@ -16,4 +16,8 @@ public class SaveData implements Serializable {
     private List<Npc> hiredNpcs;
     private List<Npc> hirableNpcs;
     private Player player;
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

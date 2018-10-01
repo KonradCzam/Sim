@@ -20,6 +20,7 @@ import javafx.stage.WindowEvent;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.swing.text.html.StyleSheet;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,18 +47,26 @@ public class EndTurnController implements Initializable, DialogController {
     EndTurnService endTurnService;
     @Resource
     ImageHandler imageHandler;
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
 
-
-
+                    EndTurnRapport endTurnRapport = endTurnService.endTurn();
+                    List<NpcRoot> npcRoots = endTurnRapport.getNpcRootList();
+                    createRootNode(npcRoots);
+                    endTurnTable.refresh();
+                }
+            };
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
 
-    public void setDialog(FXMLDialog dialog) {
-        this.dialog = dialog;
-    }
-
     public EndTurnController(ScreensConfiguration screens) {
         this.screens = screens;
+    }
+
+    public void setDialog(FXMLDialog dialog) {
+        this.dialog = dialog;
     }
 
     @Override
@@ -66,16 +75,6 @@ public class EndTurnController implements Initializable, DialogController {
 
         dialog.setOnShown(onShownEventHandler);
     }
-
-    EventHandler<WindowEvent> onShownEventHandler =
-            new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-                    EndTurnRapport endTurnRapport = endTurnService.endTurn();
-                    List<NpcRoot> npcRoots = endTurnRapport.getNpcRootList();
-                    createRootNode(npcRoots);
-                }
-            };
 
     private void initializeTreeTable() {
         TreeTableColumn<EndTurnRapport, String> nameColumn = new TreeTableColumn<>("Name");
@@ -90,9 +89,13 @@ public class EndTurnController implements Initializable, DialogController {
         moneyColumn.setPrefWidth(100.0);
         moneyColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("moneyEarned"));
 
+        TreeTableColumn<EndTurnRapport, String> statusColumn = new TreeTableColumn<>("Status");
+        statusColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("messageLevel"));
+
         endTurnTable.getColumns().add(nameColumn);
         endTurnTable.getColumns().add(jobColumn);
         endTurnTable.getColumns().add(moneyColumn);
+        endTurnTable.getColumns().add(statusColumn);
         endTurnTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
             tableRowSelected();
         });

@@ -15,10 +15,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 
 @EnableConfigurationProperties
@@ -29,26 +25,12 @@ public class Main extends Application {
         launch(args);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        Thread.setDefaultUncaughtExceptionHandler(Main::showError);
-
-
-        ApplicationContext context = new AnnotationConfigApplicationContext(SimConfig.class);
-        ScreensConfiguration screens = context.getBean(ScreensConfiguration.class);
-
-
-        screens.setPrimaryStage(stage);
-        screens.startDialog().show();
-
-    }
-
     private static void showError(Thread t, Throwable e) {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-        String filename = sdf.format(cal.getTime())+".txt";
+        String filename = sdf.format(cal.getTime()) + ".txt";
 
         PrintWriter writer = null;
         try {
@@ -60,8 +42,8 @@ public class Main extends Application {
 
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {
             e1.printStackTrace();
-        }finally {
-            if(writer!= null)
+        } finally {
+            if (writer != null)
                 writer.close();
         }
         if (Platform.isFxApplicationThread()) {
@@ -73,9 +55,23 @@ public class Main extends Application {
     }
 
     private static void showErrorDialog(Throwable e) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getMessage() + "\n\n" + e.getStackTrace().toString());
+      /*  Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getMessage() + "\n\n" + e.getStackTrace().toString());
         alert.showAndWait();
-        e.printStackTrace();
+        e.printStackTrace();*/
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        //Thread.setDefaultUncaughtExceptionHandler(Main::showError);
+
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(SimConfig.class);
+        ScreensConfiguration screens = context.getBean(ScreensConfiguration.class);
+
+
+        screens.setPrimaryStage(stage);
+        screens.startDialog().show();
+
     }
 }
 

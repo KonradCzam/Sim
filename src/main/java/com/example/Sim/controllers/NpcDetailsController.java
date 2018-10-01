@@ -34,15 +34,48 @@ import java.util.ResourceBundle;
 
 @Service
 public class NpcDetailsController implements Initializable, DialogController {
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
+    EventHandler<MouseEvent> onMouseReleasedEventHanlder =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    ((ImageView) (t.getSource())).setMouseTransparent(false);
+                    ((ImageView) (t.getSource())).setTranslateX(0);
+                    ((ImageView) (t.getSource())).setTranslateY(0);
+
+                }
+            };
+    EventHandler<MouseEvent> onMousePressedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    orgSceneX = t.getSceneX();
+                    orgSceneY = t.getSceneY();
+                    orgTranslateX = ((ImageView) (t.getSource())).getTranslateX();
+                    orgTranslateY = ((ImageView) (t.getSource())).getTranslateY();
+                    ((ImageView) (t.getSource())).setMouseTransparent(true);
+                    t.setDragDetect(true);
+                }
+            };
+    EventHandler<MouseEvent> onMouseDraggedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    double offsetX = t.getSceneX() - orgSceneX;
+                    double offsetY = t.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+                    ((ImageView) (t.getSource())).setTranslateX(newTranslateX);
+                    ((ImageView) (t.getSource())).setTranslateY(newTranslateY);
+                }
+            };
     @FXML
     private GridPane EqGrid;
-
     @FXML
     private GridPane PlayerEqGrid;
-
     @FXML
     private GridPane npcEqGrid;
-
     @FXML
     private Label ownerLabel;
     @FXML
@@ -51,7 +84,6 @@ public class NpcDetailsController implements Initializable, DialogController {
     private Label skillsLabel;
     @FXML
     private ImageView detailsImage;
-
     @FXML
     private TableView skillsTable;
     @FXML
@@ -62,18 +94,19 @@ public class NpcDetailsController implements Initializable, DialogController {
     private NpcService npcService;
     @Resource
     private PlayerService playerService;
-
     private Player player;
-@Resource
-private ImageHandler imageHandler;
-
+    @Resource
+    private ImageHandler imageHandler;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-
     private Npc currentNpc;
-    double orgSceneX, orgSceneY;
-    double orgTranslateX, orgTranslateY;
-
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    refresh();
+                }
+            };
 
     public NpcDetailsController(ScreensConfiguration screens) {
         this.screens = screens;
@@ -84,9 +117,10 @@ private ImageHandler imageHandler;
         dialog.setOnShown(onShownEventHandler);
         player = playerService.getPlayer();
     }
-    public void refresh(){
+
+    public void refresh() {
         currentNpc = npcService.getCurrentNpc();
-        if(currentNpc != null) {
+        if (currentNpc != null) {
             ownerLabel.setText(currentNpc.getName() + "'s items");
             statsLabel.setText(currentNpc.getName() + "'s skills");
             skillsLabel.setText(currentNpc.getName() + "'s stats");
@@ -102,21 +136,16 @@ private ImageHandler imageHandler;
             initializeTables();
         }
     }
-    EventHandler<WindowEvent> onShownEventHandler =
-            new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-                   refresh();
-                }
-            };
+
     public void initializeTables() {
         initializeSkillsTable();
         initializeStatsTable();
         initializeTraits();
     }
-    private <T> void addTooltipToColumnCells(TableColumn<Stat,T> column) {
 
-        Callback<TableColumn<Stat, T>, TableCell<Stat,T>> existingCellFactory
+    private <T> void addTooltipToColumnCells(TableColumn<Stat, T> column) {
+
+        Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory
                 = column.getCellFactory();
 
         column.setCellFactory(c -> {
@@ -128,9 +157,10 @@ private ImageHandler imageHandler;
             tooltip.textProperty().bind(cell.itemProperty().asString());
 
             cell.setTooltip(tooltip);
-            return cell ;
+            return cell;
         });
     }
+
     private void initializeTraits() {
         ObservableList data = FXCollections.observableArrayList(currentNpc.getTraits());
         traitsTable.setItems(data);
@@ -150,12 +180,14 @@ private ImageHandler imageHandler;
         tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
         TableColumn<Stat, Double> tableCol = new TableColumn<>("Progress");
         tableCol.setCellValueFactory(new PropertyValueFactory<Stat, Double>("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.<Stat> forTableColumn());
+        tableCol.setCellFactory(ProgressBarTableCell.<Stat>forTableColumn());
         statsTable.getColumns().addAll(tableCol);
         statsTable.setEditable(true);
         setTooltips(statsTable);
 
-    }private void initializeSkillsTable() {
+    }
+
+    private void initializeSkillsTable() {
         ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(currentNpc.getSkills().values()));
         skillsTable.setItems(data);
 
@@ -166,7 +198,7 @@ private ImageHandler imageHandler;
 
         TableColumn<Skill, Double> tableCol = new TableColumn<>("Progress");
         tableCol.setCellValueFactory(new PropertyValueFactory<Skill, Double>("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.<Skill> forTableColumn());
+        tableCol.setCellFactory(ProgressBarTableCell.<Skill>forTableColumn());
         tableCol.setPrefWidth(110);
         tableCol.setResizable(false);
         skillsTable.getColumns().addAll(tableCol);
@@ -182,22 +214,25 @@ private ImageHandler imageHandler;
         setDragables();
         setDetectors();
     }
-    private <T extends DetailsInterface> void setTooltips(TableView tableView){
+
+    private <T extends DetailsInterface> void setTooltips(TableView tableView) {
         skillsTable.setRowFactory(tv -> new TableRow<T>() {
             private Tooltip tooltip = new Tooltip();
+
             @Override
             public void updateItem(T stat, boolean empty) {
                 super.updateItem(stat, empty);
                 if (stat == null) {
                     setTooltip(null);
                 } else {
-              
-                    tooltip.setText("Stat description. Progress: " + stat.getProgress()*100 + "%");
+
+                    tooltip.setText("Stat description. Progress: " + stat.getProgress() * 100 + "%");
                     setTooltip(tooltip);
                 }
             }
         });
     }
+
     private void clearGrids() {
         PlayerEqGrid.getChildren().clear();
         npcEqGrid.getChildren().clear();
@@ -222,8 +257,9 @@ private ImageHandler imageHandler;
             }
         }
     }
+
     public void initializeEqGrid() {
-        Map<String,Item> inventory = player.getEquippedItems();
+        Map<String, Item> inventory = player.getEquippedItems();
         Integer index = 0;
         for (int row = 0; row < 5; row++) {
             for (int column = 0; column < 3; column++) {
@@ -239,6 +275,7 @@ private ImageHandler imageHandler;
             }
         }
     }
+
     public void initializePlayerGrid() {
 
         List<Item> inventory = player.getInventory();
@@ -258,7 +295,6 @@ private ImageHandler imageHandler;
             }
         }
     }
-
 
     public void setDetectors() {
         EqGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
@@ -298,45 +334,10 @@ private ImageHandler imageHandler;
         source.setImage(temp.getImage());
     }
 
-    EventHandler<MouseEvent> onMouseReleasedEventHanlder =
-            new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent t) {
-                    ((ImageView) (t.getSource())).setMouseTransparent(false);
-                    ((ImageView) (t.getSource())).setTranslateX(0);
-                    ((ImageView) (t.getSource())).setTranslateY(0);
-
-                }
-            };
-    EventHandler<MouseEvent> onMousePressedEventHandler =
-            new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent t) {
-                    orgSceneX = t.getSceneX();
-                    orgSceneY = t.getSceneY();
-                    orgTranslateX = ((ImageView) (t.getSource())).getTranslateX();
-                    orgTranslateY = ((ImageView) (t.getSource())).getTranslateY();
-                    ((ImageView) (t.getSource())).setMouseTransparent(true);
-                    t.setDragDetect(true);
-                }
-            };
-
-    EventHandler<MouseEvent> onMouseDraggedEventHandler =
-            new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent t) {
-                    double offsetX = t.getSceneX() - orgSceneX;
-                    double offsetY = t.getSceneY() - orgSceneY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
-                    ((ImageView) (t.getSource())).setTranslateX(newTranslateX);
-                    ((ImageView) (t.getSource())).setTranslateY(newTranslateY);
-                }
-            };
-
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
+
     public void goToHub() {
         dialog.close();
         screens.hubDialog().show();

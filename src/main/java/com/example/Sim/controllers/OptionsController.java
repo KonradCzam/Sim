@@ -4,9 +4,7 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Services.NpcService;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +23,7 @@ public class OptionsController implements Initializable, DialogController {
     public OptionsController(ScreensConfiguration screens) {
         this.screens = screens;
     }
+
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }

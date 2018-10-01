@@ -42,6 +42,12 @@ public class HubController implements Initializable, DialogController {
     public TableView taskTable;
     @FXML
     public ImageView hubImage;
+    @Resource
+    ImageHandler imageHandler;
+    @Autowired
+    NpcService npcService;
+    List<HubJob> hubJobs = Arrays.asList(new HubJob());
+    Npc selectedHubNpc = null;
     @FXML
     private TableColumn<Npc, String> dayJobColumn;
     @FXML
@@ -51,25 +57,30 @@ public class HubController implements Initializable, DialogController {
     @FXML
     private TableColumn<Npc, String> skillTableColumn;
     @FXML
+    private TableColumn<Npc, String> healthColumn;
+
+    @FXML
     private Pane jobButtonPane;
     @FXML
     private Button goToNpcDetails;
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
 
+                    goToNpcDetails.setDisable(true);
+                    updateTable(npcService.getHiredNpcs());
+                }
+            };
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
 
-    @Resource
-    ImageHandler imageHandler;
-    @Autowired
-    NpcService npcService;
-
-    List<HubJob> hubJobs = Arrays.asList(new HubJob());
-    Npc selectedHubNpc = null;
-    public void setDialog(FXMLDialog dialog) {
-        this.dialog = dialog;
-    }
     public HubController(ScreensConfiguration screens) {
         this.screens = screens;
+    }
+
+    public void setDialog(FXMLDialog dialog) {
+        this.dialog = dialog;
     }
 
     @Override
@@ -106,8 +117,13 @@ public class HubController implements Initializable, DialogController {
 
         dayJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDayShift().getCurrentTask().getName()));
         nightJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNightShift().getCurrentTask().getName()));
-        tirednessColumn.setCellValueFactory(cellData ->new ReadOnlyStringWrapper( new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
+        tirednessColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
                 .filter(stat -> "Tiredness".equals(stat.getName()))
+                .map(Stat::getValue)
+                .findAny()
+                .orElse(0).toString()));
+        healthColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
+                .filter(stat -> "Health".equals(stat.getName()))
                 .map(Stat::getValue)
                 .findAny()
                 .orElse(0).toString()));
@@ -115,52 +131,44 @@ public class HubController implements Initializable, DialogController {
         hubTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    EventHandler<WindowEvent> onShownEventHandler =
-            new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-
-                    goToNpcDetails.setDisable(true);
-                    updateTable(npcService.getHiredNpcs());
-                }
-            };
-
     public void updateTable(List<Npc> list) {
         ObservableList data = FXCollections.observableArrayList(list);
-        hubTable.getItems().remove(0,hubTable.getItems().size());
+        hubTable.getItems().remove(0, hubTable.getItems().size());
         hubTable.setItems(data);
 
     }
 
 
-
-    public void setDayJob(){
-        setJobs(true,false);
-    }
-    public void setNightJob(){
-        setJobs(false,true);
-    }
-    public void setBothJobs(){
-        setJobs(true,true);
+    public void setDayJob() {
+        setJobs(true, false);
     }
 
-    public void setJobs(Boolean day, Boolean night){
+    public void setNightJob() {
+        setJobs(false, true);
+    }
+
+    public void setBothJobs() {
+        setJobs(true, true);
+    }
+
+    public void setJobs(Boolean day, Boolean night) {
         Task selectedTask = (Task) taskTable.getSelectionModel().getSelectedItem();
         ObservableList selectedIndices = hubTable.getSelectionModel().getSelectedItems();
 
-        for (int i =0; i<selectedIndices.size();i++){
+        for (int i = 0; i < selectedIndices.size(); i++) {
             Integer index = npcService.getHiredNpcs().indexOf(selectedIndices.get(i));
             if (index != -1) {
-                if(day)
-                npcService.getHiredNpcs().get(index).getDayShift().setCurrentTask(selectedTask);
-                if(night)
-                npcService.getHiredNpcs().get(index).getNightShift().setCurrentTask(selectedTask);
+                if (day)
+                    npcService.getHiredNpcs().get(index).getDayShift().setCurrentTask(selectedTask);
+                if (night)
+                    npcService.getHiredNpcs().get(index).getNightShift().setCurrentTask(selectedTask);
             }
         }
         updateTable(npcService.getHiredNpcs());
 
 
     }
+
     public void tableRowSelected() {
         goToNpcDetails.setDisable(false);
         selectedHubNpc = (Npc) hubTable.getSelectionModel().getSelectedItem();
@@ -175,16 +183,17 @@ public class HubController implements Initializable, DialogController {
             }
         }
     }
+
     public void updateJobButtonPane() {
         Task selectedTask = (Task) taskTable.getSelectionModel().getSelectedItem();
         ObservableList selectedIndices = hubTable.getSelectionModel().getSelectedItems();
-        if(selectedTask !=null && !selectedIndices.isEmpty())
+        if (selectedTask != null && !selectedIndices.isEmpty())
             jobButtonPane.setDisable(false);
         else
             jobButtonPane.setDisable(true);
     }
 
-//------------------------------------Navigation
+    //------------------------------------Navigation
     public void goToGallery() {
         dialog.close();
         screens.loginDialog().show();
@@ -202,14 +211,17 @@ public class HubController implements Initializable, DialogController {
         dialog.close();
         screens.hireDialog().show();
     }
+
     public void goToPlayer() {
         dialog.close();
         screens.playerDialog().show();
     }
+
     public void goToSaveLoad() {
         dialog.close();
         screens.saveLoadDialog().show();
     }
+
     public void endTurn() {
         dialog.close();
         screens.endTurnDialog().show();

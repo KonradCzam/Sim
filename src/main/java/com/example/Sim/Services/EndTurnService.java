@@ -7,6 +7,7 @@ import com.example.Sim.Model.Raport.EndTurnRapport;
 import com.example.Sim.Model.Raport.NpcRoot;
 import com.example.Sim.Model.Raport.SingleEventRoot;
 import com.example.Sim.Model.Skill;
+import com.example.Sim.Model.TirednessSystem.WorkStatus;
 import com.example.Sim.Utilities.FileUtility;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,17 +18,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 public class EndTurnService {
+    Integer turn;
+    Task dayTask;
+    Task nightTask;
     @Resource
     private NpcService npcService;
     @Resource
     private FileUtility fileUtility;
     @Resource
     private DescriptionService descriptionService;
+    @Resource
+    private TirednessService tirednessService;
     @Value("#{'${categories.whore}'.split(',')}")
     private List<String> whoreCategories;
-    Integer turn;
-    Task dayTask;
-    Task nightTask;
 
     public EndTurnService() {
         turn = 0;
@@ -54,25 +57,48 @@ public class EndTurnService {
         dayTask = npc.getDayShift().getCurrentTask();
         nightTask = npc.getNightShift().getCurrentTask();
 
-        npc.getStats().get("Tiredness").changeValue(calculateDeltaTiredness(npc));
+        WorkStatus workStatus = tirednessService.handleTiredness(npc);
 
         NpcRoot npcRoot = new NpcRoot();
         npcRoot.setName(npc.getName());
         npcRoot.setPath(npc.getPath());
-        npcRoot.setDayShiftRapport(createEventRoots(npc, dayTask));
-        npcRoot.setNightShiftRapport(createEventRoots(npc, nightTask));
+        if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
+            npcRoot.setMessageLevel(workStatus.getLevel());
+            return handleNormalWork(npcRoot, npc, workStatus);
+        }
+        else {
+            npcRoot.setMessageLevel(workStatus.getLevel());
+            npcRoot.setDescription(descriptionService.createNpcRootDescription(workStatus,npc.getName()));
+            setNoWork(npcRoot);
+            return npcRoot;
+        }
+    }
 
-        Map<String, Integer> totalSkillGains = calculateTotalSkillGains(npcRoot.getDayShiftRapport(),npcRoot.getNightShiftRapport());
+    private NpcRoot setNoWork(NpcRoot npcRoot) {
+        npcRoot.setMoneyEarned(0);
+        npcRoot.setDayMoneyEarned(0);
+        npcRoot.setNightMoneyEarned(0);
+        npcRoot.setNightExpGain(0);
+        npcRoot.setDayExpGain(0);
+        npcRoot.setDayShiftRapport(new ArrayList<SingleEventRoot>());
+        npcRoot.setNightShiftRapport(new ArrayList<SingleEventRoot>());
 
-        npcRoot = calcTotalGoldAndExp(npcRoot);
-
-        npcRoot.setDescription(descriptionService.createNpcRootDescription(dayTask, nightTask, npcRoot, totalSkillGains));
         return npcRoot;
     }
 
-    private Integer calculateDeltaTiredness(Npc npc) {
-        return ((dayTask.getTiring() + nightTask.getTiring()) * 10) - npc.getStats().get("Constitution").getValue();
+    private NpcRoot handleNormalWork(NpcRoot npcRoot, Npc npc,WorkStatus workStatus) {
+        npcRoot.setDayShiftRapport(createEventRoots(npc, dayTask));
+        npcRoot.setNightShiftRapport(createEventRoots(npc, nightTask));
+
+        Map<String, Integer> totalSkillGains = calculateTotalSkillGains(npcRoot.getDayShiftRapport(), npcRoot.getNightShiftRapport());
+
+        npcRoot = calcTotalGoldAndExp(npcRoot);
+
+        npcRoot.setDescription(descriptionService.createNpcRootDescription(dayTask, nightTask, npcRoot, totalSkillGains, workStatus));
+
+        return npcRoot;
     }
+
 
     private List<SingleEventRoot> createEventRoots(Npc npc, Task task) {
 
@@ -95,7 +121,7 @@ public class EndTurnService {
         return singleEventRootList;
     }
 
-    private Map<String, Integer> calculateTotalSkillGains(List<SingleEventRoot> singleEventRootList,List<SingleEventRoot> singleEventRootList2) {
+    private Map<String, Integer> calculateTotalSkillGains(List<SingleEventRoot> singleEventRootList, List<SingleEventRoot> singleEventRootList2) {
         List<String> skillGains = new ArrayList<>();
         singleEventRootList.forEach(singleEventRoot -> {
             if (singleEventRoot.getSkillsGain() != null) {
@@ -160,7 +186,7 @@ public class EndTurnService {
         taskPerformance = Job.calculateTaskPerformance(npc, task, singleEventRoot.getCategory());
         sumEarned = (task.getMoneyCoefficient() * taskPerformance);
         sumEarned += ThreadLocalRandom.current().nextInt(-15, 15);
-        singleEventRoot.setMoneyEarned(Math.max(sumEarned.intValue(),0));
+        singleEventRoot.setMoneyEarned(Math.max(sumEarned.intValue(), 0));
         return singleEventRoot;
     }
 
@@ -190,12 +216,12 @@ public class EndTurnService {
         if (trained != null) {
             Double progress = 10.0 / trained.getValue();
 
-            progress = Math.min(progress,1.0);
+            progress = Math.min(progress, 1.0);
 
             trained.changeProgress(progress);
 
             if (trained.checkSkillLvlUp(category)) {
-                singleEventRoot.setDescription(descriptionService.createSingleRootNodeDescription(npc.getName(),singleEventRoot));
+                singleEventRoot.setDescription(descriptionService.createSingleRootNodeDescription(npc.getName(), singleEventRoot));
                 singleEventRoot.setSkillsGain(skillName);
             }
         }

@@ -1,5 +1,6 @@
 package com.example.Sim.Model.Raport;
 
+import com.example.Sim.Model.TirednessSystem.WorkStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class NpcRoot extends  EndTurnRapport{
+public class NpcRoot extends EndTurnRapport {
     String name;
+    String messageLevel;
     Integer dayMoneyEarned;
     Integer nightMoneyEarned;
     Integer dayExpGain;

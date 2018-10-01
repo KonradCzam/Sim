@@ -19,33 +19,36 @@ import java.util.stream.Collectors;
 @Setter
 public class FileUtility {
 
-    public void openImage() {
-
-    }
-    @Value( "${girls.directory:./New folder/}" )
-    private String directory  ;
+    @Value("${girls.directory:./New folder/}")
+    private String directory;
     @Value("#{'${categories.all}'.split(',')}")
     private List<String> allCategories;
 
-    public String[] getFileArray(){
+    public void openImage() {
+
+    }
+
+    public String[] getFileArray() {
         File dir = new File(directory);
         return dir.list();
     }
 
 
-    public boolean removeFile(String filename){
-        File dir = new File(directory+filename);
-        return  dir.delete();
+    public boolean removeFile(String filename) {
+        File dir = new File(directory + filename);
+        return dir.delete();
     }
+
     public void deleteDirectoryStream(String stringPath) throws IOException {
-        stringPath = directory+stringPath;
+        stringPath = directory + stringPath;
         Path path = Paths.get(stringPath);
         Files.walk(path)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
-    public List<String> checkNpcTypes(String name){
+
+    public List<String> checkNpcTypes(String name) {
         String dirPath = directory + name;
         List<String> possibleCategories = new ArrayList<>();
 
@@ -53,21 +56,22 @@ public class FileUtility {
 
         List<String> pictures = Arrays.asList(directory.list());
         for (String category : allCategories) {
-            if(pictures.stream().filter(line -> line.toLowerCase().contains(category)).collect(Collectors.toList()).size()>0)
-            possibleCategories.add(category);
+            if (pictures.stream().filter(line -> line.toLowerCase().contains(category)).collect(Collectors.toList()).size() > 0)
+                possibleCategories.add(category);
 
         }
         return possibleCategories;
 
     }
-    public boolean checkIfGifAvailable(String name,String category){
+
+    public boolean checkIfGifAvailable(String name, String category) {
         String dirPath = directory + name;
         File directory = new File(dirPath);
         List<String> pictures = Arrays.asList(directory.list());
-        if(pictures.stream()
+        if (pictures.stream()
                 .filter(line -> line.toLowerCase().contains(category))
                 .filter(line -> line.toLowerCase().contains(".gif"))
-                .collect(Collectors.toList()).size()>0)
+                .collect(Collectors.toList()).size() > 0)
             return true;
         else
             return false;

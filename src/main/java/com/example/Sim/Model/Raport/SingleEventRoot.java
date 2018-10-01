@@ -9,17 +9,17 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class SingleEventRoot extends  EndTurnRapport{
+public class SingleEventRoot extends EndTurnRapport {
     String description;
     Integer moneyEarned;
     String name = "Event";
-    String job ;
+    String job;
     String path;
     String category;
     String skill;
     Integer expGain;
-    String skillsGain ;
-    Map<String,Double> statProgress = new HashMap<String, Double>();
+    String skillsGain;
+    Map<String, Double> statProgress = new HashMap<String, Double>();
 
 
 }

@@ -7,7 +7,6 @@ import com.example.Sim.Utilities.NpcCreator;
 import com.example.Sim.controllers.Gallery.model.TableNpc;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,11 +30,10 @@ public class NpcService {
     List<Npc> randomNpcs = new ArrayList<Npc>();
     List<Npc> hiredNpcs = new ArrayList<Npc>();
     List<Npc> hirableNpcs = new ArrayList<Npc>();
-
-    private Integer hired = 0;
     String npcName;
     String folderPresent;
     Npc currentNpc;
+    private Integer hired = 0;
 
     public void createNpcs() {
         normalNpcs = new ArrayList<Npc>();
@@ -143,6 +141,7 @@ public class NpcService {
         hirableNpcs.remove(npc);
         hired += 1;
     }
+
     public void hireNpc(List<Npc> npcs) {
         npcs.forEach(npc -> hireNpc(npc));
     }

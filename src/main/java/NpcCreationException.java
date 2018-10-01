@@ -3,6 +3,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NpcCreationException extends Exception{
+public class NpcCreationException extends Exception {
     String message;
 }

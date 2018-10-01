@@ -13,11 +13,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class ImageHandler {
-    public void setImage(ImageView imgView, String path, String imgCategory) throws ImageNotFound{
+    public void setImage(ImageView imgView, String path, String imgCategory) throws ImageNotFound {
         setImage(imgView, path, imgCategory, false);
     }
-    public void setImage(ImageView imgView, String path, Boolean gifonly) throws ImageNotFound{
-        setImage(imgView, path,null, false);
+
+    public void setImage(ImageView imgView, String path, Boolean gifonly) throws ImageNotFound {
+        setImage(imgView, path, null, false);
     }
 
     public void setImage(ImageView imgView, String path, String imgCategory, boolean gifOnly) throws ImageNotFound {
@@ -30,7 +31,7 @@ public class ImageHandler {
         } else {
             File directory = new File(dirPath);
             List<String> pictures = Arrays.asList(directory.list());
-            List<String> filteredPictures ;
+            List<String> filteredPictures;
             if (imgCategory != null & gifOnly) {
                 filteredPictures = pictures.stream()
                         .filter(line -> line.toLowerCase().contains(imgCategory))
@@ -47,7 +48,7 @@ public class ImageHandler {
             } else {
                 filteredPictures = pictures;
             }
-            if(filteredPictures.size() == 0){
+            if (filteredPictures.size() == 0) {
                 throw new ImageNotFound("Image not found for girl: " + path + "\\nCategory: " + imgCategory);
             }
 

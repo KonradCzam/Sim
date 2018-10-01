@@ -23,11 +23,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @Service
-public class GalleryController implements Initializable,DialogController {
-    @FXML
-    private AnchorPane content;
-    @FXML
-    private ImageView imgView;
+public class GalleryController implements Initializable, DialogController {
     @FXML
     public Button button;
     @FXML
@@ -36,23 +32,25 @@ public class GalleryController implements Initializable,DialogController {
     public CheckBox gifOnly;
     @FXML
     public ComboBox imgType;
-    private ScreensConfiguration screens;
-    private FXMLDialog dialog;
-
-    private Integer rowId = 0;
-
     @Resource
     FileUtility fileUtility;
     @Resource
     ImageHandler imageHandler;
     @Resource
     NpcService npcService;
-
+    @FXML
+    private AnchorPane content;
+    @FXML
+    private ImageView imgView;
+    private ScreensConfiguration screens;
+    private FXMLDialog dialog;
+    private Integer rowId = 0;
 
 
     public GalleryController(ScreensConfiguration screens) {
         this.screens = screens;
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         npcService.createNpcs();
@@ -63,7 +61,7 @@ public class GalleryController implements Initializable,DialogController {
 
     }
 
-    public void initializeTable(){
+    public void initializeTable() {
         ObservableList data = FXCollections.observableArrayList(npcService.getNormalTableNpcs());
 
         npcTable.setItems(data);
@@ -74,54 +72,57 @@ public class GalleryController implements Initializable,DialogController {
 
         npcTable.getSelectionModel().selectFirst();
     }
-    public void setComboboxItems(String path){
+
+    public void setComboboxItems(String path) {
         ObservableList data = FXCollections.observableArrayList(fileUtility.checkNpcTypes(path));
         imgType.setItems(data);
         imgType.getSelectionModel().selectFirst();
     }
-    public void tableRowSelected(){
+
+    public void tableRowSelected() {
 
         rowId = npcTable.getSelectionModel().getFocusedIndex();
         TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
         setComboboxItems(selectedTableNpc.getPath());
-        if(selectedTableNpc.getFolder().equals("Present")){
-          try{
-              imageHandler.setImage(imgView, selectedTableNpc.getPath(),null,gifOnly.isSelected());
-          }catch (ImageNotFound e){
-              Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
-              alert.showAndWait();
-          }
+        if (selectedTableNpc.getFolder().equals("Present")) {
+            try {
+                imageHandler.setImage(imgView, selectedTableNpc.getPath(), null, gifOnly.isSelected());
+            } catch (ImageNotFound e) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+                alert.showAndWait();
+            }
         }
 
     }
 
-    public void categorySelected(){
-        if(imgType.getSelectionModel().getSelectedItem() != null){
+    public void categorySelected() {
+        if (imgType.getSelectionModel().getSelectedItem() != null) {
             gifOnly.setSelected(false);
             TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
-            String category= imgType.getSelectionModel().getSelectedItem().toString();
-            gifOnly.setDisable(!fileUtility.checkIfGifAvailable(selectedTableNpc.getPath(),category));
+            String category = imgType.getSelectionModel().getSelectedItem().toString();
+            gifOnly.setDisable(!fileUtility.checkIfGifAvailable(selectedTableNpc.getPath(), category));
         }
 
     }
-    public void buttonPress(){
+
+    public void buttonPress() {
         TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
-        try{
-            String category= imgType.getSelectionModel().getSelectedItem().toString();
-            imageHandler.setImage(imgView, selectedTableNpc.getPath(),category,gifOnly.isSelected());
-        }catch (ImageNotFound e){
+        try {
+            String category = imgType.getSelectionModel().getSelectedItem().toString();
+            imageHandler.setImage(imgView, selectedTableNpc.getPath(), category, gifOnly.isSelected());
+        } catch (ImageNotFound e) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
             alert.showAndWait();
         }
 
     }
-    public void goToBrothel(){
+
+    public void goToBrothel() {
 
         dialog.close();
         screens.hubDialog().show();
 
     }
-
 
 
     public void setDialog(FXMLDialog dialog) {
