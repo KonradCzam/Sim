@@ -12,7 +12,7 @@ public class Player implements Serializable {
     List<Trait> traits = new ArrayList<>();
     List<Item> inventory = new ArrayList<>();
     Map<String, Item> equippedItems = new HashMap<String, Item>();
-
+    Integer gold;
     List<Skill> skills = Arrays.asList(new Skill("Animal handling", 5),
             new Skill("Brewing", 5),
             new Skill("Combat", 5),
@@ -61,8 +61,12 @@ public class Player implements Serializable {
         name = "Name";
         Item item1 = new Item("C:\\Dev\\Sim\\src\\main\\resources\\UI\\Shirt.png");
         Item item2 = new Item("C:\\Dev\\Sim\\src\\main\\resources\\UI\\Shirt.png");
+        gold = 1000;
         inventory.add(item1);
         inventory.add(item2);
     }
 
+    public void setGold(Integer gold) {
+        this.gold = gold;
+    }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="brothelAnchor" prefHeight="768.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.library.SkillsAndStatsController">
+   <children>
+      <ListView fx:id="skillsList" layoutX="14.0" layoutY="29.0" prefHeight="354.0" prefWidth="152.0" />
+      <ListView fx:id="statsList" layoutX="14.0" layoutY="411.0" prefHeight="337.0" prefWidth="152.0" />
+      <Label layoutX="14.0" layoutY="4.0" text="Stats" />
+      <Label layoutX="14.0" layoutY="390.0" text="Skills" />
+      <TextArea fx:id="skillsAndStatsDescription" editable="false" layoutX="198.0" layoutY="29.0" prefHeight="721.0" prefWidth="532.0" wrapText="true" />
+   </children>
+</AnchorPane>

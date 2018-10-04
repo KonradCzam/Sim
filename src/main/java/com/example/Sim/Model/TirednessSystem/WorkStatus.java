@@ -6,7 +6,8 @@ import java.util.Arrays;
 @Getter
 public enum WorkStatus {
     NORMAL("Normal"),
-    REFUSED("Warning"),
+    MORAL_REFUSE("Warning"),
+    OVERWORK_REFUSE("Warning"),
     OVERWORKED("Warning"),
     OVERWORKED_NEAR_DEATH("Severe"),
     DEAD_TIRED("Severe");

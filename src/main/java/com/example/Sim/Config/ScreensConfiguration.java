@@ -34,6 +34,8 @@ import com.example.Sim.Utilities.ImageHandler;
 import com.example.Sim.Utilities.NpcCreator;
 import com.example.Sim.Utilities.SaveAndLoadUtility;
 import com.example.Sim.controllers.*;
+import com.example.Sim.controllers.library.LibraryController;
+import com.example.Sim.controllers.library.TaskController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -147,52 +149,18 @@ public class ScreensConfiguration {
         return new OptionsController(this);
     }
 
-
     @Bean
-    public ImageHandler imageHandler() {
-        return new ImageHandler();
+    public FXMLDialog libraryDialog() {
+        return new FXMLDialog(libraryController(), getClass().getClassLoader().getResource("library/library.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    public FileUtility fileUtility() {
-        return new FileUtility();
+    LibraryController libraryController() {
+        return new LibraryController(this);
     }
 
-    @Bean
-    public NpcService npcService() {
-        return new NpcService();
-    }
 
-    @Bean
-    public NpcCreator npcCreator() {
-        return new NpcCreator();
-    }
 
-    @Bean
-    public Player player() {
-        return new Player();
-    }
 
-    @Bean
-    public EndTurnService endTurnService() {
-        return new EndTurnService();
-    }
-
-    @Bean
-    public DescriptionService descriptionService() {
-        return new DescriptionService();
-    }
-
-    @Bean
-    public PlayerService playerService() {
-        return new PlayerService();
-    }
-
-    @Bean
-    public SaveAndLoadUtility saveAndLoadUtility() {
-        return new SaveAndLoadUtility();
-    }
-    @Bean
-    public TirednessService tirednessService(){return new TirednessService();}
 
 }

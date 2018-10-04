@@ -1,21 +1,20 @@
 package com.example.Sim.Model;
 
-import com.example.Sim.Model.Jobs.HubJob;
 import com.example.Sim.Model.Jobs.Job;
 import com.example.Sim.Model.Jobs.Task;
+import com.example.Sim.Services.JobService;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Setter
 @Getter
 public class Npc implements Serializable {
+
 
     private String path;
 
@@ -43,18 +42,22 @@ public class Npc implements Serializable {
 
     private Map<String, Item> equippedItems;
 
-    private Job dayShift;
+    private Task dayShift;
 
-    private Job nightShift;
+    private Task nightShift;
 
-    public Npc() {
+    private JobService jobService;
+
+    public Npc(JobService jobService) {
         this.Stats = new HashMap<String, Stat>();
         this.Skills = new HashMap<String, Skill>();
         this.Traits = new ArrayList<Trait>();
         inventory = new ArrayList<>();
         equippedItems = new HashMap<>();
-        dayShift = new Job();
-        nightShift = new Job();
+        dayShift = jobService.getFreeTime();
+        nightShift = jobService.getFreeTime();
+        this.jobService = jobService;
+
     }
 
     public void addStat(Stat stat) {
@@ -92,12 +95,24 @@ public class Npc implements Serializable {
     }
 
     public String calculateAverageProficiencyScore(Npc npc) {
-        npc.getStats();
-        HubJob hubJob = new HubJob();
-        Double avgSkill = hubJob.calculateAverageSkill(npc, Task.BROTHEL_WHORE.getRelevantSkills()).getAsDouble();
-        Integer temp = avgSkill.intValue();
-        return temp.toString();
-    }
 
+        List<String> relevantSkills = npc.getDayShift().getRelevantSkills();
+        List<String> relevantStats = npc.getNightShift().getRelevantStats();
+
+        OptionalDouble averageSkill = this.jobService.calculateAverageSkill(npc,relevantSkills);
+        OptionalDouble averageStat = this.jobService.calculateAverageStat(npc,relevantStats);
+        if(averageSkill.isPresent() && averageStat.isPresent()){
+            Double result = (averageSkill.getAsDouble() + averageStat.getAsDouble())/2.0;
+            Integer resultInt = result.intValue();
+            return resultInt.toString();
+        }
+        return "Not a number";
+    }
+    public Stat getStat(String name){
+        return this.getStats().get(name);
+    }
+    public Skill getSkill(String name){
+        return this.getSkills().get(name);
+    }
 }
 

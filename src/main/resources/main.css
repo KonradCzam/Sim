@@ -8,3 +8,12 @@
 .pane {
  -fx-background-color: red;
 }
+.separator{
+    -fx-background-color: Black;
+    -fx-background-radius: 20;
+}
+#topicTable .list-cell{
+    -fx-pref-height:50.0;
+    -fx-alignment: center;
+    -fx-font-size:20.0;
+}

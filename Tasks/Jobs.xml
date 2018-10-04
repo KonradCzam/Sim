@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Jobs>
+    <Job name="General">
+		<Task 
+		name="Free time"
+		description="Free time"
+		type="single"
+		tiring="-5"
+		moneyCoefficient="0.0"
+		expGain="0"
+		defaultCat= ""
+		thresholdType= "obedience"
+		threshold= "0"
+		>
+		<RelevantSkills>
+
+		</RelevantSkills>
+		<RelevantStats>
+
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Farm hand"
+		description="Physical jobs at a nearby farm"
+		type="single"
+		tiring="20"
+		moneyCoefficient="1.0"
+		expGain="10"
+		defaultCat="profile"
+		thresholdType="obedience"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Obedience" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Doctor"
+		description="Doctor at a nearby Clinic"
+		type="single"
+		tiring="5"
+		moneyCoefficient="7.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Medicine" />
+			<Skill name="Herbalism" />
+			<Skill name="Magic" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Nurse"
+		description="Nurse at a nearby Clinic"
+		type="single"
+		tiring="8"
+		moneyCoefficient="5.0"
+		expGain="40"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Medicine" />
+			<Skill name="Service" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Blacksmith"
+		description="Blacksmith in your forge"
+		type="single"
+		tiring="10"
+		moneyCoefficient="5.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Crafting" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength"/>
+			<Stat name="Constitution"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Taylor"
+		description="Taylor in your forge"
+		type="single"
+		tiring="5"
+		moneyCoefficient="5.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Crafting" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Jewler"
+		description="Jewler in your forge"
+		type="single"
+		tiring="5"
+		moneyCoefficient="5.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Crafting" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Herb Gatherer"
+		description="Herb Gatherer in nearby forest"
+		type="single"
+		tiring="5"
+		moneyCoefficient="8.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Herbalism" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+			<Stat name="Constitution"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Enchanter"
+		description="Enchantling items in your workshop"
+		type="single"
+		tiring="5"
+		moneyCoefficient="8.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Magic" />
+			<Skill name="Crafting" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+			<Stat name="Mana"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Brewer"
+		description="Brewing potions in your workshop"
+		type="single"
+		tiring="5"
+		moneyCoefficient="8.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Brewing" />
+			<Skill name="Herbalism" />
+			<Skill name="Crafting" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+	</Job>
+	<Job name="Gambling den">
+		<Task 
+		name="Cleaner"
+		description="Coocking"
+		type="single"
+		tiring="8"
+		moneyCoefficient="2.0"
+		expGain="20"
+		defaultCat= "ecchi"
+		thresholdType= "obedience"
+		threshold= "50"
+		>
+		<RelevantSkills>
+
+		</RelevantSkills>
+		<RelevantStats>
+
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Coocking"
+		description="Physical jobs at a nearby farm"
+		type="single"
+		tiring="20"
+		moneyCoefficient="1.0"
+		expGain="10"
+		defaultCat="ecchi"
+		thresholdType="obedience"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Obedience" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Barmaid"
+		description="Doctor at a nearby Clinic"
+		type="single"
+		tiring="5"
+		moneyCoefficient="7.0"
+		expGain="50"
+		defaultCat="ecchi"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Medicine" />
+			<Skill name="Herbalism" />
+			<Skill name="Magic" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Dealer"
+		description="Game host at you gambling den"
+		type="single"
+		tiring="5"
+		moneyCoefficient="6.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Service" />
+			<Skill name="Performance" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+			<Stat name="Refinement"/>
+			<Stat name="Charisma"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Waitress"
+		description="Waiting tables at you gambling den, gets pinched and slaps occasionally"
+		type="single"
+		tiring="10"
+		moneyCoefficient="5.0"
+		expGain="20"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Service" />
+			<Skill name="Performance" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Beauty"/>
+			<Stat name="Refinement"/>
+			<Stat name="Charisma"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Dealer"
+		description="Game host at you gambling den"
+		type="single"
+		tiring="5"
+		moneyCoefficient="6.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Service" />
+			<Skill name="Performance" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+			<Stat name="Refinement"/>
+			<Stat name="Charisma"/>
+		</RelevantStats>
+		</Task>
+	</Job>
+	<Job name="Brothel">
+		<Task 
+		name="Cleaner"
+		description="Coocking"
+		type="single"
+		tiring="8"
+		moneyCoefficient="2.0"
+		expGain="20"
+		defaultCat= "ecchi"
+		thresholdType= "obedience"
+		threshold= "50"
+		>
+		<RelevantSkills>
+
+		</RelevantSkills>
+		<RelevantStats>
+
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Coocking"
+		description="Physical jobs at a nearby farm"
+		type="single"
+		tiring="20"
+		moneyCoefficient="1.0"
+		expGain="10"
+		defaultCat="profile"
+		thresholdType="obedience"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Obedience" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		
+		<Task 
+		name="Barmaid"
+		description="Doctor at a nearby Clinic"
+		type="single"
+		tiring="5"
+		moneyCoefficient="7.0"
+		expGain="50"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="60">
+		<RelevantSkills>
+			<Skill name="Medicine" />
+			<Skill name="Herbalism" />
+			<Skill name="Magic" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Whore"
+		description="Doctor at a nearby Clinic"
+		type="multiple"
+		tiring="5"
+		moneyCoefficient="7.0"
+		expGain="50"
+		defaultCat="sex"
+		thresholdType="Morality"
+		threshold="10">
+
+		<RelevantSkills>
+			<Skill name="Anal" />
+			<Skill name="Normal Sex" />
+			<Skill name="BDSM" />
+			<Skill name="Beastiality" />
+			<Skill name="Masturbation" />
+			<Skill name="Lesbian" />
+			<Skill name="Strip" />
+			<Skill name="Group Sex" />
+			<Skill name="Oral Sex" />
+			<Skill name="Titty Sex" />
+			<Skill name="Handjob" />
+			<Skill name="Footjob" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Beauty"/>
+		</RelevantStats>
+		</Task>
+	</Job>
+</Jobs>

@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SaveLoadController implements Initializable, DialogController {
@@ -111,6 +112,11 @@ public class SaveLoadController implements Initializable, DialogController {
     private void save(Optional<String> name) {
         SaveSlot saveSlot = saveAndLoadUtility.createSaveSlot(name);
         saveAndLoadUtility.saveGame(saveSlot);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         refreshTable();
     }
 

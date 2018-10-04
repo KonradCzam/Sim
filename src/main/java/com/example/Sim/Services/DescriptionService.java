@@ -12,17 +12,20 @@ import java.util.Map;
 public class DescriptionService {
     String description;
 
-    public String createNpcRootDescription(WorkStatus workStatus, String name) {
-        if (workStatus == WorkStatus.REFUSED) {
-            return name + " refused to work this week. To avoid this in the future raise her obedience. She would also not refuse work is she was either too afraid of you or loved you too much.";
+    public String createPartialNpcRootDescription(WorkStatus workStatus, String name) {
+        if (workStatus == WorkStatus.OVERWORK_REFUSE) {
+            return name + " refused to work this week due to overwork. To avoid this in the future raise her obedience. She would also not refuse work is she was either too afraid of you or loved you too much.\n";
         }
         if (workStatus == WorkStatus.DEAD_TIRED) {
-            return name + " died on the job today. She was overworked but didn't dare refuse the work, either due to her love,fear or obedience.";
+            return name + " died on the job today. She was overworked but didn't dare refuse the work, either due to her love,fear or obedience.\n";
+        }
+        if (workStatus == WorkStatus.MORAL_REFUSE) {
+            return name + " refused to work this week the task was too repulsive for her. To avoid this in the future raise her obedience. She would also not refuse work is she was either too afraid of you or loved you too much. Or you could lower her morality.\n";
         }
         return null;
     }
 
-    public String createNpcRootDescription(Task task, Task nightTask, NpcRoot npcRoot, Map<String, Integer> totalSkillsGain, WorkStatus workStatus) {
+    public String createPartialNpcRootDescription(Task task, String shift, NpcRoot npcRoot, Map<String, Integer> totalSkillsGain, WorkStatus workStatus) {
         description = "";
         if(workStatus.equals(WorkStatus.OVERWORKED)){
             description += "WARNING: " + npcRoot.getName() + " is overworked and loosing health.\n";
@@ -30,29 +33,34 @@ public class DescriptionService {
         if(workStatus.equals(WorkStatus.OVERWORKED_NEAR_DEATH)){
             description += "SEVERE: " + npcRoot.getName() + "is overworked and might die VERY soon.\n";
         }
-        description += "This week during the day " + npcRoot.getName() + " worked as a " + task.getName()
-                + ". She earned a total of " + npcRoot.getDayMoneyEarned()
-                + " and gained " + npcRoot.getDayExpGain() + " EXP.";
-        description += "\nDuring the night she worked as a " + nightTask.getName()
-                + ". She earned a total of " + npcRoot.getNightMoneyEarned()
-                + " and gained " + npcRoot.getNightExpGain() + " EXP.";
-        if (!totalSkillsGain.isEmpty())
-            description += createSkillGainsDescription(npcRoot.getName(), totalSkillsGain);
+        Integer moneyEarned = null;
+        Integer expEarned = null;
+        if (" day ".equals(shift)){
+            moneyEarned = npcRoot.getDayMoneyEarned();
+            expEarned = npcRoot.getDayExpGain();
+        }
+
+        else{
+            moneyEarned = npcRoot.getNightMoneyEarned();
+            expEarned = npcRoot.getNightExpGain();
+        }
+
+
+        description += "This week during the"+ shift + npcRoot.getName() + " worked as a " + task.getName()
+                + ". She earned a total of " + moneyEarned
+                + " and gained " + expEarned + " EXP.\n";
+        if (" night ".equals(shift)){
+            if (!totalSkillsGain.isEmpty())
+                description += createSkillGainsDescription(npcRoot.getName(), totalSkillsGain);
+        }
+
         return description;
     }
 
     public String createTaskDescription(Npc npc, Task task, SingleEventRoot singleEventRoot) {
 
-        if (task == Task.BROTHEL_WHORE) {
+        if ("Brothel whore".equals(task.getName())) {
             return createBrothelWhoreDescription(npc, task, singleEventRoot);
-        } else if (task == Task.BROTHEL_STREET_WHORE) {
-            return createStreetWhoreDescription(npc);
-        } else if (task == Task.BROTHEL_STRIP) {
-            return createBrothelStripperDescription(npc);
-        } else if (task == Task.BROTHEL_BARMAID) {
-            return createBrothelBarmaidDescription(npc);
-        } else if (task == Task.BROTHEL_WAITRESS) {
-            return createBrothelWaitressDescription(npc);
         } else {
             return "No Description";
         }
@@ -70,13 +78,13 @@ public class DescriptionService {
     }
 
     public String createSingleRootNodeDescription(String name, SingleEventRoot singleEventRoot) {
-        return description += name + " has leveled up a skill: " + singleEventRoot.getSkill();
+        return  name + " has leveled up a skill: " + singleEventRoot.getSkill();
     }
 
     private String createBrothelWhoreDescription(Npc npc, Task task, SingleEventRoot singleEventRoot) {
         String taskCategory = task.getType();
 
-        return description;
+        return null;
     }
 
     private String createBrothelStripperDescription(Npc npc) {

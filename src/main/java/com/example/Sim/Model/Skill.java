@@ -13,18 +13,22 @@ public class Skill implements DetailsInterface, Serializable {
     private String category;
 
     public Skill(String name, Integer value) {
-        this.name = name.toLowerCase();
+        this.name = name;
         this.value = value;
         this.progress = 0.0;
         this.category = mapNametoCategory(name);
     }
 
     public Skill(String name, Integer min, Integer max) {
-        this.name = name.toLowerCase();
+        this.name = name;
         this.value = ThreadLocalRandom.current().nextInt(min, max + 1);
         this.progress = 0.0;
         this.category = mapNametoCategory(name);
 
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
     public void changeValue(Integer change) {
@@ -60,11 +64,11 @@ public class Skill implements DetailsInterface, Serializable {
                 return "profile";
             case "Brewing":
                 return "profile";
-            case "AnimalHandling":
+            case "Animal Handling":
                 return "profile";
             case "Cooking":
                 return "profile";
-            case "NormalSex":
+            case "Normal Sex":
                 return "sex";
             case "Anal":
                 return "anal";
@@ -76,14 +80,20 @@ public class Skill implements DetailsInterface, Serializable {
                 return "les";
             case "Strip":
                 return "strip";
-            case "Group":
+            case "Group Sex":
                 return "group";
-            case "OralSex":
+            case "Oral Sex":
                 return "oral";
-            case "TittySex":
+            case "Titty Sex":
                 return "titty";
             case "Handjob":
                 return "hand";
+            case "Masturbation":
+                return "finger";
+            case "Deep":
+                return "oral";
+            case "Dildo":
+                return "dildo";
             case "Footjob":
                 return "foot";
             default:

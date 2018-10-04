@@ -4,11 +4,13 @@ import com.example.Sim.Model.Npc;
 import com.example.Sim.Model.Skill;
 import com.example.Sim.Model.Stat;
 import com.example.Sim.Model.Trait;
+import com.example.Sim.Services.JobService;
 import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
@@ -17,14 +19,34 @@ import java.util.List;
 
 
 public class NpcCreator {
-    List<String> skillsList = Arrays.asList("Combat", "Magic", "Service", "Medicine", "Performance", "Crafting", "Farming", "Herbalism", "Brewing", "AnimalHandling", "Cooking", "NormalSex", "Anal", "BDSM", "Beastiality", "Lesbian", "Strip", "Group", "OralSex", "TittySex", "Handjob", "Footjob");
-    List<String> statsList = Arrays.asList("Level", "Exp", "Age", "Fame", "AskPrice", "House", "Health", "Happiness", "Tiredness", "PCLove", "PCFear", "PCHate", "Lactation", "Charisma", "Beauty", "Refinement", "Agility", "Strength", "Constitution", "Intelligence", "Mana", "Morality", "Dignity", "Confidence", "Obedience", "Spirit", "Libido", "NPCLove");
-    @Value("${girls.directory:./New folder/}")
-    private String directory;
 
+     @Value("${girls.directory:./New folder/}")
+    private String directory;
+    @Value("#{'${skills.all}'.split(',')}")
+     private List<String> skillsList;
+    @Value("#{'${stats.all}'.split(',')}")
+    private List<String> statsList;
+    @Resource
+    private transient JobService jobService;
+
+    private Npc createStatsAndSkills(Npc npc){
+        skillsList.forEach(skillName -> npc.addSkill(new Skill(skillName, 0)));
+        statsList.forEach(statName -> npc.addStat(new Stat(statName, 0)));
+        return npc;
+    }
+    private Integer castValueToInt(String value){
+        Integer result;
+        try{
+           result  = Integer.parseInt(value);
+        }catch (NumberFormatException e){
+            result = 0;
+        }
+        return result;
+    }
     public Npc createNpc(String npcFile) {
         String path = directory + npcFile;
-        Npc npc = new Npc();
+        Npc npc = new Npc(jobService);
+        npc = createStatsAndSkills(npc);
         try {
 
 
@@ -35,34 +57,32 @@ public class NpcCreator {
             for (int i = 1; i < list.getLength(); i++) {
                 String nodename = list.item(i).getNodeName();
                 String nodeValue = list.getNamedItem(nodename).getNodeValue();
-                if (nodeValue.equals("")) {
-                    nodeValue = "0";
-                }
+                Integer nodeValueInt = castValueToInt(nodeValue);
                 if (statsList.contains(nodename))
-                    npc.addStat(new Stat(nodename, Integer.parseInt(nodeValue)));
-                if (skillsList.contains(nodename))
-                    npc.addSkill(new Skill(nodename, Integer.parseInt(nodeValue)));
-                if (nodename.equals("Gold"))
+                    npc.getStat(nodename).setValue(nodeValueInt);
+                else if (skillsList.contains(nodename))
+                    npc.getSkill(nodename).setValue(nodeValueInt);
+                else if (nodename.equals("Gold"))
                     npc.setGold(Integer.parseInt(nodeValue));
-                if (nodename.equals("Desc"))
+                else if (nodename.equals("Desc"))
                     npc.setDesc(nodeValue);
-                if (nodename.equals("Name"))
+                else if (nodename.equals("Name"))
                     npc.setPath(nodeValue);
-                if (nodename.equals("Human"))
+                else if (nodename.equals("Human"))
                     npc.setHuman(nodeValue);
-                if (nodename.equals("Catacombs"))
+                else if (nodename.equals("Catacombs"))
                     npc.setCatacomb(nodeValue);
             }
 
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return npc;
     }
 
     public Npc createRandomNpc(String npcFile) {
-        Npc npc = new Npc();
+        Npc npc = new Npc(jobService);
         String path = directory + npcFile;
         try {
             Document doc = openDocument(path);

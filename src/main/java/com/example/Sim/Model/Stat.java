@@ -25,6 +25,9 @@ public class Stat implements DetailsInterface, Serializable {
         this.value = ThreadLocalRandom.current().nextInt(min, max + 1);
 
     }
+    public void setValue(Integer value) {
+        this.value = value;
+    }
     public void setMax(){
         this.value = 100;
     }

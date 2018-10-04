@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="brothelAnchor" prefHeight="611.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Accordion layoutX="14.0" layoutY="14.0" prefHeight="588.0" prefWidth="731.0">
+        <panes>
+          <TitledPane animated="false" text="V 0.0.1 - Release to testers">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea editable="false" layoutX="14.0" layoutY="14.0" prefHeight="474.0" prefWidth="703.0" text="&#10;- Written in java, should work on mac or linux i didn't check.&#10;- Generating NPC's from girlsx and rgirlsx files ( Same ones Whore master uses)&#10;- Using picture folders (from the perspective of the player again the same as WM)&#10;- Jobs (ex. Brothel) and tasks (ex. Brothel Whore) are loaded from outside .xml which allows creation of custom jobs / tasks or tweaking the existing jobs.&#10;- 3 Jobs with a total o 23 different tasks divided between them.&#10;- Hiring new NPC's (NPC value is calculated based on their skills and stats)&#10;- Ending the turn is implemented, all NPC's earn gold and skills based on jobs assigned and appropriate skills &#10;- End turn displays appropriate image (similar way to WM)&#10;- Tiredness system ( NPC's get tired after performing a task based on the task and their constitution)&#10;- Obedience system ( NPC's can refuse a task if their morality is too high or obedience too low )&#10;- Save / Load game &#10;- Error logging system (Creates a crash report with current date time)&#10;- Library feature that works as an information source for the player.&#10;" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="V 0.1 - Initial release">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="V 1.0 - Yeah right as if were gonna get here">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </children>
+</AnchorPane>

@@ -9,15 +9,15 @@ public class TirednessService {
     Task nightTask;
 
     public WorkStatus handleTiredness(Npc npc) {
-        dayTask = npc.getDayShift().getCurrentTask();
-        nightTask = npc.getNightShift().getCurrentTask();
+        dayTask = npc.getDayShift();
+        nightTask = npc.getNightShift();
         npc.getStats().get("Tiredness").changeValue(calculateDeltaTiredness(npc));
-        if (npc.getStats().get("Tiredness").getValue() >= 100) {
+        if (npc.getStat("Tiredness").getValue() >= 100) {
             return handleOverwork(npc);
-        } else {
-            return WorkStatus.NORMAL;
+        } else if(npc.getStat("Tiredness").getValue() < 0 ){
+            npc.getStat("Tiredness").setMin();
         }
-
+        return WorkStatus.NORMAL;
     }
 
     private Integer calculateDeltaTiredness(Npc npc) {
@@ -41,7 +41,7 @@ public class TirednessService {
             npc.getStats().get("Health").changeValue(-overwork);
         }else {
             npc.getStats().get("Tiredness").setMax();
-            return WorkStatus.REFUSED;
+            return WorkStatus.OVERWORK_REFUSE;
         }
 
         if (npc.getStats().get("Health").getValue() <= 0) {

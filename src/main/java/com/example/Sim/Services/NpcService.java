@@ -23,7 +23,8 @@ public class NpcService {
     NpcCreator npcCreator;
     @Resource
     FileUtility fileUtility;
-
+    @Resource
+    private transient JobService jobService;
 
     String[] files;
     List<Npc> normalNpcs = new ArrayList<Npc>();
@@ -131,7 +132,7 @@ public class NpcService {
     }
 
     public Integer calculateValue(Npc npc) {
-        Double avgPerformance = npc.getDayShift().calculateTaskPerformance(npc, Task.EVERYTHING);
+        Double avgPerformance = jobService.calculateTaskPerformance(npc, npc.getNightShift());
         Double price = (avgPerformance * 5);
         return price.intValue();
     }

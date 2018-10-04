@@ -17,4 +17,15 @@ public class PlayerService {
     public void removeItemFromInvetory(Item item) {
         player.getInventory().remove(item);
     }
+
+    public Integer getPlayerGold(){
+        return player.getGold();
+    }
+    public Boolean checkIfCanAfford(Integer price){
+        return price > player.getGold() ? false : true;
+    }
+    public void changeGold(Integer change){
+        Integer currentGold = player.getGold();
+        player.setGold(Math.max(currentGold + change,0));
+    }
 }

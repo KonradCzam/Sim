@@ -114,8 +114,12 @@ public class NpcDetailsController implements Initializable, DialogController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        currentNpc = npcService.getCurrentNpc();
         dialog.setOnShown(onShownEventHandler);
         player = playerService.getPlayer();
+        initializeGrids();
+        initializeTables();
+        refreshTables();
     }
 
     public void refresh() {
@@ -132,9 +136,9 @@ public class NpcDetailsController implements Initializable, DialogController {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
                 alert.showAndWait();
             }
-            initializeGrids();
-            initializeTables();
+            refreshTables();
         }
+
     }
 
     public void initializeTables() {
@@ -162,8 +166,7 @@ public class NpcDetailsController implements Initializable, DialogController {
     }
 
     private void initializeTraits() {
-        ObservableList data = FXCollections.observableArrayList(currentNpc.getTraits());
-        traitsTable.setItems(data);
+
 
         TableColumn tableColumn = (TableColumn) traitsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
@@ -171,8 +174,7 @@ public class NpcDetailsController implements Initializable, DialogController {
     }
 
     private void initializeStatsTable() {
-        ObservableList data = FXCollections.observableArrayList(new ArrayList<Stat>(currentNpc.getStats().values()));
-        statsTable.setItems(data);
+
         TableColumn tableColumn = (TableColumn) statsTable.getColumns().get(0);
         tableColumn.setSortType(TableColumn.SortType.ASCENDING);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
@@ -182,14 +184,24 @@ public class NpcDetailsController implements Initializable, DialogController {
         tableCol.setCellValueFactory(new PropertyValueFactory<Stat, Double>("progress"));
         tableCol.setCellFactory(ProgressBarTableCell.<Stat>forTableColumn());
         statsTable.getColumns().addAll(tableCol);
-        statsTable.setEditable(true);
+        statsTable.setEditable(false);
         setTooltips(statsTable);
 
     }
 
-    private void initializeSkillsTable() {
+    public void refreshTables(){
         ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(currentNpc.getSkills().values()));
         skillsTable.setItems(data);
+        setTooltips(skillsTable);
+
+         data = FXCollections.observableArrayList(new ArrayList<Stat>(currentNpc.getStats().values()));
+        statsTable.setItems(data);
+        setTooltips(statsTable);
+
+        data = FXCollections.observableArrayList(currentNpc.getTraits());
+        traitsTable.setItems(data);
+    }
+    private void initializeSkillsTable() {
 
         TableColumn tableColumn = (TableColumn) skillsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
@@ -202,8 +214,8 @@ public class NpcDetailsController implements Initializable, DialogController {
         tableCol.setPrefWidth(110);
         tableCol.setResizable(false);
         skillsTable.getColumns().addAll(tableCol);
-        skillsTable.setEditable(true);
-        setTooltips(skillsTable);
+        skillsTable.setEditable(false);
+
     }
 
     public void initializeGrids() {
