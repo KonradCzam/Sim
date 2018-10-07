@@ -25,8 +25,10 @@ public class SkillsAndStatsController implements Initializable {
     @FXML
     private TextArea skillsAndStatsDescription;
 
-    @Value("#{'${stats.all}'.split(',')}")
-    private List<String> allStats;
+    @Value("#{'${stats.status}'.split(',')}")
+    private List<String> lightStatsList;
+    @Value("#{'${stats.important}'.split(',')}")
+    private List<String> heavyStats;
     @Value("#{'${skills.all}'.split(',')}")
     private List<String> allSkills;
     @Override
@@ -35,7 +37,9 @@ public class SkillsAndStatsController implements Initializable {
 
     }
     private void initializeLists() {
-
+        List<String> allStats = new ArrayList<>();
+        allStats.addAll(lightStatsList);
+        allStats.addAll(heavyStats);
         ObservableList data = FXCollections.observableArrayList(allStats);
         statsList.setItems(data);
         statsList.getSelectionModel().selectedItemProperty().addListener((obs) -> {

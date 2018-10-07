@@ -21,4 +21,5 @@ public class Task implements Serializable{
     private String defaultCat;
     private String thresholdType;
     private Integer threshold;
+    private Integer value;
 }

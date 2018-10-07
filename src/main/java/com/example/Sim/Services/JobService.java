@@ -99,4 +99,26 @@ public class JobService {
             return WorkStatus.MORAL_REFUSE;
         }
     }
+    public String calculateAverageProficiencyScore(Npc npc) {
+
+        List<String> relevantSkillsDay = npc.getDayShift().getRelevantSkills();
+        List<String> relevantStatsDay = npc.getDayShift().getRelevantStats();
+
+        List<String> relevantSkillsNight = npc.getDayShift().getRelevantSkills();
+        List<String> relevantStatsNight = npc.getDayShift().getRelevantStats();
+
+
+        OptionalDouble averageSkillDay = calculateAverageSkill(npc,relevantSkillsDay);
+        OptionalDouble averageStatDay = calculateAverageStat(npc,relevantStatsDay);
+
+        OptionalDouble averageSkillNight = calculateAverageSkill(npc,relevantSkillsNight);
+        OptionalDouble averageStatNight = calculateAverageStat(npc,relevantStatsNight);
+
+        if(averageSkillDay.isPresent() && averageStatDay.isPresent() && averageSkillNight.isPresent() && averageStatNight.isPresent()){
+            Double result = (averageSkillDay.getAsDouble() + averageStatDay.getAsDouble() + averageSkillNight.getAsDouble() + averageStatNight.getAsDouble())/4.0;
+            Integer resultInt = result.intValue();
+            return resultInt.toString();
+        }
+        return "Not a number";
+    }
 }

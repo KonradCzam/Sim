@@ -51,15 +51,19 @@ public class JobLoader {
         String name = taskNode.getAttributes().getNamedItem("name").getNodeValue();
         String description = taskNode.getAttributes().getNamedItem("description").getNodeValue();
         List<String> relevantSkills = getRelevantSkills(taskNode);
-        List<String> relevantStats= getRelevantStats(taskNode);
+        List<String> relevantStats = getRelevantStats(taskNode);
         String type = taskNode.getAttributes().getNamedItem("type").getNodeValue();
         Integer tiring = Integer.parseInt(taskNode.getAttributes().getNamedItem("tiring").getNodeValue());
         Double moneyCoefficient = Double.parseDouble(taskNode.getAttributes().getNamedItem("moneyCoefficient").getNodeValue());
         Integer expGain = Integer.parseInt(taskNode.getAttributes().getNamedItem("expGain").getNodeValue());
         String defaultCat = taskNode.getAttributes().getNamedItem("defaultCat").getNodeValue();
-        String thresholdType =taskNode.getAttributes().getNamedItem("thresholdType").getNodeValue();
+        String thresholdType = taskNode.getAttributes().getNamedItem("thresholdType").getNodeValue();
         Integer threshold = Integer.parseInt(taskNode.getAttributes().getNamedItem("threshold").getNodeValue());
-        return new Task(name,description,relevantSkills,relevantStats,type,tiring,moneyCoefficient,expGain,defaultCat,thresholdType,threshold);
+        Integer value = 0;
+        if (taskNode.getAttributes().getNamedItem("value") != null) {
+            value = Integer.parseInt(taskNode.getAttributes().getNamedItem("value").getNodeValue());
+        }
+        return new Task(name, description, relevantSkills, relevantStats, type, tiring, moneyCoefficient, expGain, defaultCat, thresholdType, threshold, value);
     }
 
     private List<String> getRelevantStats(Node taskNode) {
@@ -81,7 +85,7 @@ public class JobLoader {
         List<String> relevantSkills = new ArrayList<>();
         NodeList skillNodes = taskNode.getFirstChild().getNextSibling().getChildNodes();
         for (int i = 0; i < skillNodes.getLength(); i++) {
-            if(skillNodes.item(i).getAttributes() != null) {
+            if (skillNodes.item(i).getAttributes() != null) {
                 String skill = skillNodes.item(i).getAttributes().item(0).getNodeValue();
                 relevantSkills.add(skill);
             }

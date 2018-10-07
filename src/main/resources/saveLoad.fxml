@@ -5,9 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="brothelAnchor" prefHeight="810.0" prefWidth="1180.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.SaveLoadController">
+<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.SaveLoadController">
     <children>
-        <TableView fx:id="loadGameTable" layoutX="14.0" layoutY="14.0" prefHeight="720.0" prefWidth="1155.0">
+        <TableView fx:id="loadGameTable" layoutX="14.0" layoutY="14.0" prefHeight="639.0" prefWidth="1260.0">
             <columns>
                 <TableColumn fx:id="saveNameColumn" editable="false" prefWidth="75.0" text="Name" />
                 <TableColumn fx:id="saveDateColumn" editable="false" prefWidth="75.0" text="Date" />
@@ -19,8 +19,8 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Button layoutX="14.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToMain" text="Main menu" />
-        <Button layoutX="155.0" layoutY="765.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
-      <Button layoutX="984.0" layoutY="750.0" mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="182.0" text="New Save" />
+        <Button layoutX="25.0" layoutY="674.0" mnemonicParsing="false" onAction="#goToMain" text="Main menu" />
+        <Button layoutX="160.0" layoutY="674.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
+      <Button layoutX="1038.0" layoutY="674.0" mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="182.0" text="New Save" />
     </children>
 </AnchorPane>

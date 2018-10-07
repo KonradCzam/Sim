@@ -56,7 +56,7 @@ public class NpcService {
         Npc npc = npcCreator.createNpc(filePath);
         npc.setName(npcName);
         npc.setFolder(folderPresent);
-        npc.setPrice(calculateValue(npc));
+        npc.setPrice(npc.calculateValue());
         normalNpcs.add(npc);
     }
 
@@ -66,7 +66,7 @@ public class NpcService {
         Npc randomNpc = npcCreator.createRandomNpc(filePath);
         randomNpc.setName(npcName);
         randomNpc.setFolder(folderPresent);
-        randomNpc.setPrice(calculateValue(randomNpc));
+        randomNpc.setPrice(randomNpc.calculateValue());
         randomNpcs.add(randomNpc);
 
     }
@@ -129,12 +129,6 @@ public class NpcService {
             hirableNpcs.addAll(randomNpcs);
         }
         return hirableNpcs.subList(0, quantity - hired);
-    }
-
-    public Integer calculateValue(Npc npc) {
-        Double avgPerformance = jobService.calculateTaskPerformance(npc, npc.getNightShift());
-        Double price = (avgPerformance * 5);
-        return price.intValue();
     }
 
     public void hireNpc(Npc npc) {

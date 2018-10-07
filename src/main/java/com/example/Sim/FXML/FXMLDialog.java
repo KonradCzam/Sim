@@ -4,6 +4,7 @@ package com.example.Sim.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -15,11 +16,13 @@ import java.net.URL;
 
 public class FXMLDialog extends Stage {
     public FXMLDialog(DialogController controller, URL fxml, Window owner) {
+
         this(controller, fxml, owner, StageStyle.DECORATED);
     }
 
     public FXMLDialog(final DialogController controller, URL fxml, Window owner, StageStyle style) {
         super(style);
+        this.setResizable(false);
         initOwner(owner);
         initModality(Modality.WINDOW_MODAL);
         FXMLLoader loader = new FXMLLoader(fxml);

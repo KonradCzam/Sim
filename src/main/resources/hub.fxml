@@ -10,48 +10,48 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane fx:id="brothelAnchor" onMouseClicked="#tableRowSelected" prefHeight="810.0" prefWidth="1619.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.HubController">
+<AnchorPane fx:id="brothelAnchor" maxHeight="720.0" maxWidth="1280.0" onMouseClicked="#tableRowSelected" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.HubController">
     <children>
-        <TableView fx:id="hubTable" layoutX="14.0" layoutY="55.0" onMouseClicked="#tableRowSelected" prefHeight="400.0" prefWidth="1246.0">
+        <TableView fx:id="hubTable" layoutX="14.0" layoutY="40.0" onMouseClicked="#tableRowSelected" prefHeight="370.0" prefWidth="947.0">
             <columns>
-                <TableColumn prefWidth="566.0" text="Name" />
-            <TableColumn fx:id="healthColumn" prefWidth="91.0" text="Health" />
-                <TableColumn fx:id="tirednessColumn" prefWidth="93.0" text="Fatigue" />
-                <TableColumn fx:id="dayJobColumn" prefWidth="142.0" text="Day Shift" />
-                <TableColumn fx:id="nightJobColumn" prefWidth="143.0" text="Night Shift" />
-                <TableColumn fx:id="skillTableColumn" minWidth="0.0" prefWidth="113.0" text="Skill" />
+                <TableColumn prefWidth="329.0" text="Name" />
+            <TableColumn fx:id="healthColumn" prefWidth="137.0" text="Health" />
+                <TableColumn fx:id="tirednessColumn" prefWidth="115.0" text="Fatigue" />
+                <TableColumn fx:id="dayJobColumn" prefWidth="141.0" text="Day Shift" />
+                <TableColumn fx:id="nightJobColumn" prefWidth="130.0" text="Night Shift" />
+                <TableColumn fx:id="skillTableColumn" minWidth="0.0" prefWidth="76.0" text="Skill" />
             </columns>
         </TableView>
-        <ImageView fx:id="hubImage" fitHeight="415.0" fitWidth="357.0" layoutX="1274.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="hubImage" fitHeight="400.0" fitWidth="291.0" layoutX="977.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../../../New%20folder/Yuna%20Shiina/profile%20(1).jpg" />
             </image>
         </ImageView>
-        <Button layoutX="1194.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToGallery" text="Gallery" />
-        <Button fx:id="goToNpcDetails" layoutX="553.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToNpcDetails" text="Girl Details" />
-        <TableView fx:id="jobTable" layoutX="14.0" layoutY="471.0" prefHeight="325.0" prefWidth="200.0">
+        <Button layoutX="895.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToGallery" text="Gallery" />
+        <Button fx:id="goToNpcDetails" layoutX="554.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToNpcDetails" text="Girl Details" />
+        <TableView fx:id="jobTable" layoutX="14.0" layoutY="420.0" prefHeight="292.0" prefWidth="200.0">
             <columns>
                 <TableColumn prefWidth="186.0" text="Workplace" />
             </columns>
         </TableView>
-        <TableView fx:id="taskTable" layoutX="226.0" layoutY="471.0" prefHeight="325.0" prefWidth="200.0">
+        <TableView fx:id="taskTable" layoutX="223.0" layoutY="420.0" prefHeight="292.0" prefWidth="200.0">
             <columns>
                 <TableColumn prefWidth="181.0" text="Task" />
             </columns>
         </TableView>
-        <Button layoutX="1008.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToHire" text="Slave Market" />
-        <Pane fx:id="jobButtonPane" layoutX="440.0" layoutY="471.0" prefHeight="148.0" prefWidth="142.0">
+        <Button layoutX="708.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToHire" text="Slave Market" />
+        <Pane fx:id="jobButtonPane" layoutX="440.0" layoutY="420.0" prefHeight="148.0" prefWidth="142.0">
             <children>
                 <Button layoutX="20.0" layoutY="14.0" mnemonicParsing="false" onAction="#setDayJob" text="Set day shift" />
                 <Button layoutX="15.0" layoutY="54.0" mnemonicParsing="false" onAction="#setNightJob" text="Set night shift" />
                 <Button layoutX="32.0" layoutY="95.0" mnemonicParsing="false" onAction="#setBothJobs" text="Set both" />
             </children>
         </Pane>
-        <Button layoutX="440.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToPlayer" text="PlayerDetails" />
-        <Button layoutX="1525.0" layoutY="765.0" mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
-        <Button layoutX="1121.0" layoutY="765.0" mnemonicParsing="false" onAction="#gotoToLibrary" text="Library" />
-        <Button layoutX="1419.0" layoutY="765.0" mnemonicParsing="false" onAction="#goToSaveLoad" text="Save/Load" />
-      <Label fx:id="goldLabel" layoutX="14.0" layoutY="14.0" text="Gold: ">
+        <Button layoutX="440.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToPlayer" text="PlayerDetails" />
+        <Button layoutX="1186.0" layoutY="681.0" mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
+        <Button layoutX="822.0" layoutY="681.0" mnemonicParsing="false" onAction="#gotoToLibrary" text="Library" />
+        <Button layoutX="1089.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToSaveLoad" text="Save/Load" />
+      <Label fx:id="goldLabel" text="Gold: ">
          <font>
             <Font size="28.0" />
          </font>

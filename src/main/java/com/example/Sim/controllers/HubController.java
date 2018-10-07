@@ -145,7 +145,7 @@ public class HubController implements Initializable, DialogController {
                 .map(Stat::getValue)
                 .findAny()
                 .orElse(0).toString()));
-        skillTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().calculateAverageProficiencyScore(cellData.getValue())));
+        skillTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(jobService.calculateAverageProficiencyScore(cellData.getValue())));
         hubTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 

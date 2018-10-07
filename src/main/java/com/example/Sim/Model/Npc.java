@@ -1,15 +1,14 @@
 package com.example.Sim.Model;
 
-import com.example.Sim.Model.Jobs.Job;
 import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Services.JobService;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Setter
 @Getter
@@ -21,7 +20,8 @@ public class Npc implements Serializable {
     private String folder;
 
     private String Name;
-
+    private Map<String, Stat> HeavyStats;
+    private Map<String, Stat> LightStats;
     private Map<String, Stat> Stats;
 
     private List<Trait> Traits;
@@ -46,24 +46,26 @@ public class Npc implements Serializable {
 
     private Task nightShift;
 
-    private JobService jobService;
 
     public Npc(JobService jobService) {
-        this.Stats = new HashMap<String, Stat>();
-        this.Skills = new HashMap<String, Skill>();
+        this.Stats = new TreeMap<String, Stat>();
+        this.LightStats = new TreeMap<String, Stat>();
+        this.HeavyStats = new TreeMap<String, Stat>();
+        this.Skills = new TreeMap<String, Skill>();
         this.Traits = new ArrayList<Trait>();
         inventory = new ArrayList<>();
-        equippedItems = new HashMap<>();
+        equippedItems = new TreeMap<>();
         dayShift = jobService.getFreeTime();
         nightShift = jobService.getFreeTime();
-        this.jobService = jobService;
 
     }
 
-    public void addStat(Stat stat) {
-        this.Stats.put(stat.getName(), stat);
+    public void addHeavyStat(Stat stat) {
+        this.HeavyStats.put(stat.getName(), stat);
     }
-
+    public void addLightStat(Stat stat) {
+        this.LightStats.put(stat.getName(), stat);
+    }
     public void addTrait(Trait trait) {
         this.Traits.add(trait);
     }
@@ -94,25 +96,46 @@ public class Npc implements Serializable {
         Desc = desc;
     }
 
-    public String calculateAverageProficiencyScore(Npc npc) {
 
-        List<String> relevantSkills = npc.getDayShift().getRelevantSkills();
-        List<String> relevantStats = npc.getNightShift().getRelevantStats();
 
-        OptionalDouble averageSkill = this.jobService.calculateAverageSkill(npc,relevantSkills);
-        OptionalDouble averageStat = this.jobService.calculateAverageStat(npc,relevantStats);
-        if(averageSkill.isPresent() && averageStat.isPresent()){
-            Double result = (averageSkill.getAsDouble() + averageStat.getAsDouble())/2.0;
-            Integer resultInt = result.intValue();
-            return resultInt.toString();
-        }
-        return "Not a number";
+    public Integer calculateValue() {
+        Integer statValue = calculateAverageWeightedStat();
+        Integer skillValue = calculateAverageSkill();
+        return statValue + skillValue;
+    }
+
+    private Integer calculateAverageSkill() {
+        AtomicReference<Integer> value = new AtomicReference<>(0);
+        this.getSkills().forEach((skillName, skill) -> value.set(value.get() + skill.getValue()));
+        return value.get();
+    }
+
+    private Integer calculateAverageWeightedStat() {
+        AtomicReference<Integer> value = new AtomicReference<>(0);
+        this.getStats().forEach((statName, stat) -> value.set(value.get() + (stat.getValue() * stat.getWeight())));
+        return value.get();
+    }
+    public Integer calculateLevel() {
+        AtomicReference<Integer> value = new AtomicReference<>(0);
+        this.getHeavyStats().forEach((statName, stat) -> value.set(value.get() + stat.getValue()));
+        return value.get()/10;
     }
     public Stat getStat(String name){
-        return this.getStats().get(name);
+        if(this.getHeavyStats().get(name) != null)
+            return this.getHeavyStats().get(name);
+        else
+            return this.getLightStats().get(name);
+
     }
     public Skill getSkill(String name){
         return this.getSkills().get(name);
+    }
+
+    public Map<String, Stat> getStats(){
+        Map<String, Stat> allStats = new TreeMap<String, Stat>();
+        allStats.putAll(this.LightStats);
+        allStats.putAll(this.HeavyStats);
+        return allStats;
     }
 }
 

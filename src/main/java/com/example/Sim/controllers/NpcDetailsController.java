@@ -94,6 +94,7 @@ public class NpcDetailsController implements Initializable, DialogController {
     private NpcService npcService;
     @Resource
     private PlayerService playerService;
+    @Resource
     private Player player;
     @Resource
     private ImageHandler imageHandler;
@@ -255,14 +256,17 @@ public class NpcDetailsController implements Initializable, DialogController {
         List<Item> inventory = currentNpc.getInventory();
 
         Integer index = 0;
-        for (int row = 0; row < 5; row++) {
+        for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 6; column++) {
                 if (index < inventory.size()) {
-                    npcEqGrid.add(inventory.get(index).getImageView(), column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    npcEqGrid.add(imageView, column, row);
                     index++;
                 } else {
-                    String imagePath = "UI\\EqEmpty.png";
-                    Image image = new Image(imagePath);
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
                     ImageView imageView = new ImageView(image);
                     npcEqGrid.add(imageView, column, row);
                 }
@@ -271,16 +275,19 @@ public class NpcDetailsController implements Initializable, DialogController {
     }
 
     public void initializeEqGrid() {
-        Map<String, Item> inventory = player.getEquippedItems();
+        List<Item> inventory = currentNpc.getInventory();
         Integer index = 0;
         for (int row = 0; row < 5; row++) {
             for (int column = 0; column < 3; column++) {
                 if (index < inventory.size()) {
-                    EqGrid.add(inventory.get(index).getImageView(), column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView  imageView = new ImageView(image);
+                    EqGrid.add(imageView, column, row);
                     index++;
                 } else {
-                    String imagePath = "UI\\EqEmpty.png";
-                    Image image = new Image(imagePath);
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
                     ImageView imageView = new ImageView(image);
                     EqGrid.add(imageView, column, row);
                 }
@@ -293,14 +300,17 @@ public class NpcDetailsController implements Initializable, DialogController {
         List<Item> inventory = player.getInventory();
 
         Integer index = 0;
-        for (int row = 0; row < 5; row++) {
+        for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 6; column++) {
                 if (index < inventory.size()) {
-                    PlayerEqGrid.add(inventory.get(index).getImageView(), column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView  imageView = new ImageView(image);
+                    PlayerEqGrid.add(imageView, column, row);
                     index++;
                 } else {
-                    String imagePath = "UI\\EqEmpty.png";
-                    Image image = new Image(imagePath);
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
                     ImageView imageView = new ImageView(image);
                     PlayerEqGrid.add(imageView, column, row);
                 }

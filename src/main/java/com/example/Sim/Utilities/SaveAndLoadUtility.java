@@ -85,6 +85,7 @@ public class SaveAndLoadUtility {
 
             } catch (IOException | ClassNotFoundException e) {
                 logState("Failed to load! " + e.getLocalizedMessage());
+                e.printStackTrace();
             }
         } else {
             logState("Nothing to load.");

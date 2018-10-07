@@ -14,42 +14,48 @@ import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
 public class NpcCreator {
 
-     @Value("${girls.directory:./New folder/}")
+    @Value("${girls.directory:./New folder/}")
     private String directory;
     @Value("#{'${skills.all}'.split(',')}")
-     private List<String> skillsList;
-    @Value("#{'${stats.all}'.split(',')}")
-    private List<String> statsList;
+    private List<String> skillsList;
+    @Value("#{'${stats.status}'.split(',')}")
+    private List<String> lightStatsList;
+    @Value("#{'${stats.important}'.split(',')}")
+    private List<String> heavyStats;
     @Resource
     private transient JobService jobService;
 
-    private Npc createStatsAndSkills(Npc npc){
+    private Npc createStatsAndSkills(Npc npc) {
+        Collections.sort(skillsList);
+        Collections.sort(lightStatsList);
+        Collections.sort(heavyStats);
         skillsList.forEach(skillName -> npc.addSkill(new Skill(skillName, 0)));
-        statsList.forEach(statName -> npc.addStat(new Stat(statName, 0)));
+        heavyStats.forEach(statName -> npc.addHeavyStat(new Stat(statName, 0)));
+        lightStatsList.forEach(statName -> npc.addLightStat(new Stat(statName, 0)));
         return npc;
     }
-    private Integer castValueToInt(String value){
+
+    private Integer castValueToInt(String value) {
         Integer result;
-        try{
-           result  = Integer.parseInt(value);
-        }catch (NumberFormatException e){
+        try {
+            result = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
             result = 0;
         }
         return result;
     }
+
     public Npc createNpc(String npcFile) {
         String path = directory + npcFile;
         Npc npc = new Npc(jobService);
         npc = createStatsAndSkills(npc);
         try {
-
-
             Document doc = openDocument(path);
 
             NamedNodeMap list = doc.getElementsByTagName("Girl").item(0).getAttributes();
@@ -58,7 +64,7 @@ public class NpcCreator {
                 String nodename = list.item(i).getNodeName();
                 String nodeValue = list.getNamedItem(nodename).getNodeValue();
                 Integer nodeValueInt = castValueToInt(nodeValue);
-                if (statsList.contains(nodename))
+                if (lightStatsList.contains(nodename) || heavyStats.contains(nodename))
                     npc.getStat(nodename).setValue(nodeValueInt);
                 else if (skillsList.contains(nodename))
                     npc.getSkill(nodename).setValue(nodeValueInt);
@@ -78,12 +84,17 @@ public class NpcCreator {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if(npc.getStat("Age").getValue() <18 ){
+            npc.getStat("Age").setValue(18);
+        }
+        npc.getStat("Level").setValue(npc.calculateLevel());
         return npc;
     }
 
     public Npc createRandomNpc(String npcFile) {
         Npc npc = new Npc(jobService);
         String path = directory + npcFile;
+        npc = createStatsAndSkills(npc);
         try {
             Document doc = openDocument(path);
 
@@ -116,25 +127,29 @@ public class NpcCreator {
                 if (nodeValueMax.equals("")) {
                     nodeValueMax = "100";
                 }
-                npc.addStat(new Stat(nodename, Integer.parseInt(nodeValueMin), Integer.parseInt(nodeValueMax)));
 
+                Integer nodeValueMinInt = castValueToInt(nodeValueMin);
+                Integer nodeValueMaxInt = castValueToInt(nodeValueMax);
+                if (lightStatsList.contains(nodename) || heavyStats.contains(nodename))
+                    npc.getStat(nodename).setValue(nodeValueMinInt,nodeValueMaxInt);
             }
 
             for (int i = 1; i < skillList.getLength(); i++) {
-                String nodename = skillList.item(i).getAttributes().getNamedItem("Name").getNodeValue();
-                String nodeValueMin = skillList.item(i).getAttributes().getNamedItem("Min").getNodeValue();
-                String nodeValueMax = skillList.item(i).getAttributes().getNamedItem("Max").getNodeValue();
-
+                String nodename = statList.item(i).getAttributes().getNamedItem("Name").getNodeValue();
+                String nodeValueMin = statList.item(i).getAttributes().getNamedItem("Min").getNodeValue();
+                String nodeValueMax = statList.item(i).getAttributes().getNamedItem("Max").getNodeValue();
                 if (nodeValueMin.equals("")) {
                     nodeValueMin = "0";
                 }
                 if (nodeValueMax.equals("")) {
                     nodeValueMax = "100";
                 }
-                Integer nodeValueMaxInt = Integer.parseInt(nodeValueMax);
-                Integer nodeValueMinInt = Integer.parseInt(nodeValueMin);
 
-                npc.addSkill(new Skill(nodename, nodeValueMinInt, nodeValueMaxInt));
+                Integer nodeValueMinInt = castValueToInt(nodeValueMin);
+                Integer nodeValueMaxInt = castValueToInt(nodeValueMax);
+                if (skillsList.contains(nodename))
+                    npc.getSkill(nodename).setValue(nodeValueMinInt,nodeValueMaxInt);
+
 
             }
             for (int i = 1; i < traitList.getLength(); i++) {
@@ -151,6 +166,10 @@ public class NpcCreator {
         } catch (Exception e) {
 
         }
+        if(npc.getStat("Age").getValue() <18 ){
+            npc.getStat("Age").setValue(18);
+        }
+        npc.getStat("Level").setValue(npc.calculateLevel());
         return npc;
     }
 

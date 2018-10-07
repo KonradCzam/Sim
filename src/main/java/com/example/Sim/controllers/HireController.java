@@ -9,6 +9,7 @@ import com.example.Sim.Model.Player;
 import com.example.Sim.Model.Skill;
 import com.example.Sim.Model.Stat;
 import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.ImageHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,7 +51,7 @@ public class HireController implements Initializable, DialogController {
     @Resource
     private NpcService npcService;
     @Resource
-    private Player player;
+    private PlayerService playerService;
     @Resource
     private ImageHandler imageHandler;
 
@@ -136,15 +137,23 @@ public class HireController implements Initializable, DialogController {
     }
 
     public void buy() {
-        npcService.hireNpc(currentNpc);
-        hireTable.getItems().remove(currentNpc);
-        if (hireTable.getItems().isEmpty()) {
-            hireBuy.setDisable(true);
-        } else {
-            hireBuy.setDisable(false);
-            hireTable.getSelectionModel().selectFirst();
-            currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
+        if(playerService.checkIfCanAfford(currentNpc.getPrice())){
+            npcService.hireNpc(currentNpc);
+            hireTable.getItems().remove(currentNpc);
+            if (hireTable.getItems().isEmpty()) {
+                hireBuy.setDisable(true);
+            } else {
+                hireBuy.setDisable(false);
+                hireTable.getSelectionModel().selectFirst();
+                currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
+            }
+            playerService.changeGold(-currentNpc.getPrice());
         }
+        else{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You cant afford this slave.");
+            alert.showAndWait();
+        }
+
 
     }
 

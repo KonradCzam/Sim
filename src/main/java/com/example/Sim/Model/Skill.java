@@ -30,6 +30,9 @@ public class Skill implements DetailsInterface, Serializable {
     public void setValue(Integer value) {
         this.value = value;
     }
+    public void setValue(Integer min,Integer max) {
+        this.value = ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
 
     public void changeValue(Integer change) {
         this.value += change;

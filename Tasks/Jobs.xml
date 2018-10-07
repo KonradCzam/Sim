@@ -4,19 +4,19 @@
 		<Task 
 		name="Free time"
 		description="Free time"
-		type="single"
+		type="training"
 		tiring="-5"
 		moneyCoefficient="0.0"
 		expGain="0"
-		defaultCat= ""
+		defaultCat= "profile"
 		thresholdType= "obedience"
 		threshold= "0"
-		>
+		value = "5">
 		<RelevantSkills>
 
 		</RelevantSkills>
 		<RelevantStats>
-
+<Stat name="Health"/>
 		</RelevantStats>
 		</Task>
 		
@@ -76,7 +76,9 @@
 			<Stat name="Inteligence"/>
 		</RelevantStats>
 		</Task>
-		<Task 
+	</Job>
+	<Job name="Crafting">
+	<Task 
 		name="Blacksmith"
 		description="Blacksmith in your forge"
 		type="single"
@@ -185,10 +187,97 @@
 		</RelevantStats>
 		</Task>
 	</Job>
+	<Job name="Services">
+		<Task 
+		name="Agility Training"
+		description="Send the slave to the gym to train agility. Gain 2 for 200 gold."
+		type="training"
+		tiring="15"
+		moneyCoefficient="-2000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "2">
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Agility"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Constitution Training"
+		description="Send the slave to the gym to train constitution. Gain 2 for 200 gold."
+		type="training"
+		tiring="15"
+		moneyCoefficient="-2000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "2">
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Constitution"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Intelligence Training"
+		description="Send the slave to the library to train intelligence. Gain 2 for 200 gold."
+		type="training"
+		tiring="15"
+		moneyCoefficient="-2000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "2">
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Inteligence"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Strength Training"
+		description="Send the slave to the gym to train strength. Gain 2 for 200 gold."
+		type="training"
+		tiring="15"
+		moneyCoefficient="-2000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "2">
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength"/>
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Hospital"
+		description="Send the slave to the hospital to get healed."
+		type="training"
+		tiring="-10"
+		moneyCoefficient="-1000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "50" >
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Health"/>
+		</RelevantStats>
+		</Task>
+	</Job>
 	<Job name="Gambling den">
 		<Task 
 		name="Cleaner"
-		description="Coocking"
+		description="Cleans the floor of spilled drinks and food from the Excited Gamblers"
 		type="single"
 		tiring="8"
 		moneyCoefficient="2.0"
@@ -206,8 +295,8 @@
 		</Task>
 		
 		<Task 
-		name="Coocking"
-		description="Physical jobs at a nearby farm"
+		name="Cooking"
+		description="Fixes food for customers and yourself"
 		type="single"
 		tiring="20"
 		moneyCoefficient="1.0"
@@ -226,7 +315,7 @@
 		
 		<Task 
 		name="Barmaid"
-		description="Doctor at a nearby Clinic"
+		description="Works behind the bar mixing the erotic drinks and spiced beer for the customes to spend much more."
 		type="single"
 		tiring="5"
 		moneyCoefficient="7.0"
@@ -284,8 +373,8 @@
 		</RelevantStats>
 		</Task>
 		<Task 
-		name="Dealer"
-		description="Game host at you gambling den"
+		name="Escort"
+		description="Be a companion to gambling den customers, sometimes a bit more physical"
 		type="single"
 		tiring="5"
 		moneyCoefficient="6.0"
@@ -325,33 +414,14 @@
 		</Task>
 		
 		<Task 
-		name="Coocking"
-		description="Physical jobs at a nearby farm"
-		type="single"
-		tiring="20"
-		moneyCoefficient="1.0"
-		expGain="10"
-		defaultCat="profile"
-		thresholdType="obedience"
-		threshold="30">
-		<RelevantSkills>
-			<Skill name ="Obedience" />
-		</RelevantSkills>
-		<RelevantStats>
-			<Stat name="Strength" />
-			<Stat name="Constitution" />
-		</RelevantStats>
-		</Task>
-		
-		<Task 
 		name="Barmaid"
-		description="Doctor at a nearby Clinic"
+		description="Works behind the bar mixing the erotic drinks and spiced beer for the customes to spend much more."
 		type="single"
 		tiring="5"
 		moneyCoefficient="7.0"
 		expGain="50"
-		defaultCat="profile"
-		thresholdType="Obedience"
+		defaultCat="ecchi"
+		thresholdType="Morality"
 		threshold="60">
 		<RelevantSkills>
 			<Skill name="Medicine" />
@@ -362,16 +432,89 @@
 			<Stat name="Inteligence"/>
 		</RelevantStats>
 		</Task>
+		
+		<Task 
+		name="Maseuse"
+		description="Massages for customers, sometimes with a happy ending"
+		type="single"
+		tiring="9"
+		moneyCoefficient="4.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Morality" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Inviter"
+		description="Promote the brothel on the streets by inviting customers in."
+		type="single"
+		tiring="7"
+		moneyCoefficient="3.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Morality" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Strip club Waitress"
+		description="Serves the customers the very, very spiced drinks so the are more open to the immorar tasks."
+		type="single"
+		tiring="7"
+		moneyCoefficient="3.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Morality" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
+		<Task 
+		name="Stripper"
+		description="Strip in the brothel"
+		type="single"
+		tiring="10"
+		moneyCoefficient="8.0"
+		expGain="30"
+		defaultCat="ecchi"
+		thresholdType="Morality"
+		threshold="30">
+		<RelevantSkills>
+			<Skill name ="Morality" />
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Strength" />
+			<Stat name="Constitution" />
+		</RelevantStats>
+		</Task>
 		<Task 
 		name="Whore"
-		description="Doctor at a nearby Clinic"
+		description="Gives the allowed sexual acts to the customes.  Such a nice Slut!"
 		type="multiple"
 		tiring="5"
 		moneyCoefficient="7.0"
 		expGain="50"
 		defaultCat="sex"
 		thresholdType="Morality"
-		threshold="10">
+		threshold="-100">
 
 		<RelevantSkills>
 			<Skill name="Anal" />

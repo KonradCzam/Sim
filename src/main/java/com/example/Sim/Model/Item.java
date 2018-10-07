@@ -9,14 +9,12 @@ import java.io.Serializable;
 
 @Getter
 public class Item implements Serializable {
-    public transient ImageView imageView;
-    String name;
-    String description;
-    String path;
+
+    private String name;
+    private String description;
+    private String path;
 
     public Item(String path) {
-        File file = new File(path);
-        Image image = new Image(file.toURI().toString());
-        this.imageView = new ImageView(image);
+        this.path = path;
     }
 }

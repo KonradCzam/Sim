@@ -59,9 +59,9 @@ public class Player implements Serializable {
 
     public Player() {
         name = "Name";
-        Item item1 = new Item("C:\\Dev\\Sim\\src\\main\\resources\\UI\\Shirt.png");
-        Item item2 = new Item("C:\\Dev\\Sim\\src\\main\\resources\\UI\\Shirt.png");
-        gold = 1000;
+        Item item1 = new Item("/UI/Shirt.png");
+        Item item2 = new Item("/UI/Shirt.png");
+        gold = 10000;
         inventory.add(item1);
         inventory.add(item2);
     }

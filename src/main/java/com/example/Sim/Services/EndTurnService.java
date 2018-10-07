@@ -30,6 +30,8 @@ public class EndTurnService {
     private TirednessService tirednessService;
     @Resource
     private transient JobService jobService;
+    @Resource
+    private transient PlayerService playerService;
     @Value("#{'${categories.whore}'.split(',')}")
     private List<String> whoreCategories;
 
@@ -41,7 +43,9 @@ public class EndTurnService {
         turn += 1;
         npcService.shuffleHirable();
         npcService.setHired(0);
-        return prepareEndTurnReport();
+        EndTurnRapport endTurnRapport = prepareEndTurnReport();
+        playerService.changeGold(calcTotalEarned(endTurnRapport.getNpcRootList()));
+        return endTurnRapport;
     }
 
     private EndTurnRapport prepareEndTurnReport() {
@@ -161,12 +165,28 @@ public class EndTurnService {
 
         singleEventRoot.setJob(task.getName());
         singleEventRoot.setPath(npc.getPath());
+        if ("training".equals(task.getType())) {
+            singleEventRoot = handleTraining(npc, task, singleEventRoot);
+        } else {
+            singleEventRoot = selectCategory(npc, task, singleEventRoot);
+            singleEventRoot = handleGoldEarned(npc, task, singleEventRoot);
+            singleEventRoot = handleProgressGain(npc, singleEventRoot);
+            singleEventRoot.setExpGain(task.getExpGain());
+            singleEventRoot = handleExpGain(npc, task, singleEventRoot);
+        }
+        return singleEventRoot;
+    }
 
-        singleEventRoot = selectCategory(npc, task, singleEventRoot);
-        singleEventRoot = handleGoldEarned(npc, task, singleEventRoot);
-        singleEventRoot = handleProgressGain(npc, singleEventRoot);
+    private SingleEventRoot handleTraining(Npc npc, Task task, SingleEventRoot singleEventRoot) {
+        singleEventRoot.setCategory(task.getDefaultCat());
+        singleEventRoot.setMoneyEarned(task.getMoneyCoefficient().intValue());
         singleEventRoot.setExpGain(task.getExpGain());
-        singleEventRoot = handleExpGain(npc, task, singleEventRoot);
+        Integer deltaStat = task.getValue();
+        String statName = task.getRelevantStats().get(0);
+        npc.getStat(statName).changeValue(deltaStat);
+        Map<String, Double> statProgress = new HashMap<String, Double>();
+        statProgress.put(statName, new Double(deltaStat));
+        singleEventRoot.setStatProgress(statProgress);
         return singleEventRoot;
     }
 
@@ -215,14 +235,19 @@ public class EndTurnService {
         }
 
         String selectedCat;
-        if (npc.getSkills().get(selectedSkill) != null) {
-            selectedCat = npc.getSkills().get(selectedSkill).getCategory();
+        if (selectedSkill != null) {
+            if (npc.getSkills().get(selectedSkill) != null) {
+                selectedCat = npc.getSkills().get(selectedSkill).getCategory();
 
-            if (!possibleCategories.contains(selectedCat))
+                if (!possibleCategories.contains(selectedCat))
+                    selectedCat = task.getDefaultCat();
+            } else {
                 selectedCat = task.getDefaultCat();
-        } else {
-            selectedCat = task.getDefaultCat();
 
+            }
+
+        } else {
+            selectedCat = "profile";
         }
         singleEventRoot.setSkill(selectedSkill);
         singleEventRoot.setCategory(selectedCat);
@@ -233,21 +258,24 @@ public class EndTurnService {
         String description = "";
         String category = singleEventRoot.getCategory();
         String skillName = singleEventRoot.getSkill();
-        Skill trained = npc.getSkills().get(singleEventRoot.getSkill());
+        if (skillName != null) {
+            Skill trained = npc.getSkills().get(singleEventRoot.getSkill());
 
-        singleEventRoot.setDescription(description);
-        if (trained != null) {
-            Double progress = 10.0 / trained.getValue();
+            singleEventRoot.setDescription(description);
+            if (trained != null) {
+                Double progress = 10.0 / trained.getValue();
 
-            progress = Math.min(progress, 1.0);
+                progress = Math.min(progress, 1.0);
 
-            trained.changeProgress(progress);
+                trained.changeProgress(progress);
 
-            if (trained.checkSkillLvlUp(category)) {
-                singleEventRoot.setDescription(descriptionService.createSingleRootNodeDescription(npc.getName(), singleEventRoot));
-                singleEventRoot.setSkillsGain(skillName);
+                if (trained.checkSkillLvlUp(category)) {
+                    singleEventRoot.setDescription(descriptionService.createSingleRootNodeDescription(npc.getName(), singleEventRoot));
+                    singleEventRoot.setSkillsGain(skillName);
+                }
             }
         }
+
         return singleEventRoot;
     }
 
@@ -264,5 +292,14 @@ public class EndTurnService {
 
     public void setTurn(Integer turn) {
         this.turn = turn;
+    }
+
+    private Integer calcTotalEarned(List<NpcRoot> npcRoots) {
+        Integer totalEarned = 0;
+        for (int i = 0; i < npcRoots.size(); i++) {
+            totalEarned += npcRoots.get(i).getDayMoneyEarned();
+            totalEarned += npcRoots.get(i).getNightMoneyEarned();
+        }
+        return totalEarned;
     }
 }
