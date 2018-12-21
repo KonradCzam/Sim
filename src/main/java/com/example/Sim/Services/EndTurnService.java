@@ -1,11 +1,11 @@
 package com.example.Sim.Services;
 
+import com.example.Sim.Model.Jobs.JobCustomers;
 import com.example.Sim.Model.Jobs.Task;
-import com.example.Sim.Model.Npc;
-import com.example.Sim.Model.Raport.EndTurnRapport;
-import com.example.Sim.Model.Raport.NpcRoot;
-import com.example.Sim.Model.Raport.SingleEventRoot;
-import com.example.Sim.Model.Skill;
+import com.example.Sim.Model.NPC.NPCTaskExpStats;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.Raport.*;
+import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.TirednessSystem.WorkStatus;
 import com.example.Sim.Utilities.FileUtility;
 import lombok.Getter;
@@ -20,6 +20,8 @@ public class EndTurnService {
     Integer turn;
     Task dayTask;
     Task nightTask;
+    Boolean presentOld = false;
+    Integer earnedLastTurn ;
     @Resource
     private NpcService npcService;
     @Resource
@@ -29,9 +31,17 @@ public class EndTurnService {
     @Resource
     private TirednessService tirednessService;
     @Resource
+    private ObedienceService obedienceService;
+    @Resource
     private transient JobService jobService;
     @Resource
     private transient PlayerService playerService;
+    @Resource
+    private transient FactorService factorService;
+
+    @Resource
+    private transient CustomerService customerService;
+
     @Value("#{'${categories.whore}'.split(',')}")
     private List<String> whoreCategories;
 
@@ -43,18 +53,47 @@ public class EndTurnService {
         turn += 1;
         npcService.shuffleHirable();
         npcService.setHired(0);
-        EndTurnRapport endTurnRapport = prepareEndTurnReport();
-        playerService.changeGold(calcTotalEarned(endTurnRapport.getNpcRootList()));
-        return endTurnRapport;
+        GirlEndTurnRapport girlEndTurnRapport = createGirlEndTurnRapport();
+        FinanceEndTurnRapport financeEndTurnRapport = createFinanceEndTurnRapport();
+        this.earnedLastTurn = calcTotalEarned(financeEndTurnRapport.getFinanceRootList());
+        playerService.changeGold(earnedLastTurn);
+        return new EndTurnRapport(financeEndTurnRapport,girlEndTurnRapport);
     }
 
-    private EndTurnRapport prepareEndTurnReport() {
+
+
+    private FinanceEndTurnRapport createFinanceEndTurnRapport() {
+        jobService.calculateAllJobsStats();
+        customerService.generateAllCustomers();
+        FinanceEndTurnRapport financeEndTurnRapport = prepareFinancialEndTurnRapport();
+        return financeEndTurnRapport;
+    }
+
+    private FinanceEndTurnRapport prepareFinancialEndTurnRapport() {
+        List<JobRoot> jobRoots = new ArrayList<>();
+        Map<String, JobCustomers> customersDividedByTierAndShift = customerService.getDividedCustomersByPopularity();
+        //Calculate happines and gold spent
+        for(JobCustomers jobsCustomers : customersDividedByTierAndShift.values()){
+            jobsCustomers = jobService.handleEndTurn(jobsCustomers);
+        }
+        //Reformat to JobRoot nodes
+        for (Map.Entry<String,JobCustomers> entry : customersDividedByTierAndShift.entrySet()) {
+            JobRoot jobRoot = new JobRoot(entry.getKey(),entry.getValue());
+            jobRoots.add(jobRoot);
+        }
+        FinanceEndTurnRapport financeEndTurnRapport = new FinanceEndTurnRapport();
+        financeEndTurnRapport.setFinanceRootList(jobRoots);
+        return financeEndTurnRapport;
+    }
+
+
+    private GirlEndTurnRapport createGirlEndTurnRapport() {
         List<NpcRoot> npcRootList = new ArrayList<>();
         npcService.getHiredNpcs().forEach(npc -> npcRootList.add(endTurnForNpc(npc)));
 
-        EndTurnRapport endTurnRapport = new EndTurnRapport();
-        endTurnRapport.setNpcRootList(npcRootList);
-        return endTurnRapport;
+        GirlEndTurnRapport girlEndTurnRapport = new GirlEndTurnRapport();
+        girlEndTurnRapport.setNpcRootList(npcRootList);
+        return girlEndTurnRapport;
     }
 
     private NpcRoot endTurnForNpc(Npc npc) {
@@ -66,36 +105,52 @@ public class EndTurnService {
         nightTask = npc.getNightShift();
 
         WorkStatus dayWorkStatus = calcWorkStatus(npc, dayTask);
-        WorkStatus nightWorkStatus = calcWorkStatus(npc, nightTask);
+        npcRoot.setDayWorkStatus(dayWorkStatus);
 
-        handleShift(dayWorkStatus, dayTask, npcRoot, npc, " day ");
-        handleShift(nightWorkStatus, nightTask, npcRoot, npc, " night ");
+        handleShift(dayWorkStatus, npcRoot, npc, " day ");
+
+        WorkStatus nightWorkStatus = calcWorkStatus(npc, nightTask);
+        npcRoot.setNightWorkStatus(nightWorkStatus);
+
+        handleShift(nightWorkStatus, npcRoot, npc, " night ");
+
+        Map<String,Integer> changes = factorService.handleEndTurnFactors(npc);
+        npcRoot.setObedience(changes.get("Obedience"));
+        npcRoot.setLove(changes.get("Love"));
+        descriptionService.addNpcRootDescription(npcRoot,npc);
+
         return npcRoot;
     }
 
-    private NpcRoot handleShift(WorkStatus workStatus, Task task, NpcRoot npcRoot, Npc npc, String shift) {
-        if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
-            npcRoot.setMessageLevel(workStatus.getLevel());
-            npcRoot = handleNormalWork(npcRoot, npc, workStatus, shift);
-            Map<String, Integer> totalSkillGains = null;
-            if (" night ".equals(shift)) {
-                totalSkillGains = calculateShiftSkillGains(npcRoot.getDayShiftRapport());
-                totalSkillGains.putAll(calculateShiftSkillGains(npcRoot.getNightShiftRapport()));
-            }
-            npcRoot.setDescription(npcRoot.getDescription() + descriptionService.createPartialNpcRootDescription(task, shift, npcRoot, totalSkillGains, workStatus));
-            return npcRoot;
-        } else {
-            npcRoot.setMessageLevel(workStatus.getLevel());
-            npcRoot.setDescription(npcRoot.getDescription() + descriptionService.createPartialNpcRootDescription(workStatus, npc.getName()));
+    private NpcRoot handleShift(WorkStatus workStatus,  NpcRoot npcRoot, Npc npc, String shift) {
+
+        npcRoot.setMessageLevel(workStatus.getLevel());
+
+        if (workStatus == WorkStatus.DEAD_TIRED){
             setNoWork(npcRoot);
+            npcService.killNpc(npc);
             return npcRoot;
         }
-    }
+        if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
+            npcRoot = handleNormalWork(npcRoot, npc, shift);
+        } else{
+            setNoWork(npcRoot);
+        }
 
+        return npcRoot;
+    }
+    private NpcRoot handleNormalWork(NpcRoot npcRoot, Npc npc, String shift) {
+        if (" day ".equals(shift)) {
+            npcRoot.setDayShiftRapport(createEventRoots(npc, dayTask));
+        } else {
+            npcRoot.setNightShiftRapport(createEventRoots(npc, nightTask));
+        }
+        return npcRoot;
+    }
     private WorkStatus calcWorkStatus(Npc npc, Task task) {
-        WorkStatus response = jobService.calculateIfRefuse(npc, task);
+        WorkStatus response = obedienceService.calculateIfRefuse(npc, task);
         if (response == WorkStatus.NORMAL)
-            return tirednessService.handleTiredness(npc);
+            return tirednessService.handleTiredness(npc,task);
         else
             return response;
 
@@ -113,66 +168,42 @@ public class EndTurnService {
         return npcRoot;
     }
 
-    private NpcRoot handleNormalWork(NpcRoot npcRoot, Npc npc, WorkStatus workStatus, String shift) {
-        if (" day ".equals(shift)) {
-            npcRoot.setDayShiftRapport(createEventRoots(npc, dayTask));
-        } else {
-            npcRoot.setNightShiftRapport(createEventRoots(npc, nightTask));
-        }
-
-
-        npcRoot = calcTotalGoldAndExp(npcRoot, shift);
-        return npcRoot;
-    }
-
-
     private List<SingleEventRoot> createEventRoots(Npc npc, Task task) {
 
         List<SingleEventRoot> singleEventRootList = new ArrayList<>();
         Integer noOfCustomers = 1;
 
         if ("multiple".equals(task.getType())) {
-            noOfCustomers = npc.getStats().get("Constitution").getValue() / 10;
+            noOfCustomers = npc.getStat("Constitution").getValue() / 10;
             if (noOfCustomers == 0) {
                 noOfCustomers = 1;
             }
         }
+        String jobName = jobService.getJobNameByTask(task);
+        npc.addJobExp(jobName,task,noOfCustomers);
         for (int i = 0; i < noOfCustomers; i++) {
             SingleEventRoot singleEventRoot = new SingleEventRoot();
             singleEventRoot = createSingleEventRoot(npc, task, singleEventRoot);
             singleEventRootList.add(singleEventRoot);
         }
-
-
         return singleEventRootList;
     }
 
-    private Map<String, Integer> calculateShiftSkillGains(List<SingleEventRoot> singleEventRootList) {
-        List<String> skillGains = new ArrayList<>();
-        singleEventRootList.forEach(singleEventRoot -> {
-            if (singleEventRoot.getSkillsGain() != null) {
-                skillGains.add(singleEventRoot.getSkillsGain());
-            }
-        });
-        Set<String> distinct = new HashSet<>(skillGains);
-        Map<String, Integer> skillLvlUpped = new HashMap<String, Integer>();
-        distinct.forEach(skillGain -> skillLvlUpped.put(skillGain, Collections.frequency(skillGains, skillGain)));
 
-        return skillLvlUpped;
-    }
 
     private SingleEventRoot createSingleEventRoot(Npc npc, Task task, SingleEventRoot singleEventRoot) {
 
         singleEventRoot.setJob(task.getName());
         singleEventRoot.setPath(npc.getPath());
+        singleEventRoot.setNpcName(npc.getName());
         if ("training".equals(task.getType())) {
             singleEventRoot = handleTraining(npc, task, singleEventRoot);
         } else {
+            //Category is the sort of picture that will be displayed
             singleEventRoot = selectCategory(npc, task, singleEventRoot);
-            singleEventRoot = handleGoldEarned(npc, task, singleEventRoot);
+            singleEventRoot = handleTips(npc, task, singleEventRoot);
             singleEventRoot = handleProgressGain(npc, singleEventRoot);
-            singleEventRoot.setExpGain(task.getExpGain());
-            singleEventRoot = handleExpGain(npc, task, singleEventRoot);
+            singleEventRoot = handleProgressGain(npc, singleEventRoot);
         }
         return singleEventRoot;
     }
@@ -180,7 +211,6 @@ public class EndTurnService {
     private SingleEventRoot handleTraining(Npc npc, Task task, SingleEventRoot singleEventRoot) {
         singleEventRoot.setCategory(task.getDefaultCat());
         singleEventRoot.setMoneyEarned(task.getMoneyCoefficient().intValue());
-        singleEventRoot.setExpGain(task.getExpGain());
         Integer deltaStat = task.getValue();
         String statName = task.getRelevantStats().get(0);
         npc.getStat(statName).changeValue(deltaStat);
@@ -190,34 +220,7 @@ public class EndTurnService {
         return singleEventRoot;
     }
 
-    private NpcRoot calcTotalGoldAndExp(NpcRoot npcRoot, String shift) {
-        Integer money = 0;
-        Integer exp = 0;
-        List<SingleEventRoot> shiftRapport;
-        if (" day ".equals(shift)) {
-            shiftRapport = npcRoot.getDayShiftRapport();
-        } else {
-            shiftRapport = npcRoot.getNightShiftRapport();
-        }
-        for (int i = 0; i < shiftRapport.size(); i++) {
-            money += shiftRapport.get(i).getMoneyEarned();
-            exp += shiftRapport.get(i).getExpGain();
-        }
-
-        if (" day ".equals(shift)) {
-            npcRoot.setDayExpGain(exp);
-            npcRoot.setDayMoneyEarned(money);
-            npcRoot.setMoneyEarned(money);
-        } else {
-            npcRoot.setNightExpGain(exp);
-            npcRoot.setNightMoneyEarned(money);
-            npcRoot.setMoneyEarned(npcRoot.getMoneyEarned() + money);
-        }
-
-        return npcRoot;
-    }
-
-    private SingleEventRoot handleGoldEarned(Npc npc, Task task, SingleEventRoot singleEventRoot) {
+    private SingleEventRoot handleTips(Npc npc, Task task, SingleEventRoot singleEventRoot) {
         Double taskPerformance;
         Double sumEarned;
         taskPerformance = jobService.calculateTaskPerformance(npc, task, singleEventRoot.getCategory());
@@ -259,18 +262,18 @@ public class EndTurnService {
         String category = singleEventRoot.getCategory();
         String skillName = singleEventRoot.getSkill();
         if (skillName != null) {
-            Skill trained = npc.getSkills().get(singleEventRoot.getSkill());
+            Skill trainedSkill = npc.getSkills().get(singleEventRoot.getSkill());
 
             singleEventRoot.setDescription(description);
-            if (trained != null) {
-                Double progress = 10.0 / trained.getValue();
+            if (trainedSkill != null) {
+                Double progress = 10.0 / trainedSkill.getValue();
 
                 progress = Math.min(progress, 1.0);
 
-                trained.changeProgress(progress);
+                trainedSkill.changeProgress(progress);
 
-                if (trained.checkSkillLvlUp(category)) {
-                    singleEventRoot.setDescription(descriptionService.createSingleRootNodeDescription(npc.getName(), singleEventRoot));
+                if (trainedSkill.checkSkillLvlUp(category)) {
+
                     singleEventRoot.setSkillsGain(skillName);
                 }
             }
@@ -279,27 +282,19 @@ public class EndTurnService {
         return singleEventRoot;
     }
 
-
-    private SingleEventRoot handleExpGain(Npc npc, Task task, SingleEventRoot singleEventRoot) {
-
-        return singleEventRoot;
-    }
-
-    public SingleEventRoot checkLvlUp(Npc npc, SingleEventRoot singleEventRoot) {
-
-        return singleEventRoot;
-    }
-
     public void setTurn(Integer turn) {
         this.turn = turn;
     }
 
-    private Integer calcTotalEarned(List<NpcRoot> npcRoots) {
-        Integer totalEarned = 0;
-        for (int i = 0; i < npcRoots.size(); i++) {
-            totalEarned += npcRoots.get(i).getDayMoneyEarned();
-            totalEarned += npcRoots.get(i).getNightMoneyEarned();
+    private Integer calcTotalEarned(List<JobRoot> financeRootList) {
+        Integer result = 0;
+        for(JobRoot jobRoot : financeRootList){
+            result+=jobRoot.getMoneyEarned();
         }
-        return totalEarned;
+        return result;
+    }
+
+    public void setPresentOld(Boolean presentOld) {
+        this.presentOld = presentOld;
     }
 }

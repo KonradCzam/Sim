@@ -73,14 +73,14 @@
             <children>
                 <TableView fx:id="playerSkillsTable" layoutX="349.0" layoutY="35.0" prefHeight="378.0" prefWidth="330.0">
                     <columns>
-                        <TableColumn prefWidth="130.0" resizable="false" text="Name" />
-                        <TableColumn prefWidth="70.0" resizable="false" text="Value" />
+                        <TableColumn prefWidth="150.0" resizable="false" text="Name" />
+                        <TableColumn prefWidth="50.0" resizable="false" text="Value" />
                     </columns>
                 </TableView>
                 <TableView fx:id="playerStatsTable" layoutX="14.0" layoutY="35.0" prefHeight="378.0" prefWidth="310.0">
                     <columns>
-                        <TableColumn prefWidth="110.0" resizable="false" text="Name" />
-                        <TableColumn editable="false" prefWidth="70.0" resizable="false" sortable="false" text="Value" />
+                        <TableColumn prefWidth="150.0" resizable="false" text="Name" />
+                        <TableColumn editable="false" prefWidth="50.0" resizable="false" sortable="false" text="Value" />
                     </columns>
                 </TableView>
                 <Label layoutX="14.0" layoutY="14.0" text="Your stats" />

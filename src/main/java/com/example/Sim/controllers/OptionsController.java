@@ -32,5 +32,9 @@ public class OptionsController implements Initializable, DialogController {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+    public void goToStart(){
+        dialog.close();
+        screens.startDialog().show();
+    }
 
 }

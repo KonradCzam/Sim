@@ -4,10 +4,18 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Factors.HousingFactor;
 import com.example.Sim.Model.*;
+import com.example.Sim.Model.NPC.NPCTaskExpStats;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.NPC.Skill;
+import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Services.DescriptionService;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.ImageHandler;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -23,14 +31,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @Service
 public class NpcDetailsController implements Initializable, DialogController {
@@ -90,6 +96,13 @@ public class NpcDetailsController implements Initializable, DialogController {
     private TableView traitsTable;
     @FXML
     private TableView statsTable;
+    @FXML
+    private ComboBox housingCombo;
+    @FXML
+    private TextArea descriptionText;
+    @FXML
+    private TabPane jobsTabsPane;
+    private TableView jobsTable;
     @Resource
     private NpcService npcService;
     @Resource
@@ -98,6 +111,12 @@ public class NpcDetailsController implements Initializable, DialogController {
     private Player player;
     @Resource
     private ImageHandler imageHandler;
+    @Resource
+    private DescriptionService descriptionService;
+    @Resource
+    HousingFactor housingFactor;
+    @Value("#{'${factors.housing.names}'.split(',')}")
+    String[] names;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
     private Npc currentNpc;
@@ -106,6 +125,7 @@ public class NpcDetailsController implements Initializable, DialogController {
                 @Override
                 public void handle(WindowEvent t) {
                     refresh();
+
                 }
             };
 
@@ -120,32 +140,44 @@ public class NpcDetailsController implements Initializable, DialogController {
         player = playerService.getPlayer();
         initializeGrids();
         initializeTables();
+        initializeFactors();
         refreshTables();
+        createJobExpPage();
     }
+
 
     public void refresh() {
         currentNpc = npcService.getCurrentNpc();
-        if (currentNpc != null) {
-            ownerLabel.setText(currentNpc.getName() + "'s items");
-            statsLabel.setText(currentNpc.getName() + "'s skills");
-            skillsLabel.setText(currentNpc.getName() + "'s stats");
+
+        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
+        ownerLabel.setText(currentNpc.getName() + "'s items");
+        statsLabel.setText(currentNpc.getName() + "'s base skills");
+        skillsLabel.setText(currentNpc.getName() + "'s base stats");
 
 
-            try {
-                imageHandler.setImage(detailsImage, currentNpc.getPath(), "profile", false);
-            } catch (ImageNotFound e) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
-                alert.showAndWait();
-            }
-            refreshTables();
+        try {
+            imageHandler.setImage(detailsImage, currentNpc.getPath(), "profile", false);
+        } catch (ImageNotFound e) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+            alert.showAndWait();
         }
+        refreshTables();
+        refreshFactors();
+        createJobExpPage();
 
+    }
+
+
+    private void initializeFactors() {
+        ObservableList<String> options =
+                FXCollections.observableArrayList(names);
+        housingCombo.setItems(options);
     }
 
     public void initializeTables() {
         initializeSkillsTable();
         initializeStatsTable();
-        initializeTraits();
+        initializeTraitsTable();
     }
 
     private <T> void addTooltipToColumnCells(TableColumn<Stat, T> column) {
@@ -166,11 +198,13 @@ public class NpcDetailsController implements Initializable, DialogController {
         });
     }
 
-    private void initializeTraits() {
+    private void initializeTraitsTable() {
 
 
         TableColumn tableColumn = (TableColumn) traitsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) traitsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("effect"));
 
     }
 
@@ -190,18 +224,28 @@ public class NpcDetailsController implements Initializable, DialogController {
 
     }
 
-    public void refreshTables(){
+    public void refreshTables() {
+        skillsTable.getItems().remove(0, skillsTable.getItems().size());
         ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(currentNpc.getSkills().values()));
         skillsTable.setItems(data);
         setTooltips(skillsTable);
 
-         data = FXCollections.observableArrayList(new ArrayList<Stat>(currentNpc.getStats().values()));
-        statsTable.setItems(data);
+        statsTable.getItems().remove(0, statsTable.getItems().size());
+        ObservableList data2 = FXCollections.observableArrayList(new ArrayList<Stat>(currentNpc.getStats().values()));
+        statsTable.setItems(data2);
         setTooltips(statsTable);
 
-        data = FXCollections.observableArrayList(currentNpc.getTraits());
-        traitsTable.setItems(data);
+        traitsTable.getItems().remove(0, traitsTable.getItems().size());
+        ObservableList data3 = FXCollections.observableArrayList(currentNpc.getTraits());
+        traitsTable.setItems(data3);
+
     }
+
+    private void refreshFactors() {
+        Integer index = currentNpc.getFactors().get("HousingFactor");
+        housingCombo.getSelectionModel().select(names[index]);
+    }
+
     private void initializeSkillsTable() {
 
         TableColumn tableColumn = (TableColumn) skillsTable.getColumns().get(0);
@@ -282,7 +326,7 @@ public class NpcDetailsController implements Initializable, DialogController {
                 if (index < inventory.size()) {
                     String imagePath = inventory.get(index).getPath();
                     Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    ImageView  imageView = new ImageView(image);
+                    ImageView imageView = new ImageView(image);
                     EqGrid.add(imageView, column, row);
                     index++;
                 } else {
@@ -305,7 +349,7 @@ public class NpcDetailsController implements Initializable, DialogController {
                 if (index < inventory.size()) {
                     String imagePath = inventory.get(index).getPath();
                     Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    ImageView  imageView = new ImageView(image);
+                    ImageView imageView = new ImageView(image);
                     PlayerEqGrid.add(imageView, column, row);
                     index++;
                 } else {
@@ -356,14 +400,81 @@ public class NpcDetailsController implements Initializable, DialogController {
         source.setImage(temp.getImage());
     }
 
+    public void housingSelected() {
+        Integer selectedIndex = housingCombo.getSelectionModel().getSelectedIndex();
+        currentNpc.getFactors().put("HousingFactor", selectedIndex);
+        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
+    }
+
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
+    public void createJobExpPage(){
+        jobsTabsPane.getTabs().remove(0,jobsTabsPane.getTabs().size());
+        for (Map.Entry<String,List<NPCTaskExpStats>> entry : currentNpc.getJobExperience().entrySet()) {
+            Tab tab = new Tab();
+            tab.setText(entry.getKey());
+            tab.setContent(createJobTable(entry.getValue()));
+            jobsTabsPane.getTabs().add(tab);
+        }
+    }
 
+    private  TableView createJobTable(List<NPCTaskExpStats> npcTaskExpStatsList) {
+
+        // use fully detailed type for Map.Entry<String, String>
+        TableColumn<Map.Entry<String, Integer>, String> taskNameCol = new TableColumn<>("Task");
+        taskNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+                // this callback returns property for just one cell, you can't use a loop here
+                // for first column we use key
+                return new SimpleStringProperty(p.getValue().getKey());
+            }
+        });
+
+        TableColumn<Map.Entry<String, Integer>, String> expCol = new TableColumn<>("Exp");
+        expCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getValue().toString());
+            }
+        });
+
+        final TableView<Map.Entry<String,Integer>> table = new TableView<>(getJobsTableData(npcTaskExpStatsList));
+        table.getColumns().addAll(taskNameCol, expCol);
+        return table;
+    }
+    public ObservableList<Map.Entry<String, Integer>> getJobsTableData(List<NPCTaskExpStats> npcTaskExpStatsList){
+        Map<String,Integer> taskMap = new TreeMap<>();
+        npcTaskExpStatsList.forEach(npcTaskExpStats -> {
+            taskMap.put(npcTaskExpStats.getTaskName(),npcTaskExpStats.getExp());
+        });
+
+        return FXCollections.observableArrayList(taskMap.entrySet());
+    };
     public void goToHub() {
         dialog.close();
         screens.hubDialog().show();
     }
 
+    public void goToPrev() {
+        Integer index = npcService.getHiredNpcs().indexOf(currentNpc);
+        index -=1;
+        if(index ==-1)
+            index = npcService.getHiredNpcs().size()-1;
+        npcService.setCurrentNpc(npcService.getHiredNpcs().get(index));
+        refresh();
+    }
 
+    public void goToNext() {
+        Integer index = npcService.getHiredNpcs().indexOf(currentNpc);
+        index +=1;
+        if(index >= npcService.getHiredNpcs().size())
+            index = 0;
+        npcService.setCurrentNpc(npcService.getHiredNpcs().get(index));
+        refresh();
+    }
 }

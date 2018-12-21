@@ -1,5 +1,6 @@
 package com.example.Sim.Model;
 
+import com.example.Sim.Model.NPC.Npc;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

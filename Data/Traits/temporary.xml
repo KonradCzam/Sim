@@ -1,0 +1,80 @@
+<Traits>
+	<Trait
+        Name="Botox Treatment"
+        Desc="She recently had Botox injected into her face. If she is happy about it, no one can tell."
+        Type="Temporary"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Bruises"
+        Desc="This girl has bruises all over her body."
+        Type="Temporary"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Demon Possessed"
+        Desc="Her body is currently being physically possessed by a demon."
+        Type="Temporary"
+        InheritChance="1"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+	 <Trait
+        Name="Emprisoned Customer"
+        Desc="This girl was was a customer but broke the law in some way, allowing you to take her as a slave."
+        Type="Temporary"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+	 <Trait
+        Name="Kidnapped"
+        Desc="This girl was taken from her family."
+        Type="Temporary"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    
+    <Trait
+        Name="Out-Patient Surgery"
+        Desc="She recently got out of surgery and should be resting."
+        Type="Temporary"
+        InheritChance="1"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Spirit Possessed"
+        Desc="Her body is currently being physically possessed by an evil spirit."
+        Type="Temporary"
+        InheritChance="1"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+ </Traits>

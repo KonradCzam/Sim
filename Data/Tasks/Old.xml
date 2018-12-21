@@ -10,10 +10,9 @@
 		expGain="0"
 		defaultCat= "profile"
 		thresholdType= "obedience"
-		threshold= "0"
+		threshold= "-200"
 		value = "5">
 		<RelevantSkills>
-
 		</RelevantSkills>
 		<RelevantStats>
 <Stat name="Health"/>
@@ -257,6 +256,23 @@
 		</RelevantStats>
 		</Task>
 		<Task 
+		name="Obedience Training"
+		description="Send the slave to the gym to train strength. Gain 2 for 200 gold."
+		type="training"
+		tiring="15"
+		moneyCoefficient="-2000.0"
+		expGain="0"
+		defaultCat="profile"
+		thresholdType="Obedience"
+		threshold="-200"
+		value = "2">
+		<RelevantSkills>
+		</RelevantSkills>
+		<RelevantStats>
+			<Stat name="Obedience"/>
+		</RelevantStats>
+		</Task>
+		<Task 
 		name="Hospital"
 		description="Send the slave to the hospital to get healed."
 		type="training"
@@ -354,7 +370,7 @@
 		</Task>
 		<Task 
 		name="Waitress"
-		description="Waiting tables at you gambling den, gets pinched and slaps occasionally"
+		description="Waiting tables at you gambling den, gets pinches and slaps occasionally"
 		type="single"
 		tiring="10"
 		moneyCoefficient="5.0"
@@ -396,7 +412,7 @@
 	<Job name="Brothel">
 		<Task 
 		name="Cleaner"
-		description="Coocking"
+		description="Cleans the floor of spilled drinks and food from the excited customers"
 		type="single"
 		tiring="8"
 		moneyCoefficient="2.0"
@@ -471,7 +487,7 @@
 		</Task>
 		<Task 
 		name="Strip club Waitress"
-		description="Serves the customers the very, very spiced drinks so the are more open to the immorar tasks."
+		description="Serves the customers the very, very spiced drinks so they are more open to the immoral options."
 		type="single"
 		tiring="7"
 		moneyCoefficient="3.0"

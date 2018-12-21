@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class NpcRoot extends EndTurnRapport {
+public class NpcRoot extends GirlEndTurnRapport {
     String name;
     String messageLevel;
     Integer dayMoneyEarned;
@@ -20,6 +20,10 @@ public class NpcRoot extends EndTurnRapport {
     String statChange;
     String path;
     String category = "profile";
+    WorkStatus dayWorkStatus;
+    WorkStatus nightWorkStatus;
     List<SingleEventRoot> dayShiftRapport;
     List<SingleEventRoot> nightShiftRapport;
+    Integer obedience;
+    Integer love;
 }

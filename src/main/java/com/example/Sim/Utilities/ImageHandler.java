@@ -21,47 +21,52 @@ public class ImageHandler {
         setImage(imgView, path, null, false);
     }
 
-    public void setImage(ImageView imgView, String path, String imgCategory, boolean gifOnly) throws ImageNotFound {
+    public String setImage(ImageView imgView, String path, String imgCategory, boolean gifOnly) throws ImageNotFound {
         String dirPath = "./New folder/";
         String gifString = ".gif";
         Image img = null;
         dirPath += path;
-        if (path == null) {
-            imgView.setImage(null);
-        } else {
-            File directory = new File(dirPath);
-            List<String> pictures = Arrays.asList(directory.list());
-            List<String> filteredPictures;
-            if (imgCategory != null & gifOnly) {
-                filteredPictures = pictures.stream()
-                        .filter(line -> line.toLowerCase().contains(imgCategory))
-                        .filter(line -> line.toLowerCase().contains(".gif"))
-                        .collect(Collectors.toList());
-            } else if (imgCategory != null & !gifOnly) {
-                filteredPictures = pictures.stream()
-                        .filter(line -> line.toLowerCase().contains(imgCategory))
-                        .collect(Collectors.toList());
-            } else if (imgCategory == null & gifOnly) {
-                filteredPictures = pictures.stream()
-                        .filter(line -> line.contains(".gif"))
-                        .collect(Collectors.toList());
+        try {
+            if (path == null) {
+                imgView.setImage(null);
             } else {
-                filteredPictures = pictures;
-            }
-            if (filteredPictures.size() == 0) {
-                throw new ImageNotFound("Image not found for girl: " + path + "\\nCategory: " + imgCategory);
-            }
+                File directory = new File(dirPath);
+                List<String> pictures = Arrays.asList(directory.list());
+                List<String> filteredPictures;
+                if (imgCategory != null & gifOnly) {
+                    filteredPictures = pictures.stream()
+                            .filter(line -> line.toLowerCase().contains(imgCategory))
+                            .filter(line -> line.toLowerCase().contains(".gif"))
+                            .collect(Collectors.toList());
+                } else if (imgCategory != null & !gifOnly) {
+                    filteredPictures = pictures.stream()
+                            .filter(line -> line.toLowerCase().contains(imgCategory))
+                            .collect(Collectors.toList());
+                } else if (imgCategory == null & gifOnly) {
+                    filteredPictures = pictures.stream()
+                            .filter(line -> line.contains(".gif"))
+                            .collect(Collectors.toList());
+                } else {
+                    filteredPictures = pictures;
+                }
+                if (filteredPictures.size() == 0) {
+                    throw new ImageNotFound("Image not found for girl: " + path + "\\nCategory: " + imgCategory);
+                }
 
-            int index = ThreadLocalRandom.current().nextInt(filteredPictures.size());
-            dirPath += "\\" + filteredPictures.get(index);
-            try {
-                FileInputStream inputstream = new FileInputStream(new File(dirPath));
-                img = new Image(inputstream);
-            } catch (
-                    IOException e) {
-                e.printStackTrace();
+                int index = ThreadLocalRandom.current().nextInt(filteredPictures.size());
+                dirPath += "\\" + filteredPictures.get(index);
+                try {
+                    FileInputStream inputstream = new FileInputStream(new File(dirPath));
+                    img = new Image(inputstream);
+                } catch (
+                        IOException e) {
+                    e.printStackTrace();
+                }
+                imgView.setImage(img);
             }
-            imgView.setImage(img);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return dirPath;
     }
 }

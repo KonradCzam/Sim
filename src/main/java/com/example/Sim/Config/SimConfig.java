@@ -2,12 +2,11 @@ package com.example.Sim.Config;
 
 import com.example.Sim.Model.Player;
 import com.example.Sim.Services.*;
-import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Utilities.NpcCreator;
-import com.example.Sim.Utilities.SaveAndLoadUtility;
-import com.example.Sim.controllers.library.TaskController;
+import com.example.Sim.Utilities.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Mehmet Sunkur <mehmetsunkur@gmail.com>
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.*;
 
 @Configuration
 @ComponentScan("com.example.Sim")
-@Import({ScreensConfiguration.class, LibraryConfig.class})
+@Import({ScreensConfiguration.class, LibraryConfig.class, ScriptConfig.class, FactorConfig.class})
 @EnableAspectJAutoProxy
 public class SimConfig {
     @Bean
@@ -35,12 +34,15 @@ public class SimConfig {
 
     @Bean
     public NpcCreator npcCreator() {
-        return new NpcCreator();
+        return new NpcCreator(traitLoader());
     }
 
     @Bean
-    public Player player() {
-        return new Player();
+    public Player player(@Value("#{'${skills.player}'.split(',')}")
+                                 List<String> skillsList,
+                         @Value("#{'${stats.player}'.split(',')}")
+                                 List<String> statsList) {
+        return new Player(skillsList, statsList);
     }
 
     @Bean
@@ -55,16 +57,47 @@ public class SimConfig {
 
     @Bean
     public PlayerService playerService() {
-        return new PlayerService();
+        return new PlayerService(traitLoader());
     }
 
     @Bean
     public SaveAndLoadUtility saveAndLoadUtility() {
         return new SaveAndLoadUtility();
     }
+
     @Bean
-    public TirednessService tirednessService(){return new TirednessService();}
+    public TirednessService tirednessService() {
+        return new TirednessService();
+    }
     @Bean
-    public JobService jobService(){return new JobService();}
+    public JobLoader jobLoader() {
+        return new JobLoader();
+    }
+    @Bean
+    public JobService jobService() {
+        return new JobService(jobLoader());
+    }
+
+    @Bean
+    public ObedienceService obedienceService() {
+        return new ObedienceService();
+    }
+
+    @Bean
+    public AchievementService achievmentService() {
+        return new AchievementService();
+    }
+
+    @Bean
+    public TraitLoader traitLoader() {
+        return new TraitLoader();
+    }
+    @Bean
+    public CustomerService customerService() {
+        return new CustomerService();
+    }
+
+
+
 
 }

@@ -1,0 +1,156 @@
+ <Traits>
+	<Trait
+        Name="Agile"
+        Desc="This girl is quick on her feet and swift with her hands. She has natural gift of dexterity."
+        Type="Action"
+        InheritChance="30"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Blind"
+        Desc="This girl is blind and cannot see."
+        Type="Action"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Bad Eyesight"
+        Desc="This girl needs glasses to see; without them, she is almost blind."
+        Type="Action"
+        InheritChance="10"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Sharp-Eyed"
+        Desc="This girl can see much more clearly than most people."
+        Type="Action"
+        InheritChance="10"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Brawler"
+        Desc="This girl knows how to whoop asses when necessary."
+        Type="Action"
+        InheritChance="5"
+        RandomChance="10" 
+		TargetSkill = "Combat" 
+		TargetSkillValue = "5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Clumsy"
+        Desc="This girl often makes mistakes. Maybe she will learn in time."
+        Type="Action"
+        InheritChance="5"
+        RandomChance="20" 
+		TargetSkill = "Service" 
+		TargetSkillValue = "-5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Deaf"
+        Desc="This girl is deaf and cannot hear."
+        Type="Action"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Mute"
+        Desc="This girl is mute and cannot speak."
+        Type="Action"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-50" 
+		 />
+    <Trait
+        Name="Delicate"
+        Desc="This girl is a delicate flower. She gets tired quickly and bruises easily if she's hit."
+        Type="Action"
+        InheritChance="20"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "MaxHealth,Constitution,Strength"
+		TargetStatValue = "-20,-5,-5" 
+		 />
+    <Trait
+        Name="Fleet of Foot"
+        Desc="This girl is quick on her feet. She can usually outrun her enemies if she can't beat them."
+        Type="Action"
+        InheritChance="30"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Fragile"
+        Desc="This girl is fragile and gets hurt or tired easy. (easy to hurt)"
+        Type="Action"
+        InheritChance="20"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Open Minded"
+        Desc="She has no problems trying different things sexually and will accept anything as-is."
+        Type="Action"
+        InheritChance="30"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Strong"
+        Desc="This girl can fight well and is tough. (+combat skills/stats)"
+        Type="Action"
+        InheritChance="30"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Tough"
+        Desc="This girl is tough, and can take a lot of punishment. (hard to hurt)"
+        Type="Action"
+        InheritChance="50"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+ </Traits>

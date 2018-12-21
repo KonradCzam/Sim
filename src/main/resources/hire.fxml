@@ -37,7 +37,7 @@
                 <TableView fx:id="hireTraitsTable" layoutX="19.0" layoutY="518.0" prefHeight="169.0" prefWidth="417.0">
                     <columns>
                         <TableColumn prefWidth="195.0" resizable="false" text="Name" />
-                        <TableColumn prefWidth="204.0" resizable="false" text="Effect" />
+                        <TableColumn fx:id="effectColumn" prefWidth="204.0" resizable="false" text="Effect" />
                     </columns>
                 </TableView>
                 <Label fx:id="hireTraitsLabel" layoutX="14.0" layoutY="497.0" text="Label" />

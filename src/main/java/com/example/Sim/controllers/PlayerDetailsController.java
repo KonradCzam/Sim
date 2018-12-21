@@ -4,6 +4,9 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.*;
+import com.example.Sim.Model.NPC.Skill;
+import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.ImageHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +22,6 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -79,7 +81,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     @FXML
     private TableView playerStatsTable;
     @Resource
-    private Player player;
+    private PlayerService playerService;
     EventHandler<WindowEvent> onShownEventHandler =
             new EventHandler<WindowEvent>() {
                 @Override
@@ -114,7 +116,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
 
     private <T> void addTooltipToColumnCells(TableColumn<Stat, T> column) {
 
-        Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory
+      /*  Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory
                 = column.getCellFactory();
 
         column.setCellFactory(c -> {
@@ -127,11 +129,11 @@ public class PlayerDetailsController implements Initializable, DialogController 
 
             cell.setTooltip(tooltip);
             return cell;
-        });
+        });*/
     }
 
     private void initializeTraits() {
-        ObservableList data = FXCollections.observableArrayList(player.getTraits());
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getTraits());
         playerTraitsTable.setItems(data);
 
         TableColumn tableColumn = (TableColumn) playerTraitsTable.getColumns().get(0);
@@ -140,7 +142,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     }
 
     private void initializeStatsTable() {
-        ObservableList data = FXCollections.observableArrayList(player.getStats());
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getStats().values());
         playerStatsTable.setItems(data);
 
         TableColumn tableColumn = (TableColumn) playerStatsTable.getColumns().get(0);
@@ -149,7 +151,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
         tableColumn = (TableColumn) playerStatsTable.getColumns().get(1);
         tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
         TableColumn<Stat, Double> tableCol = new TableColumn<>("Progress");
-        tableCol.setPrefWidth(130.0);
+        tableCol.setPrefWidth(100);
         tableCol.setCellValueFactory(new PropertyValueFactory<Stat, Double>("progress"));
         tableCol.setCellFactory(ProgressBarTableCell.<Stat>forTableColumn());
         playerStatsTable.getColumns().addAll(tableCol);
@@ -159,7 +161,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     }
 
     private void initializeSkillsTable() {
-        ObservableList data = FXCollections.observableArrayList(player.getSkills());
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getSkills().values());
         playerSkillsTable.setItems(data);
 
         TableColumn tableColumn = (TableColumn) playerSkillsTable.getColumns().get(0);
@@ -169,10 +171,10 @@ public class PlayerDetailsController implements Initializable, DialogController 
         tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
 
         TableColumn<Skill, Double> tableCol = new TableColumn<>("Progress");
-        tableCol.setPrefWidth(130.0);
+
         tableCol.setCellValueFactory(new PropertyValueFactory<Skill, Double>("progress"));
         tableCol.setCellFactory(ProgressBarTableCell.<Skill>forTableColumn());
-        tableCol.setPrefWidth(110);
+        tableCol.setPrefWidth(100);
         tableCol.setResizable(false);
         playerSkillsTable.getColumns().addAll(tableCol);
         playerSkillsTable.setEditable(true);
@@ -185,7 +187,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     }
 
     public void initializeEqGrid() {
-        Map<String, Item> inventory = player.getEquippedItems();
+        Map<String, Item> inventory = playerService.getPlayer().getEquippedItems();
         Integer index = 0;
         for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 3; column++) {
@@ -207,7 +209,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     }
 
     public void initializePlayerItemsGrid() {
-        List<Item> inventory = player.getInventory();
+        List<Item> inventory = playerService.getPlayer().getInventory();
 
         Integer index = 0;
         for (int row = 0; row < 4; row++) {
@@ -229,7 +231,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
     }
 
     private <T extends DetailsInterface> void setTooltips(TableView tableView) {
-        playerSkillsTable.setRowFactory(tv -> new TableRow<T>() {
+       /* playerSkillsTable.setRowFactory(tv -> new TableRow<T>() {
             private Tooltip tooltip = new Tooltip();
 
             @Override
@@ -242,8 +244,8 @@ public class PlayerDetailsController implements Initializable, DialogController 
                     tooltip.setText("Stat description. Progress: " + stat.getProgress() * 100 + "%");
                     setTooltip(tooltip);
                 }
-            }
-        });
+            }*
+        });*/
     }
 
     public void setDetectors() {

@@ -1,0 +1,362 @@
+
+    
+<Traits>
+
+	<Trait
+        Name="Branded on the Ass"
+        Desc="Normally the slave brand goes on the shoulder, but for some reason hers was placed on her ass."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Obedience,Happiness"
+		TargetStatValue = "5,-5" 
+		 />
+    <Trait
+        Name="Branded on the Forehead"
+        Desc="Normally the slave brand goes on the shoulder, but for some reason hers was placed on her forehead."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Obedience,Happiness"
+		TargetStatValue = "10,-10" 
+		 />
+    
+    
+    <Trait
+        Name="Deluxe Derriere"
+        Desc="The legendary perfectly peach-shaped ass. Big enough to melt hands, shapely enough to glue eyes to it forever. You can't gaze at it too long without lowering your shades."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "Anal" 
+		TargetSkillValue = "10" 
+		TargetStat = "Charisma"
+		TargetStatValue = "10" 
+		 />
+    
+    <Trait
+        Name="Eye Patch"
+        Desc="This girl has lost an eye, but wears a patch over it. She thinks it makes her look dangerous and cool. "
+        Type="Physical"
+        InheritChance="1"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-5" 
+		 />
+    <Trait
+        Name="Fat"
+        Desc="She is a very heavy girl."
+        Type="Physical"
+        InheritChance="40"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-5" 
+		 />
+    <Trait
+        Name="Flat Ass"
+        Desc="Her posterior isn't really anything special. Not much to grope or slap whatsoever."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-5" 
+		 />
+    <Trait
+        Name="Flexible"
+        Desc="She is able to bend her body in many different ways."
+        Type="Physical"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "Normal Sex" 
+		TargetSkillValue = "5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Giant"
+        Desc="This girl is tall. Her height might be a bit intimidating..."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="2" 
+		TargetSkill = "BDSM" 
+		TargetSkillValue = "5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Great Arse"
+        Desc="She has a really nice arse."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="30" 
+		TargetSkill = "Anal" 
+		TargetSkillValue = "5" 
+		TargetStat = "Charisma"
+		TargetStatValue = "5" 
+		 />
+    <Trait
+        Name="Great Figure"
+        Desc="This girl has a really good figure."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="30" 
+		TargetSkill = "Performance,Stripping" 
+		TargetSkillValue = "5,5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Hourglass Figure"
+        Desc="Her body has the highly desireable shape of an hourglass - big tits, thin waist, wide hips and ass."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="10" 
+		TargetSkill = "Performance,Stripping" 
+		TargetSkillValue = "10,10" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Incest"
+        Desc="This is a child of incest."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Large Hips"
+        Desc="This girl has really large hips."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "Stripping" 
+		TargetSkillValue = "5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Long Legs"
+        Desc="The legs on this girl go all the way to heaven."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="10" 
+		TargetSkill = "Stripping" 
+		TargetSkillValue = "10" 
+		TargetStat = "Charisma"
+		TargetStatValue = "5" 
+		 />
+    <Trait
+        Name="Malformed"
+        Desc="This girl is deformed."
+        Type="Physical"
+        InheritChance="5"
+        RandomChance="1" 
+		TargetSkill = "AllSex" 
+		TargetSkillValue = "-15" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-15" 
+		 />
+    <Trait
+        Name="Mature Body"
+        Desc="A girl no longer, this woman's lascivious body is a fruit ripe for the picking."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "AllSex" 
+		TargetSkillValue = "2" 
+		TargetStat = "Charisma"
+		TargetStatValue = "2" 
+		 />
+    <Trait
+        Name="Missing Finger"
+        Desc="This girl is missing a finger."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-2" 
+		 />
+    <Trait
+        Name="Missing Fingers"
+        Desc="This girl is missing several fingers."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-4" 
+		 />
+		 
+	<Trait
+        Name="Missing Teeth"
+        Desc="This girl is missing a couple of teeth."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-10" 
+		 />
+    <Trait
+        Name="Missing Toe"
+        Desc="This girl is missing a toe."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-1" 
+		 />
+    <Trait
+        Name="Missing Toes"
+        Desc="This girl is missing several toes."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-3" 
+		 />
+    <Trait
+        Name="Muscular"
+        Desc="This girl has an athletic, well-toned body with visible muscles. She definitely works out."
+        Type="Physical"
+        InheritChance="10"
+        RandomChance="10" 
+		TargetSkill = "Combat" 
+		TargetSkillValue = "10" 
+		TargetStat = "BDSM"
+		TargetStatValue = "5" 
+		 />
+	<Trait
+        Name="No Teeth"
+        Desc="This girl no longer has any teeth. Customers need not fear any 'accidents' and are willing to use her more roughly. (-looks)"
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Old"
+        Desc="This girl is old and looks it."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    
+    <Trait
+        Name="Phat Booty"
+        Desc="This girl has the kind of butt that makes all your gang members go 'Daaaayyyuuumn!'."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Plump Tush"
+        Desc="This girl's huge ass is impossible to hide. She can barely fit in any pants and every dress she wears is filled with her butt's shape."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Plump"
+        Desc="This girl has more than a few soft bits. Plenty of supple flesh to squeeze and pinch."
+        Type="Physical"
+        InheritChance="50"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Short"
+        Desc="This girl is short."
+        Type="Physical"
+        InheritChance="50"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Tall"
+        Desc="This girl is considered tall."
+        Type="Physical"
+        InheritChance="50"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Tight Butt"
+        Desc="Two finely-sculpted, scrumptious ass cheeks. What they lack in size, they make up with shape."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "Anal" 
+		TargetSkillValue = "+5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Whore"
+        Desc="This girl has serviced thousands of customers, willingly or unwillingly. That has put a toll on her body."
+        Type="Physical"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "Anal,Normal Sex,BDSM,Masturbation,Beastiality,Lesbian,Strip,Group Sex,Oral Sex,Titty Sex,Handjob,Footjob" 
+		TargetSkillValue = "-5,-5,+5,+5,+5,+5,+5,+5,-5,-5,+5,+5,+5" 
+		TargetStat = "Charisma"
+		TargetStatValue = "-5" 
+		 />
+    <Trait
+        Name="Wide Bottom"
+        Desc="She can be rightfully proud of her large, shapely hips and equally juicy thighs."
+        Type="Physical"
+        InheritChance="70"
+        RandomChance="20" 
+		TargetSkill = "Anal" 
+		TargetSkillValue = "+5" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+ </Traits>

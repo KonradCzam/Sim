@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Traits>
+	<Trait
+        Name="Alcoholic"
+        Desc="This girl is addicted to alcohol."
+        Type="Addiction"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Cum Addict"
+        Desc="This girl is addicted to the taste of semen and will even trick her customers to taste their delicious cum."
+        Type="Addiction"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Fairy Dust Addict"
+        Desc="This girl is addicted to the mellow fairy dust. (drug) (+happiness) (-looks)"
+        Type="Addiction"
+        InheritChance="5"
+        RandomChance="3" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Shroud Addict"
+        Desc="A girl addicted to the gas emmited from the rare Shroud Mushroom. (drug) (+happiness) (-looks)"
+        Type="Addiction"
+        InheritChance="5"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Smoker"
+        Desc="This girl is addicted to nicotine."
+        Type="Addiction"
+        InheritChance="10"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Viras Blood Addict"
+        Desc="This girl is additced to the blood of the sex crazed plant Viras. (drug) (+happiness) (-looks)"
+        Type="Addiction"
+        InheritChance="5"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+</Traits>

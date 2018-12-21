@@ -66,7 +66,7 @@ public class TaskController implements Initializable {
 
     private void taskSelected() {
         String taskName = (String) libraryTasks.getSelectionModel().getSelectedItem();
-        Task task = jobService.getAllTasks().get(taskName);
+        Task task = JobService.allTasks.get(taskName);
         if (task != null) {
             String text = "Name: " + task.getName() + "\n" +
                     "Description: " + task.getDescription() + "\n" +

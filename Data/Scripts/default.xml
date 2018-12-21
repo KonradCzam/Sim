@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Node>
+	<Name>First</Name>
+	<Text>Choose race</Text>
+		<Options>
+			<FunctionCall
+			Text = "Zombie"
+			Function = "addPlayerTrait"
+			TraitName = "Zombie"
+			NextNode="End" />
+			<FunctionCall
+			Text = "Undead"
+			Function = "addPlayerTrait"
+			TraitName = "Undead"
+			NextNode="End" />
+			<FunctionCall
+			Text = "Skeleton"
+			Function = "addPlayerTrait"
+			TraitName = "Skeleton"
+			NextNode="End" />
+			<FunctionCall
+			Text = "Vampire"
+			Function = "addPlayerTrait"
+			TraitName = "Vampire"
+			NextNode="End" />
+		</Options>
+</Node>

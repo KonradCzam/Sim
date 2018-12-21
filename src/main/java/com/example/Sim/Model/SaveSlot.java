@@ -1,6 +1,7 @@
 package com.example.Sim.Model;
 
 
+import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Services.EndTurnService;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;

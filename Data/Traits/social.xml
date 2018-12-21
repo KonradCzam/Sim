@@ -1,0 +1,156 @@
+<Traits>
+<Trait
+        Name="Charismatic"
+        Desc="Increased Charisma. She is a natural born leader, negotiator, diplomat, and fast talker. Damn, she's smooth. (+looks)"
+        Type="Social"
+        InheritChance="10"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Charming"
+        Desc="This girl has a lot of natural appealing wit on her side, in a non-sexual sort of way. Higher Charisma, and Natural Looks. (+looks)"
+        Type="Social"
+        InheritChance="10"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Elegant"
+        Desc="She's got style and flair. (+looks)"
+        Type="Social"
+        InheritChance="10"
+        RandomChance="20" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Exhibitionist"
+        Desc="She loves to show her body."
+        Type="Social"
+        InheritChance="1"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Idol"
+        Desc="This girl has gathered quite the following."
+        Type="Social"
+        InheritChance="1"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Noble"
+        Desc="This blue-blooded girl comes from an aristocratic, high-class background."
+        Type="Social"
+        InheritChance="0"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Princess"
+        Desc="She is a princess."
+        Type="Social"
+        InheritChance="0"
+        RandomChance="2" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Queen"
+        Desc="She is a queen."
+        Type="Social"
+        InheritChance="0"
+        RandomChance="1" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Sexy Air"
+        Desc="Something about this girl is just so sexy, everything she does is hot. (+customer attraction)"
+        Type="Social"
+        InheritChance="10"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+	<Trait
+        Name="Shy"
+        Desc="This girl has trouble interacting with people she does not know."
+        Type="Social"
+        InheritChance="1"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Slut"
+        Desc="She definitely wouldn't make a good wife. A good whore on the other hand..."
+        Type="Social"
+        InheritChance="1"
+        RandomChance="5" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Social Drinker"
+        Desc="This girl knows how to handle her alcohol."
+        Type="Social"
+        InheritChance="30"
+        RandomChance="10" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Your Daughter"
+        Desc="This girl is a child of your loins."
+        Type="Social"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+    <Trait
+        Name="Your Wife"
+        Desc="This girl is one of your wives."
+        Type="Social"
+        InheritChance="0"
+        RandomChance="0" 
+		TargetSkill = "" 
+		TargetSkillValue = "0" 
+		TargetStat = ""
+		TargetStatValue = "" 
+		 />
+ </Traits>

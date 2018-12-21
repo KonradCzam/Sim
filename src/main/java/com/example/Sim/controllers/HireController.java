@@ -4,10 +4,9 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Model.Npc;
-import com.example.Sim.Model.Player;
-import com.example.Sim.Model.Skill;
-import com.example.Sim.Model.Stat;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.NPC.Skill;
+import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;
 import com.example.Sim.Utilities.ImageHandler;
@@ -170,8 +169,8 @@ public class HireController implements Initializable, DialogController {
 
     public void refreshNpcSelect(Npc npc) {
         currentNpc = npc;
-        hireSkillsLabel.setText(currentNpc.getName() + "'s skills");
-        hireStatsLabel.setText(currentNpc.getName() + "'s stats");
+        hireSkillsLabel.setText(currentNpc.getName() + "'s base skills");
+        hireStatsLabel.setText(currentNpc.getName() + "'s  base stats");
         ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(npc.getSkills().values()));
         hireSkillsTable.setItems(data);
         data = FXCollections.observableArrayList(new ArrayList<Stat>(npc.getStats().values()));

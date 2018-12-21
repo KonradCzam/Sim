@@ -6,6 +6,7 @@ import com.example.Sim.Utilities.JobLoader;
 import com.example.Sim.controllers.library.TaskController;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -40,6 +41,12 @@ public class Main extends Application {
             writer.println(e.getClass() + ": " + e.getMessage());
             for (int i = 0; i < e.getStackTrace().length; i++) {
                 writer.println(e.getStackTrace()[i].toString());
+
+            }
+            writer.println(e.getCause().getClass() + ": " + e.getCause().getMessage());
+            for (int i = 0; i < e.getCause().getStackTrace().length; i++) {
+                writer.println(e.getCause().getStackTrace()[i].toString());
+
             }
 
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {
@@ -57,17 +64,16 @@ public class Main extends Application {
     }
 
     private static void showErrorDialog(Throwable e) {
-      /*  Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getMessage() + "\n\n" + e.getStackTrace().toString());
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getMessage() + "\n\n" + e.getStackTrace().toString());
         alert.showAndWait();
-        e.printStackTrace();*/
+        e.printStackTrace();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Thread.setDefaultUncaughtExceptionHandler(Main::showError);
+        Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
-        JobLoader jobLoader = new JobLoader();
-        jobLoader.generateJobs();
+
         ApplicationContext context = new AnnotationConfigApplicationContext(SimConfig.class);
         ScreensConfiguration screens = context.getBean(ScreensConfiguration.class);
         screens.setPrimaryStage(stage);

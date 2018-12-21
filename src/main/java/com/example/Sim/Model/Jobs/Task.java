@@ -19,7 +19,6 @@ public class Task implements Serializable{
     private Double moneyCoefficient;
     private Integer expGain;
     private String defaultCat;
-    private String thresholdType;
     private Integer threshold;
     private Integer value;
 }

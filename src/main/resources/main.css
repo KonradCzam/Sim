@@ -1,17 +1,12 @@
 .root {
 -fx-base: rgba(60, 63, 65, 255); // dark
 }
-#equipedPane, #npcItemsPane, #playerItemsPane, #npcStats, #setBothJobs{
+#equipedPane, #setBothJobs{
 
  -fx-background-color: rgba(45, 45, 45, 255);
 }
-.pane {
- -fx-background-color: red;
-}
-.separator{
-    -fx-background-color: Black;
-    -fx-background-radius: 20;
-}
+
+
 #topicTable .list-cell{
     -fx-pref-height:50.0;
     -fx-alignment: center;

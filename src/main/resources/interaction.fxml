@@ -10,44 +10,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.HireController">
-    <children>
-        <TableView fx:id="hireTable" layoutX="14.0" layoutY="13.0" onMouseClicked="#tableRowSelected" prefHeight="640.0" prefWidth="340.0">
-            <columns>
-                <TableColumn prefWidth="225.0" text="Name" />
-                <TableColumn minWidth="0.0" prefWidth="97.0" text="Price" />
-            </columns>
-        </TableView>
-        <Pane fx:id="hireNpcStats" layoutX="816.0" prefHeight="702.0" prefWidth="444.0">
-            <children>
-                <TableView fx:id="hireSkillsTable" layoutX="227.0" layoutY="25.0" prefHeight="472.0" prefWidth="199.0">
-                    <columns>
-                        <TableColumn prefWidth="110.0" resizable="false" text="Name" />
-                        <TableColumn prefWidth="70.0" resizable="false" text="Value" />
-                    </columns>
-                </TableView>
-                <TableView fx:id="hireStatsTable" layoutX="14.0" layoutY="25.0" prefHeight="472.0" prefWidth="199.0">
-                    <columns>
-                        <TableColumn prefWidth="110.0" resizable="false" text="Name" />
-                        <TableColumn editable="false" prefWidth="70.0" resizable="false" sortable="false" text="Value" />
-                    </columns>
-                </TableView>
-                <Label fx:id="hireStatsLabel" layoutX="14.0" layoutY="4.0" text="Label" />
-                <Label fx:id="hireSkillsLabel" layoutX="227.0" layoutY="4.0" text="Label" />
-                <TableView fx:id="hireTraitsTable" layoutX="19.0" layoutY="518.0" prefHeight="169.0" prefWidth="417.0">
-                    <columns>
-                        <TableColumn prefWidth="195.0" resizable="false" text="Name" />
-                        <TableColumn fx:id="effectColumn" prefWidth="204.0" resizable="false" text="Effect" />
-                    </columns>
-                </TableView>
-                <Label fx:id="hireTraitsLabel" layoutX="14.0" layoutY="497.0" text="Label" />
-            </children>
-            <padding>
-                <Insets left="15.0" />
-            </padding>
-        </Pane>
-        <ImageView fx:id="hireImage" fitHeight="676.0" fitWidth="465.0" layoutX="361.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
-        <Button fx:id="hireBack" layoutX="14.0" layoutY="658.0" mnemonicParsing="false" onAction="#goToHub" text="Back" />
-        <Button fx:id="hireBuy" layoutX="75.0" layoutY="658.0" mnemonicParsing="false" onAction="#buy" text="Buy" />
-    </children>
+<AnchorPane prefHeight="720.0" prefWidth="1259.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.InteractionController">
+   <children>
+      <TextArea fx:id="interText" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="398.0" prefWidth="790.0" wrapText="true" />
+      <TextArea fx:id="interOption1" editable="false" layoutX="10.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption2" editable="false" layoutX="320.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption3" editable="false" layoutX="630.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption4" editable="false" layoutX="940.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <ImageView fx:id="interImage" fitHeight="398.0" fitWidth="429.0" layoutX="810.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
 </AnchorPane>

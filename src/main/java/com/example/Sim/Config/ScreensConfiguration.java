@@ -27,15 +27,8 @@ package com.example.Sim.Config;
  */
 
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Model.Player;
-import com.example.Sim.Services.*;
-import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Utilities.NpcCreator;
-import com.example.Sim.Utilities.SaveAndLoadUtility;
 import com.example.Sim.controllers.*;
 import com.example.Sim.controllers.library.LibraryController;
-import com.example.Sim.controllers.library.TaskController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -143,7 +136,6 @@ public class ScreensConfiguration {
     public FXMLDialog optionsDialog() {
         return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED);
     }
-
     @Bean
     OptionsController optionsController() {
         return new OptionsController(this);
@@ -153,10 +145,27 @@ public class ScreensConfiguration {
     public FXMLDialog libraryDialog() {
         return new FXMLDialog(libraryController(), getClass().getClassLoader().getResource("library/library.fxml"), primaryStage, StageStyle.DECORATED);
     }
-
     @Bean
     LibraryController libraryController() {
         return new LibraryController(this);
+    }
+
+    @Bean
+    public FXMLDialog interactionDialog() {
+        return new FXMLDialog(interactionController(), getClass().getClassLoader().getResource("interaction.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+    @Bean
+    InteractionController interactionController() {
+        return new InteractionController(this);
+    }
+
+    @Bean
+    public FXMLDialog achievementsDialog() {
+        return new FXMLDialog(achievementsController(), getClass().getClassLoader().getResource("achievements.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+    @Bean
+    AchievementsController achievementsController() {
+        return new AchievementsController(this);
     }
 
 
