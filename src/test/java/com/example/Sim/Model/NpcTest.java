@@ -4,10 +4,6 @@ import com.example.Sim.Services.NpcService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
-
-import static org.junit.Assert.*;
-
 public class NpcTest {
 
     @Autowired

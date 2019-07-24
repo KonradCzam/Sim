@@ -2,6 +2,7 @@ package com.example.Sim.Model.Raport;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SingleEventRoot extends GirlEndTurnRapport {
     String description;
     Integer moneyEarned;
@@ -20,6 +22,4 @@ public class SingleEventRoot extends GirlEndTurnRapport {
     String skill;
     String skillsGain;
     Map<String, Double> statProgress = new HashMap<String, Double>();
-
-
 }

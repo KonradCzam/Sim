@@ -2,17 +2,19 @@ package com.example.Sim.Services;
 
 import com.example.Sim.Model.Jobs.JobCustomers;
 import com.example.Sim.Model.Jobs.Task;
-import com.example.Sim.Model.NPC.NPCTaskExpStats;
 import com.example.Sim.Model.NPC.Npc;
-import com.example.Sim.Model.Raport.*;
 import com.example.Sim.Model.NPC.Skill;
+import com.example.Sim.Model.Raport.*;
 import com.example.Sim.Model.TirednessSystem.WorkStatus;
 import com.example.Sim.Utilities.FileUtility;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
@@ -114,9 +116,8 @@ public class EndTurnService {
 
         handleShift(nightWorkStatus, npcRoot, npc, " night ");
 
-        Map<String,Integer> changes = factorService.handleEndTurnFactors(npc);
-        npcRoot.setObedience(changes.get("Obedience"));
-        npcRoot.setLove(changes.get("Love"));
+        factorService.handleEndTurnFactors(npc);
+
         descriptionService.addNpcRootDescription(npcRoot,npc);
 
         return npcRoot;
@@ -128,7 +129,6 @@ public class EndTurnService {
 
         if (workStatus == WorkStatus.DEAD_TIRED){
             setNoWork(npcRoot);
-            npcService.killNpc(npc);
             return npcRoot;
         }
         if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
@@ -174,7 +174,7 @@ public class EndTurnService {
         Integer noOfCustomers = 1;
 
         if ("multiple".equals(task.getType())) {
-            noOfCustomers = npc.getStat("Constitution").getValue() / 10;
+            noOfCustomers = npc.getStat("Constitution").getEffectiveValue() / 10;
             if (noOfCustomers == 0) {
                 noOfCustomers = 1;
             }
@@ -201,8 +201,6 @@ public class EndTurnService {
         } else {
             //Category is the sort of picture that will be displayed
             singleEventRoot = selectCategory(npc, task, singleEventRoot);
-            singleEventRoot = handleTips(npc, task, singleEventRoot);
-            singleEventRoot = handleProgressGain(npc, singleEventRoot);
             singleEventRoot = handleProgressGain(npc, singleEventRoot);
         }
         return singleEventRoot;
@@ -220,15 +218,7 @@ public class EndTurnService {
         return singleEventRoot;
     }
 
-    private SingleEventRoot handleTips(Npc npc, Task task, SingleEventRoot singleEventRoot) {
-        Double taskPerformance;
-        Double sumEarned;
-        taskPerformance = jobService.calculateTaskPerformance(npc, task, singleEventRoot.getCategory());
-        sumEarned = (task.getMoneyCoefficient() * taskPerformance);
-        sumEarned += ThreadLocalRandom.current().nextInt(-15, 15);
-        singleEventRoot.setMoneyEarned(Math.max(sumEarned.intValue(), 0));
-        return singleEventRoot;
-    }
+
 
     private SingleEventRoot selectCategory(Npc npc, Task task, SingleEventRoot singleEventRoot) {
         List<String> possibleCategories = fileUtility.checkNpcTypes(npc.getPath());

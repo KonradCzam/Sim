@@ -131,7 +131,7 @@ public class HireController implements Initializable, DialogController {
 
     public void setHiraTableData() {
 
-        ObservableList data = FXCollections.observableArrayList(npcService.getHirableNpcsList(5));
+        ObservableList data = FXCollections.observableArrayList(npcService.getHirableNpcsList(5,3));
         hireTable.setItems(data);
     }
 

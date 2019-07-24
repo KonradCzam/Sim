@@ -2,13 +2,10 @@ package com.example.Sim;
 
 import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Config.SimConfig;
-import com.example.Sim.Utilities.JobLoader;
-import com.example.Sim.controllers.library.TaskController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

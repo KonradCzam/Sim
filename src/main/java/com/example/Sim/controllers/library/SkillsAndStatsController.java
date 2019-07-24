@@ -9,7 +9,6 @@ import javafx.scene.control.TextArea;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

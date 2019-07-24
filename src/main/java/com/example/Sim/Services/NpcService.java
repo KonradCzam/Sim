@@ -1,9 +1,9 @@
 package com.example.Sim.Services;
 
+import com.example.Sim.Exceptions.NpcCreationException;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Trait;
 import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.Exceptions.NpcCreationException;
 import com.example.Sim.Utilities.NpcCreator;
 import com.example.Sim.controllers.Gallery.model.TableNpc;
 import javafx.scene.control.Alert;
@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Getter
 @NoArgsConstructor
@@ -32,48 +33,62 @@ public class NpcService {
 
     String[] files;
     List<Npc> normalNpcs = new ArrayList<Npc>();
-    List<Npc> randomNpcs = new ArrayList<Npc>();
+
     List<String> randomTemplates = new ArrayList();
     List<Npc> hiredNpcs = new ArrayList<Npc>();
     List<Npc> hirableNpcs = new ArrayList<Npc>();
     String npcName;
     String folderPresent;
     Npc currentNpc;
+    List<String> randomNpcTemplatesString = new ArrayList<>();
     private Integer hired = 0;
 
+
     public void createNpcs() {
-        normalNpcs = new ArrayList<Npc>();
-        randomNpcs = new ArrayList<Npc>();
         files = fileUtility.getFileArray();
         for (int i = 0; i < files.length; i++) {
             if (files[i].endsWith(".girlsx")) {
                 addToNormalList(files[i]);
             }
             if (files[i].endsWith(".rgirlsx")) {
-                addToTemplateList(files[i]);
-
+                randomNpcTemplatesString.add(files[i]);
             }
         }
     }
 
-    private void addToTemplateList(String filePath) {
-        npcName = filePath.substring(0, filePath.length() - 8);
-        folderPresent = setFolder(files, npcName, true);
-        Npc randomNpc = null;
-        try {
-            randomNpc = npcCreator.createRandomNpc(filePath);
-        } catch (NpcCreationException e) {
-            showAlert(e,filePath);
+    private List<Npc> createRandomHirableNpcs(Integer number) {
+        List<Npc> randomNpcs = new ArrayList<Npc>();
+        Random rand = new Random();
+        for(int i =0 ; i<number;i++) {
+            Integer random = rand.nextInt(randomNpcTemplatesString.size());
+            String filePath = randomNpcTemplatesString.get(random);
+            npcName = filePath.substring(0, filePath.length() - 8);
+            Npc randomNpc = null;
+            try {
+                randomNpc = npcCreator.createRandomNpc(filePath);
+            } catch (NpcCreationException e) {
+                showAlert(e, filePath);
+            }
+            npcName = generateRandomName();
+            randomNpc.setName(npcName);
+            randomNpc.setFolder(checkIfFolderPresent(files, randomNpc.getPath()));
+            randomNpc.setPrice(randomNpc.calculateValue());
+            randomNpcs.add(randomNpc);
         }
-        randomNpc.setName(npcName);
-        randomNpc.setFolder(folderPresent);
-        randomNpc.setPrice(randomNpc.calculateValue());
-        randomNpcs.add(randomNpc);
+        return randomNpcs;
+    }
+
+    private String generateRandomName() {
+        String fullName;
+        String name = fileUtility.getRandomLine("Data/Resources/RandomGirlNames.txt");
+        String surname = fileUtility.getRandomLine("Data/Resources/RandomLastNames.txt");
+        fullName = name + " " + surname;
+        return fullName;
     }
 
     private void addToNormalList(String filePath) {
         npcName = filePath.substring(0, filePath.length() - 7);
-        folderPresent = setFolder(files, npcName, true);
+
         Npc npc = null;
         try {
             npc = npcCreator.createNpc(filePath);
@@ -81,25 +96,12 @@ public class NpcService {
             showAlert(e,filePath);
         }
         npc.setName(npcName);
-        npc.setFolder(folderPresent);
+
+        npc.setFolder(checkIfFolderPresent(files, npc.getPath()));
         npc.setPrice(npc.calculateValue());
         normalNpcs.add(npc);
     }
 
-    private void addToRandomList(String filePath,String npcName) {
-        folderPresent = setFolder(files, npcName, true);
-        Npc randomNpc = null;
-        try {
-            randomNpc = npcCreator.createRandomNpc(filePath);
-        } catch (NpcCreationException e) {
-            showAlert(e,filePath);
-        }
-        randomNpc.setName(npcName);
-        randomNpc.setFolder(folderPresent);
-        randomNpc.setPrice(randomNpc.calculateValue());
-        randomNpcs.add(randomNpc);
-
-    }
 
     public List<TableNpc> getNormalTableNpcs() {
         List<TableNpc> tableNpcs = new ArrayList<TableNpc>();
@@ -118,8 +120,8 @@ public class NpcService {
        return npcCreator.getTrait(nodename);
     }
 
-    private String setFolder(String[] files, String girlName, Boolean random) {
-        if (contains(files, girlName, true))
+    private String checkIfFolderPresent(String[] files, String girlName) {
+        if (contains(files, girlName))
             return "Present";
         else
             return "Missing";
@@ -132,27 +134,24 @@ public class NpcService {
         alert.showAndWait();
         e.printStackTrace();
     }
-    private boolean contains(String[] array, String v, Boolean random) {
-        if (random) {
+    private boolean contains(String[] array, String v) {
             for (String e : array)
-                if (v != null && v.startsWith(e))
+                if (v != null && e.endsWith(v))
                     return true;
             return false;
-        } else {
-            for (String e : array)
-                if (v != null && v.endsWith(e))
-                    return true;
-            return false;
-        }
+
     }
 
-    public List<Npc> getHirableNpcsList(Integer quantity) {
+    public List<Npc> getHirableNpcsList(Integer quantity, Integer numberOfUniqueGirls) {
+        hirableNpcs.clear();
 
-        if (hirableNpcs.isEmpty()) {
-            hirableNpcs.addAll(normalNpcs);
-            hirableNpcs.addAll(randomNpcs);
-            shuffleHirable();
+        for(int i = 0; i<numberOfUniqueGirls;i++){
+            Collections.shuffle(normalNpcs);
+            hirableNpcs.add(normalNpcs.get(0));
         }
+
+        hirableNpcs.addAll(createRandomHirableNpcs(quantity-numberOfUniqueGirls));
+
         return hirableNpcs.subList(0, quantity - hired);
     }
 
@@ -174,6 +173,10 @@ public class NpcService {
     }
     public void sellNpcs(List<Npc> npcList){
         npcList.forEach(npc -> sellNpc(npc));
+    }
+    public void sellNpc (String npcName){
+        sellNpc(hiredNpcs.stream().filter(npc -> npc.getName().equals(npcName)).findAny().get());
+
     }
     public void sellNpc (Npc npc){
         hiredNpcs.remove(npc);
@@ -197,4 +200,8 @@ public class NpcService {
     public void setHirableNpcs(List<Npc> hirableNpcs) {
         this.hirableNpcs = hirableNpcs;
     }
+
+
+
+
 }

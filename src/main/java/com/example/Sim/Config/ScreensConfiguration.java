@@ -27,6 +27,7 @@ package com.example.Sim.Config;
  */
 
 import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Scripts.ScriptGenerator.ScriptGeneratorController;
 import com.example.Sim.controllers.*;
 import com.example.Sim.controllers.library.LibraryController;
 import javafx.scene.Parent;
@@ -167,6 +168,16 @@ public class ScreensConfiguration {
     AchievementsController achievementsController() {
         return new AchievementsController(this);
     }
+
+    @Bean
+    public FXMLDialog scriptGeneraorDialog() {
+        return new FXMLDialog(scriptGeneraorController(), getClass().getClassLoader().getResource("scriptGenerator.fxml"), primaryStage, StageStyle.DECORATED);
+    }
+    @Bean
+    ScriptGeneratorController scriptGeneraorController() {
+        return new ScriptGeneratorController(this);
+    }
+
 
 
 

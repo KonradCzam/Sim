@@ -1,28 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<Node>
-	<Name>First</Name>
-	<Text>Choose race</Text>
-		<Options>
-			<FunctionCall
-			Text = "Zombie"
-			Function = "addPlayerTrait"
-			TraitName = "Zombie"
-			NextNode="End" />
-			<FunctionCall
-			Text = "Undead"
-			Function = "addPlayerTrait"
-			TraitName = "Undead"
-			NextNode="End" />
-			<FunctionCall
-			Text = "Skeleton"
-			Function = "addPlayerTrait"
-			TraitName = "Skeleton"
-			NextNode="End" />
-			<FunctionCall
-			Text = "Vampire"
-			Function = "addPlayerTrait"
-			TraitName = "Vampire"
-			NextNode="End" />
-		</Options>
-</Node>
+<Nodes>
+	<Node>
+		<Name>First</Name>
+		<Text>Dialog 1</Text>
+			<Options>
+				<FunctionCall
+				Text = "Option 1"
+				Function = "Skip"
+				NextNode="Second" />
+				<FunctionCall
+				Text = "Option 2"
+				Function = "Skip"
+				NextNode="Third" />
+				<FunctionCall
+				Text = "Option 3"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 4"
+				Function = "Skip"
+				NextNode="End" />
+			</Options>
+	</Node>
+	<Node>
+		<Name>Second</Name>
+		<Text>Dialog 2</Text>
+			<Options>
+				<FunctionCall
+				Text = "Option 11"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 12"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 13"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 14"
+				Function = "Skip"
+				NextNode="End" />
+			</Options>
+	</Node>
+	<Node>
+		<Name>Third</Name>
+		<Text>Dialog 3</Text>
+			<Options>
+				<FunctionCall
+				Text = "Option 21"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 22"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 23"
+				Function = "Skip"
+				NextNode="End" />
+				<FunctionCall
+				Text = "Option 24"
+				Function = "Skip"
+				NextNode="End" />
+			</Options>
+	</Node>
+</Nodes>

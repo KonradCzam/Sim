@@ -1,9 +1,10 @@
 package com.example.Sim.Services;
 
-import com.example.Sim.Model.*;
+import com.example.Sim.Model.Item;
 import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Model.NPC.Trait;
+import com.example.Sim.Model.Player;
 import com.example.Sim.Utilities.TraitLoader;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,13 +23,6 @@ public class PlayerService {
     @Resource
     private Player player;
 
-    public void addItemToInvetory(Item item) {
-        player.getInventory().add(item);
-    }
-
-    public void removeItemFromInvetory(Item item) {
-        player.getInventory().remove(item);
-    }
 
     public void changeSkill(String skillName, Integer delta){
         player.getSkills().get(skillName).changeValue(delta);
@@ -53,9 +47,6 @@ public class PlayerService {
                 }
             });
             player.addTrait(npcTraits.get(0));
-    }
-    public void addTrait(Trait trait){
-        player.addTrait(trait);
     }
     public void removeTrait(String traitName){
         player.getTraits().removeIf(trait -> traitName.equals(trait.getName()));

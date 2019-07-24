@@ -26,9 +26,7 @@ import java.util.List;
 @Component
 @Scope("prototype")
 public class SaveSlot implements ApplicationContextAware {
-
     private static final long serialVersionUID = 1L;
-
     public Button saveButton;
     public Button loadButton;
     ApplicationContext context;

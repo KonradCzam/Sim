@@ -4,7 +4,6 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Services.NpcService;
-import com.example.Sim.Utilities.JobLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -66,6 +65,6 @@ public class StartController implements Initializable, DialogController {
     }
     public void goToAch(){
         dialog.close();
-        screens.achievementsDialog().show();
+        screens.scriptGeneraorDialog().show();
     }
 }

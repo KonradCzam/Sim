@@ -5,11 +5,13 @@ import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Factors.HousingFactor;
-import com.example.Sim.Model.*;
+import com.example.Sim.Model.DetailsInterface;
+import com.example.Sim.Model.Item;
 import com.example.Sim.Model.NPC.NPCTaskExpStats;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Model.Player;
 import com.example.Sim.Services.DescriptionService;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;
@@ -36,7 +38,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @Service
 public class NpcDetailsController implements Initializable, DialogController {
@@ -251,8 +256,18 @@ public class NpcDetailsController implements Initializable, DialogController {
         TableColumn tableColumn = (TableColumn) skillsTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
         tableColumn = (TableColumn) skillsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
+        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Skill, String>, ObservableValue<String>>() {
 
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Skill, String> p) {
+                // this callback returns property for just one cell, you can't use a loop here
+                // for first column we use key
+                if(p.getValue().getTraitBonus() != null && p.getValue().getTraitBonus() != 0)
+                    return new SimpleStringProperty(p.getValue().getValue().toString() + " + " + p.getValue().getTraitBonus().toString());
+                return new SimpleStringProperty(p.getValue().getValue().toString());
+
+            }
+        });
         TableColumn<Skill, Double> tableCol = new TableColumn<>("Progress");
         tableCol.setCellValueFactory(new PropertyValueFactory<Skill, Double>("progress"));
         tableCol.setCellFactory(ProgressBarTableCell.<Skill>forTableColumn());
@@ -422,39 +437,50 @@ public class NpcDetailsController implements Initializable, DialogController {
     private  TableView createJobTable(List<NPCTaskExpStats> npcTaskExpStatsList) {
 
         // use fully detailed type for Map.Entry<String, String>
-        TableColumn<Map.Entry<String, Integer>, String> taskNameCol = new TableColumn<>("Task");
-        taskNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+        TableColumn<NPCTaskExpStats, String> taskNameCol = new TableColumn<>("Task");
+        taskNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
 
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
                 // this callback returns property for just one cell, you can't use a loop here
                 // for first column we use key
-                return new SimpleStringProperty(p.getValue().getKey());
+                return new SimpleStringProperty(p.getValue().getTaskName());
             }
         });
 
-        TableColumn<Map.Entry<String, Integer>, String> expCol = new TableColumn<>("Exp");
-        expCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+        TableColumn<NPCTaskExpStats, String> expCol = new TableColumn<>("Exp");
+        expCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
 
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
                 // for second column we use value
-                return new SimpleStringProperty(p.getValue().getValue().toString());
+                return new SimpleStringProperty(p.getValue().getExp().toString());
+            }
+        });
+        TableColumn<NPCTaskExpStats, String> rankCol = new TableColumn<>("Rank");
+        rankCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getRankLevel().toString());
             }
         });
 
-        final TableView<Map.Entry<String,Integer>> table = new TableView<>(getJobsTableData(npcTaskExpStatsList));
-        table.getColumns().addAll(taskNameCol, expCol);
+        TableColumn<NPCTaskExpStats, String> rankNameCol = new TableColumn<>("Rank name");
+        rankNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getRank());
+            }
+        });
+        final TableView<NPCTaskExpStats> table = new TableView<NPCTaskExpStats>(FXCollections.observableArrayList(npcTaskExpStatsList));
+        table.getColumns().addAll(taskNameCol, expCol,rankCol,rankNameCol);
         return table;
     }
-    public ObservableList<Map.Entry<String, Integer>> getJobsTableData(List<NPCTaskExpStats> npcTaskExpStatsList){
-        Map<String,Integer> taskMap = new TreeMap<>();
-        npcTaskExpStatsList.forEach(npcTaskExpStats -> {
-            taskMap.put(npcTaskExpStats.getTaskName(),npcTaskExpStats.getExp());
-        });
 
-        return FXCollections.observableArrayList(taskMap.entrySet());
-    };
     public void goToHub() {
         dialog.close();
         screens.hubDialog().show();

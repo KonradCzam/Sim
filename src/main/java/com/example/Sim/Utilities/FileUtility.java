@@ -5,14 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,29 +22,38 @@ public class FileUtility {
     @Value("#{'${categories.all}'.split(',')}")
     private List<String> allCategories;
 
-    public void openImage() {
-
-    }
 
     public String[] getFileArray() {
         File dir = new File(directory);
         return dir.list();
     }
 
+    public String getRandomLine(String path) {
+        File file = new File(path);
+        String result = null;
+        Random rand = new Random();
+        int n = 0;
+        try {
+            for(Scanner sc = new Scanner(file); sc.hasNext(); )
+            {
+                ++n;
+                String line = sc.nextLine();
+                if(rand.nextInt(n) == 0)
+                    result = line;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
 
     public boolean removeFile(String filename) {
         File dir = new File(directory + filename);
         return dir.delete();
     }
 
-    public void deleteDirectoryStream(String stringPath) throws IOException {
-        stringPath = directory + stringPath;
-        Path path = Paths.get(stringPath);
-        Files.walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-    }
 
     public List<String> checkNpcTypes(String name) {
         String dirPath = directory + name;

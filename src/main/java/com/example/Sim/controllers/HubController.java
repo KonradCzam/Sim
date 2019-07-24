@@ -29,7 +29,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @Service
 public class HubController implements Initializable, DialogController {
@@ -223,12 +225,12 @@ public class HubController implements Initializable, DialogController {
         nightJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNightShift().getName()));
         tirednessColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
                 .filter(stat -> "Tiredness".equals(stat.getName()))
-                .map(Stat::getValue)
+                .map(Stat::getEffectiveValue)
                 .findAny()
                 .orElse(0).toString()));
         healthColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
                 .filter(stat -> "Health".equals(stat.getName()))
-                .map(Stat::getValue)
+                .map(Stat::getEffectiveValue)
                 .findAny()
                 .orElse(0).toString()));
         skillTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(jobService.calculateAverageProficiencyScore(cellData.getValue())));

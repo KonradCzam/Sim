@@ -3,7 +3,6 @@ package com.example.Sim.controllers.library;
 import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

@@ -1,8 +1,6 @@
 package com.example.Sim.Model.TirednessSystem;
 
 import lombok.Getter;
-
-import java.util.Arrays;
 @Getter
 public enum WorkStatus {
     NORMAL("Normal"),

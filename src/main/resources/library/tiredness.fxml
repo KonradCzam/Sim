@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
-
+<?import javafx.scene.text.Font?>
 <AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextArea editable="false" layoutX="20.0" layoutY="10.0" prefHeight="700.0" prefWidth="960.0" text="Slaves get tired when performing tasks, as of this time the formula is :&#10;&#10;task tiredness * 20 - slave constitution =  tiredness change this week&#10;&#10;If total tiredness goes over 100 the slave gets overworked, it will generate a warning at the end turn screen.&#10;&#10;Overworked slaves lose health equal to the amount of overwork. &#10;&#10;Example&#10;Slave has 80 tiredness and her work this turn equals to 40 tiredness&#10;Her Tiredness at the begining of the next turn is 100 and her health is 80&#10;&#10;Slaves at 0 health or below die.&#10;&#10;Slaves will try to prevent their own death. They do that by refusing to do the task if their health is too low.&#10;However if their obedience and fear are high enough they can still get worked to death.&#10;&#10;The formula is :&#10;&#10;if ((obedience + pcFear) &gt; (100-health))&#10;   do task&#10;else&#10;   refuse task &#10;" wrapText="true">

@@ -53,7 +53,6 @@ public class GalleryController implements Initializable, DialogController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        npcService.createNpcs();
 
         initializeTable();
         gifOnly.setDisable(true);

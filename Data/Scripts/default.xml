@@ -6,22 +6,22 @@
 		<Options>
 			<FunctionCall
 			Text = "Zombie"
-			Function = "addPlayerTrait"
+			Function = "AddPlayerTrait"
 			TraitName = "Zombie"
 			NextNode="End" />
 			<FunctionCall
 			Text = "Undead"
-			Function = "addPlayerTrait"
+			Function = "AddPlayerTrait"
 			TraitName = "Undead"
 			NextNode="End" />
 			<FunctionCall
 			Text = "Skeleton"
-			Function = "addPlayerTrait"
+			Function = "AddPlayerTrait"
 			TraitName = "Skeleton"
 			NextNode="End" />
 			<FunctionCall
 			Text = "Vampire"
-			Function = "addPlayerTrait"
+			Function = "AddPlayerTrait"
 			TraitName = "Vampire"
 			NextNode="End" />
 		</Options>

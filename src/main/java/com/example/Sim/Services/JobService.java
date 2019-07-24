@@ -11,6 +11,7 @@ import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Utilities.JobLoader;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +28,20 @@ public class JobService {
     JobLoader jobLoader;
     @Resource
     NpcService npcService;
-
+    @Value("#{'${ranks.brothel.whore}'.split(',')}")
+    String[] brothelWhoreRanks;
+    @Value("#{'${ranks.brothel.masseuse}'.split(',')}")
+    String[] brothelMasseuseRanks;
+    @Value("#{'${ranks.brothel.cleaner}'.split(',')}")
+    String[] brothelCleanerRanks;
+    @Value("#{'${ranks.brothel.barmaid}'.split(',')}")
+    String[] brothelBarmaidNames;
+    @Value("#{'${ranks.brothel.inviter}'.split(',')}")
+    String[] brothelInviterRanks;
+    @Value("#{'${ranks.brothel.waitress}'.split(',')}")
+    String[] brothelWaitressRanks;
+    @Value("#{'${ranks.brothel.stripper}'.split(',')}")
+    String[] brothelStripperRanks;
 
     public JobService(JobLoader jobLoader){
         this.jobLoader = jobLoader;
@@ -269,5 +283,34 @@ public class JobService {
     public String getJobNameByTask(Task task){
         String taskname = task.getName();
         return jobList.stream().filter(job -> job.getTasks().contains(task)).findFirst().orElse(null).getName();
+    }
+
+    public String[] getRankName(String taskName){
+        String[] currentRankNames = {"Undefined","Undefined","Undefined","Undefined","Undefined","Undefined","Undefined","Undefined","Undefined","Undefined"};
+
+        switch(taskName){
+            case "Brothel Whore":
+                currentRankNames = brothelWhoreRanks;
+                break;
+            case "Brothel Masseuse":
+                currentRankNames = brothelMasseuseRanks;
+                break;
+            case "Brothel Cleaner":
+                currentRankNames = brothelCleanerRanks;
+                break;
+            case "Brothel Waitress":
+                currentRankNames = brothelWaitressRanks;
+                break;
+            case "Brothel Barmaid":
+                currentRankNames = brothelBarmaidNames;
+                break;
+            case "Brothel Invites":
+                currentRankNames = brothelInviterRanks;
+                break;
+            case "Brothel Stripper":
+                currentRankNames = brothelStripperRanks;
+                break;
+        }
+        return currentRankNames;
     }
 }

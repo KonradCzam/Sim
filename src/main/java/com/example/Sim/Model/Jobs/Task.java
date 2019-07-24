@@ -2,13 +2,14 @@ package com.example.Sim.Model.Jobs;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Task implements Serializable{
     private String name;
     private String description;

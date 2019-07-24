@@ -3,12 +3,14 @@ package com.example.Sim.Model;
 import com.example.Sim.Model.NPC.Npc;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SaveData implements Serializable {
     public String name;
     public String date;

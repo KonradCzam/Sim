@@ -4,16 +4,18 @@ import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Model.NPC.Trait;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Player implements Serializable {
 
 

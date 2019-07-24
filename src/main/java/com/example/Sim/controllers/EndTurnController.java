@@ -5,13 +5,8 @@ import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.NPC.Npc;
-import com.example.Sim.Model.Raport.JobRoot;
-import com.example.Sim.Model.Raport.GirlEndTurnRapport;
-import com.example.Sim.Model.Raport.NpcRoot;
-import com.example.Sim.Model.Raport.SingleEventRoot;
-import com.example.Sim.Model.Raport.EndTurnRapport;
+import com.example.Sim.Model.Raport.*;
 import com.example.Sim.Services.EndTurnService;
-import com.example.Sim.Model.Raport.FinanceEndTurnRapport;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Utilities.ImageHandler;
 import javafx.event.EventHandler;
@@ -21,6 +16,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +48,8 @@ public class EndTurnController implements Initializable, DialogController {
     ImageView endTurnImage2;
     @FXML
     TextArea descriptionBox2;
-
+    @FXML
+    VBox profileVBox;
     @Resource
     NpcService npcService;
     @Resource
@@ -70,9 +68,12 @@ public class EndTurnController implements Initializable, DialogController {
                     GirlEndTurnRapport girlEndTurnRapport = endTurnRapport.getGirlEndTurnRapport();
                     FinanceEndTurnRapport financeEndTurnRapport = endTurnRapport.getFinanceEndTurnRapport();
                     List<NpcRoot> npcRoots = girlEndTurnRapport.getNpcRootList();
+
                     createRootNode(npcRoots);
                     createFinancialRootNode(financeEndTurnRapport);
+                    npcRoots.forEach(npcRoot -> createSingleProfileTab(npcRoot));
                     endTurnTable.refresh();
+
                 }
 
 
@@ -213,14 +214,27 @@ public class EndTurnController implements Initializable, DialogController {
     }
 
     private void tableRowSelected() {
-        TreeItem treeItem = (TreeItem) endTurnTable.getSelectionModel().getSelectedItem();
-        if (treeItem != null) {
-            GirlEndTurnRapport npcRoot = null;
-            if (treeItem.getValue().getClass() == NpcRoot.class) {
-                npcRoot = (NpcRoot) treeItem.getValue();
-            } else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
-                npcRoot = (SingleEventRoot) treeItem.getValue();
-            }
+        setProfilePicture(endTurnImage,getSelectedGirlEndTurnRapport());
+    }
+
+    public void createSingleProfileTab(NpcRoot npcRoot) {
+
+        Pane profileTab = new Pane();
+        profileTab.setPrefSize(420, 150);
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(150);
+        setProfilePicture(imageView, npcRoot);
+        profileTab.getChildren().add(imageView);
+        Label label = new Label();
+        label.setText(npcRoot.getName());
+        label.setLayoutX(100.0);
+        profileTab.getChildren().add(label);
+        profileTab.getStyleClass().add("profileTab");
+        profileVBox.getChildren().add(profileTab);
+    }
+    private void setProfilePicture(ImageView endTurnImage, GirlEndTurnRapport npcRoot){
+
             if (npcRoot != null)
                 try {
                     if(npcRoot.getImagePath() !=null){
@@ -236,10 +250,21 @@ public class EndTurnController implements Initializable, DialogController {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-        }
+
 
     }
-
+    private GirlEndTurnRapport getSelectedGirlEndTurnRapport(){
+        TreeItem treeItem = (TreeItem) endTurnTable.getSelectionModel().getSelectedItem();
+        GirlEndTurnRapport npcRoot = null;
+        if (treeItem != null) {
+            if (treeItem.getValue().getClass() == NpcRoot.class) {
+                npcRoot = (NpcRoot) treeItem.getValue();
+            } else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
+                npcRoot = (SingleEventRoot) treeItem.getValue();
+            }
+        }
+        return npcRoot;
+    }
     public void goToHub() {
         dialog.close();
         screens.hubDialog().show();

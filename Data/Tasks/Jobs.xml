@@ -38,7 +38,7 @@
 			</RelevantStats>
 		</Task>
 	</Job>
-	<Job name="Crafting">
+	<!--<Job name="Crafting">
 		<Task name="Blacksmith" description="Blacksmith in your forge" type="single" tiring="10" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
 			<RelevantSkills>
 				<Skill name="Crafting"/>
@@ -92,7 +92,7 @@
 				<Stat name="Inteligence"/>
 			</RelevantStats>
 		</Task>
-	</Job>
+	</Job>-->
 	<Job name="Gambling Den">
 		
 		<Concern name="Clenliness" tasks="Gamble Cleaning" weights="100"/>
@@ -182,7 +182,7 @@
 				<Stat name="Strength"/>
 			</RelevantStats>
 		</Task>
-		<Task name="Brothel Cleaning" description="Cleans the floor of spilled drinks and food from the excited customers" type="single" tiring="8" moneyCoefficient="10.0" expGain="20" defaultCat="ecchi" threshold="80">
+		<Task name="Brothel Cleaner" description="Cleans the floor of spilled drinks and food from the excited customers" type="single" tiring="8" moneyCoefficient="10.0" expGain="20" defaultCat="ecchi" threshold="80">
 			<RelevantSkills>
 				<Skill name="Service"/>
 			</RelevantSkills>

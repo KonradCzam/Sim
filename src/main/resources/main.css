@@ -12,3 +12,10 @@
     -fx-alignment: center;
     -fx-font-size:20.0;
 }
+.profileTab{
+    -fx-padding: 10;
+    -fx-margin: 20;
+    -fx-border-width: 2;
+    -fx-border-color: black;
+    -fx-border-style: solid;
+}

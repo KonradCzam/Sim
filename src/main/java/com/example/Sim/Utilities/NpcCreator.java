@@ -45,9 +45,9 @@ public class NpcCreator {
         Collections.sort(skillsList);
         Collections.sort(lightStatsList);
         Collections.sort(heavyStats);
-        skillsList.forEach(skillName -> npc.addSkill(new Skill(skillName, 0)));
-        heavyStats.forEach(statName -> npc.addHeavyStat(new Stat(statName, 0)));
-        lightStatsList.forEach(statName -> npc.addLightStat(new Stat(statName, 0)));
+        skillsList.forEach(skillName -> npc.addSkill(new Skill(skillName, 10,20)));
+        heavyStats.forEach(statName -> npc.addHeavyStat(new Stat(statName, 10,20)));
+        lightStatsList.forEach(statName -> npc.addLightStat(new Stat(statName, 10,20)));
         return npc;
     }
 
@@ -93,7 +93,7 @@ public class NpcCreator {
             if (npc.getStat("Age").getValue() < 18) {
                 npc.getStat("Age").setValue(18);
             }
-            npc.getStat("Level").setValue(npc.calculateLevel());
+            npc.getStat("MaxHealth").setValue(100);
             return npc;
         } catch (Exception e) {
             throw new NpcCreationException();
@@ -176,10 +176,11 @@ public class NpcCreator {
             } catch (Exception e) {
 
             }
+            npc.getStat("MaxHealth").setValue(100);
             if (npc.getStat("Age").getValue() < 18) {
                 npc.getStat("Age").setValue(18);
             }
-            npc.getStat("Level").setValue(npc.calculateLevel());
+
 
             return npc;
         } catch (Exception e) {
