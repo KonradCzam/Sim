@@ -1,21 +1,24 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.controllers;
 
-import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.FXML.DialogController;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Services.NpcService;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.net.URL;
 import java.util.ResourceBundle;
+import java.net.URL;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Config.ScreensConfiguration;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javax.annotation.Resource;
+import com.example.Sim.Services.NpcService;
+import org.springframework.stereotype.Service;
+import com.example.Sim.FXML.DialogController;
+import javafx.fxml.Initializable;
 
 @Service
-public class StartController implements Initializable, DialogController {
-
+public class StartController implements Initializable, DialogController
+{
     @Resource
     NpcService npcService;
     @FXML
@@ -28,43 +31,41 @@ public class StartController implements Initializable, DialogController {
     private Button quitButton;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-
-
-    public StartController(ScreensConfiguration screens) {
+    
+    public StartController(final ScreensConfiguration screens) {
         this.screens = screens;
     }
-
-    public void setDialog(FXMLDialog dialog) {
+    
+    public void setDialog(final FXMLDialog dialog) {
         this.dialog = dialog;
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
+    
+    public void initialize(final URL location, final ResourceBundle resources) {
     }
-
+    
     public void startGame() {
-        npcService.createNpcs();
-        npcService.shuffleHirable();
-        dialog.close();
-        screens.hubDialog().show();
+        this.npcService.createNpcs();
+        this.npcService.shuffleHirable();
+        this.dialog.close();
+        this.screens.hubDialog().show();
     }
-
+    
     public void loadGame() {
-        dialog.close();
-        screens.saveLoadDialog().show();
+        this.dialog.close();
+        this.screens.saveLoadDialog().show();
     }
-
+    
     public void quit() {
         Runtime.getRuntime().exit(0);
     }
-
+    
     public void goToOptions() {
-        dialog.close();
-        screens.interactionDialog().show();
+        this.dialog.close();
+        this.screens.interactionDialog().show();
     }
-    public void goToAch(){
-        dialog.close();
-        screens.scriptGeneraorDialog().show();
+    
+    public void goToAch() {
+        this.dialog.close();
+        this.screens.achievementsDialog().show();
     }
 }

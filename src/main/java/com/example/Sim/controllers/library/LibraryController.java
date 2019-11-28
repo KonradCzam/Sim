@@ -1,30 +1,35 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.controllers.library;
 
-import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.FXML.DialogController;
-import com.example.Sim.FXML.FXMLDialog;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.AnchorPane;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
-
+import javafx.beans.Observable;
 import java.io.IOException;
-import java.net.URL;
-import java.util.List;
+import javafx.scene.Node;
+import javafx.fxml.FXMLLoader;
+import javafx.collections.ObservableList;
+import java.util.Collection;
+import javafx.collections.FXCollections;
 import java.util.ResourceBundle;
+import java.net.URL;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Config.ScreensConfiguration;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Button;
+import javafx.fxml.FXML;
+import javafx.scene.layout.AnchorPane;
+import org.springframework.stereotype.Service;
+import com.example.Sim.FXML.DialogController;
+import javafx.fxml.Initializable;
 
 @Service
-public class LibraryController implements Initializable, DialogController {
-
+public class LibraryController implements Initializable, DialogController
+{
     @FXML
     private AnchorPane targetPane;
     @FXML
@@ -35,56 +40,47 @@ public class LibraryController implements Initializable, DialogController {
     ApplicationContext applicationContext;
     @Value("#{'${library.all}'.split(',')}")
     List<String> topics;
-
-
     private List<String> allCategories;
-    public void handleButtonAction() {
-        dialog.close();
-        screens.hubDialog().show();
-    }
-
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-
-
-
-    public LibraryController(ScreensConfiguration screens) {
+    
+    public void handleButtonAction() {
+        this.dialog.close();
+        this.screens.hubDialog().show();
+    }
+    
+    public LibraryController(final ScreensConfiguration screens) {
         this.screens = screens;
     }
-    public void setDialog(FXMLDialog dialog) {
+    
+    public void setDialog(final FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        changeTargetPane("library/new.fxml");
-        ObservableList data = FXCollections.observableArrayList(topics);
-        topicTable.setItems(data);
-        topicTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
-            topicSelected();
-        });
-
+    
+    public void initialize(final URL location, final ResourceBundle resources) {
+        this.changeTargetPane("library/new.fxml");
+        final ObservableList data = FXCollections.observableArrayList((Collection)this.topics);
+        this.topicTable.setItems(data);
+        this.topicTable.getSelectionModel().selectedItemProperty().addListener(this::lambda$initialize$0);
     }
-
+    
     private void topicSelected() {
-        String topicName = (String)topicTable.getSelectionModel().getSelectedItem();
+        String topicName = (String)this.topicTable.getSelectionModel().getSelectedItem();
         topicName = topicName.toLowerCase();
-        topicName = topicName.replaceAll("\\s+","");
-
-        changeTargetPane("library/" + topicName+".fxml");
+        topicName = topicName.replaceAll("\\s+", "");
+        this.changeTargetPane("library/" + topicName + ".fxml");
     }
-
-    public void changeTargetPane(String fxml){
+    
+    public void changeTargetPane(final String fxml) {
         Node root = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getClassLoader().getResource(fxml));
-        fxmlLoader.setControllerFactory(applicationContext::getBean);
+        final FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getClassLoader().getResource(fxml));
+        fxmlLoader.setControllerFactory(this.applicationContext::getBean);
         try {
-            root  = fxmlLoader.load();
-        } catch (IOException e) {
+            root = (Node)fxmlLoader.load();
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-
-        targetPane.getChildren().setAll(root);
+        this.targetPane.getChildren().setAll((Object[])new Node[] { root });
     }
-
-
 }

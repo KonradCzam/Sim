@@ -1,64 +1,59 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.controllers.library;
 
-import javafx.collections.FXCollections;
+import javafx.beans.Observable;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.net.URL;
+import javafx.collections.FXCollections;
+import java.util.Collection;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.net.URL;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
+import javafx.scene.control.TextArea;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import org.springframework.beans.factory.annotation.Configurable;
+import javafx.fxml.Initializable;
 
 @Configurable
-public class SkillsAndStatsController implements Initializable {
-
+public class SkillsAndStatsController implements Initializable
+{
     @FXML
     private ListView skillsList;
     @FXML
     private ListView statsList;
     @FXML
     private TextArea skillsAndStatsDescription;
-
     @Value("#{'${stats.status}'.split(',')}")
     private List<String> lightStatsList;
     @Value("#{'${stats.important}'.split(',')}")
     private List<String> heavyStats;
     @Value("#{'${skills.all}'.split(',')}")
     private List<String> allSkills;
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initializeLists();
-
+    
+    public void initialize(final URL location, final ResourceBundle resources) {
+        this.initializeLists();
     }
+    
     private void initializeLists() {
-        List<String> allStats = new ArrayList<>();
-        allStats.addAll(lightStatsList);
-        allStats.addAll(heavyStats);
-        ObservableList data = FXCollections.observableArrayList(allStats);
-        statsList.setItems(data);
-        statsList.getSelectionModel().selectedItemProperty().addListener((obs) -> {
-            statSelected();
-        });
-
-
-        data = FXCollections.observableArrayList(allSkills);
-        skillsList.setItems(data);
-        skillsList.getSelectionModel().selectedItemProperty().addListener((obs) -> {
-            skillSelected();
-        });
+        final List<String> allStats = new ArrayList<String>();
+        allStats.addAll(this.lightStatsList);
+        allStats.addAll(this.heavyStats);
+        ObservableList data = FXCollections.observableArrayList((Collection)allStats);
+        this.statsList.setItems(data);
+        this.statsList.getSelectionModel().selectedItemProperty().addListener(this::lambda$initializeLists$0);
+        data = FXCollections.observableArrayList((Collection)this.allSkills);
+        this.skillsList.setItems(data);
+        this.skillsList.getSelectionModel().selectedItemProperty().addListener(this::lambda$initializeLists$1);
     }
-
+    
     private void skillSelected() {
-
     }
-
+    
     private void statSelected() {
     }
-
-
 }

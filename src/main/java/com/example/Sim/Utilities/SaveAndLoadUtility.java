@@ -1,164 +1,116 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.Utilities;
 
-
-import com.example.Sim.Model.SaveData;
-import com.example.Sim.Model.SaveSlot;
-import com.example.Sim.Services.EndTurnService;
-import com.example.Sim.Services.NpcService;
-import com.example.Sim.Services.PlayerService;
 import javafx.concurrent.Task;
-
-import javax.annotation.Resource;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+import com.example.Sim.Model.SaveData;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.Sim.Model.SaveSlot;
 import java.util.Optional;
+import java.io.File;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Services.PlayerService;
+import javax.annotation.Resource;
+import com.example.Sim.Services.NpcService;
 
-public class SaveAndLoadUtility {
-
-    private final String DIRECTORY_NAME = "Saves" + File.separator;
-    /**
-     * Directory where the game files are located!
-     */
-    private final String PATH_ROOT = "." + File.separator + DIRECTORY_NAME;
+public class SaveAndLoadUtility
+{
+    private final String DIRECTORY_NAME;
+    private final String PATH_ROOT;
     private final String SAVE_FILE = "gameData.saveSlot";
-    private final String SAVE_FILE_PATH = PATH_ROOT + SAVE_FILE;
+    private final String SAVE_FILE_PATH;
     @Resource
     NpcService npcService;
     @Resource
     PlayerService playerService;
     @Resource
     EndTurnService endTurnService;
-
-    public SaveSlot createSaveSlot(Optional<String> name) {
-        Services services = new Services(npcService, playerService, this, endTurnService);
+    
+    public SaveAndLoadUtility() {
+        this.DIRECTORY_NAME = "Saves" + File.separator;
+        this.PATH_ROOT = "." + File.separator + this.DIRECTORY_NAME;
+        this.SAVE_FILE = "gameData.saveSlot";
+        this.SAVE_FILE_PATH = this.PATH_ROOT + "gameData.saveSlot";
+    }
+    
+    public SaveSlot createSaveSlot(final Optional<String> name) {
+        final Services services = new Services(this.npcService, this.playerService, this, this.endTurnService);
         SaveSlot saveData;
         if (name.isPresent()) {
-            saveData = new SaveSlot(name.get(), npcService.getHiredNpcs(), npcService.getHirableNpcs(), playerService.getPlayer(), services);
-        } else {
-            saveData = new SaveSlot(npcService.getHiredNpcs(), npcService.getHirableNpcs(), playerService.getPlayer(), services);
+            saveData = new SaveSlot((String)name.get(), this.npcService.getHiredNpcs(), this.npcService.getHirableNpcs(), this.playerService.getPlayer(), services);
+        }
+        else {
+            saveData = new SaveSlot(this.npcService.getHiredNpcs(), this.npcService.getHirableNpcs(), this.playerService.getPlayer(), services);
         }
         return saveData;
-
     }
-
+    
     public SaveSlot createEmptySlot() {
-        Services services = new Services(npcService, playerService, this, endTurnService);
-        SaveSlot saveData = new SaveSlot(true, services);
+        final Services services = new Services(this.npcService, this.playerService, this, this.endTurnService);
+        final SaveSlot saveData = new SaveSlot(Boolean.valueOf(true), services);
         return saveData;
-
     }
-
+    
     public List<SaveSlot> getSavedGames() {
-        Services services = new Services(npcService, playerService, this, endTurnService);
-
-        List<SaveSlot> saveSlots = new ArrayList<>();
-        File dir = new File(DIRECTORY_NAME);
-        String[] list = dir.list();
-        for (int i = 0; i < list.length; i++) {
-            saveSlots.add(new SaveSlot(readSaveFile(list[i]), services));
+        final Services services = new Services(this.npcService, this.playerService, this, this.endTurnService);
+        final List<SaveSlot> saveSlots = new ArrayList<SaveSlot>();
+        final File dir = new File(this.DIRECTORY_NAME);
+        final String[] list = dir.list();
+        for (int i = 0; i < list.length; ++i) {
+            saveSlots.add(new SaveSlot(this.readSaveFile(list[i]), services));
         }
         return saveSlots;
     }
-
-    public SaveData readSaveFile(String path) {
-
+    
+    public SaveData readSaveFile(final String path) {
         SaveData savedData = null;
-        File root = new File(PATH_ROOT);
-        File file = new File(PATH_ROOT + path);
-
+        final File root = new File(this.PATH_ROOT);
+        final File file = new File(this.PATH_ROOT + path);
         if (root.exists() && file.exists()) {
             try {
-                logState("Loading file");
-
-                FileInputStream fileIn = new FileInputStream(file);
-                ObjectInputStream inputStream = new ObjectInputStream(fileIn);
-
-                savedData = (SaveData) inputStream.readObject();
-                processSavedData(savedData);
-
+                this.logState("Loading file");
+                final FileInputStream fileIn = new FileInputStream(file);
+                final ObjectInputStream inputStream = new ObjectInputStream(fileIn);
+                savedData = (SaveData)inputStream.readObject();
+                this.processSavedData(savedData);
                 inputStream.close();
                 fileIn.close();
-
-                logState("File loaded");
-
-
-            } catch (IOException | ClassNotFoundException e) {
-                logState("Failed to load! " + e.getLocalizedMessage());
+                this.logState("File loaded");
+            }
+            catch (IOException | ClassNotFoundException ex2) {
+                final Exception ex;
+                final Exception e = ex;
+                this.logState("Failed to load! " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
-        } else {
-            logState("Nothing to load.");
         }
-
+        else {
+            this.logState("Nothing to load.");
+        }
         return savedData;
     }
-
-    /**
-     * Method which when called will attempt to save a SaveSlot
-     * to a specified directory.
-     *
-     * @param saveSlot
-     */
-
-    public void saveGame(SaveSlot saveSlot) {
-        Task<Void> task = new Task<Void>() {
-            @Override
-            public Void call() throws Exception {
-
-                File root = new File(PATH_ROOT);
-                File file = new File(SAVE_FILE_PATH);
-
-                file.delete();
-                logState("Saving file...");
-                try {
-                    root.mkdirs();
-
-                    FileOutputStream fileOut = new FileOutputStream(PATH_ROOT + saveSlot.getSaveData().getName());
-                    BufferedOutputStream bufferedStream = new BufferedOutputStream(fileOut);
-                    ObjectOutputStream outputStream = new ObjectOutputStream(bufferedStream);
-
-                    outputStream.writeObject(saveSlot.getSaveData());
-                    outputStream.close();
-                    fileOut.close();
-
-                    logState("File saved.");
-
-                } catch (IOException e) {
-                    logState("Failed to save, I/O exception");
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-
-        Thread thread = new Thread(task);
+    
+    public void saveGame(final SaveSlot saveSlot) {
+        final Task<Void> task = (Task<Void>)new SaveAndLoadUtility$1(this, saveSlot);
+        final Thread thread = new Thread((Runnable)task);
         thread.setDaemon(true);
         thread.start();
     }
-
-    /**
-     * Method which when called attempts to retrieve the saved data
-     * from a specified directory
-     */
-
-
-    private void processSavedData(SaveData savedData) {
-        /*SaveData.profileName = savedData.getProfileName();
-        SaveData.score = savedData.getScore();
-        SaveData.level = savedData.getLevel();
-        SaveData.gameVolume = savedData.getGameVolume();
-        SaveData.resolutionX = savedData.getResolutionX();
-        SaveData.resolutionY = savedData.getResolutionY();*/
-        logState("LOADED");
-        logState("LOADED");
+    
+    private void processSavedData(final SaveData savedData) {
+        this.logState("LOADED");
+        this.logState("LOADED");
     }
-
-    private String logState(String log) {
+    
+    private String logState(final String log) {
         System.out.println("Game Saver: " + log);
         return log;
     }
-
-
 }
-

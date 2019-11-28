@@ -1,35 +1,44 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.controllers;
 
-import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.FXML.DialogController;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Model.SaveData;
-import com.example.Sim.Model.SaveSlot;
-import com.example.Sim.Services.EndTurnService;
-import com.example.Sim.Services.NpcService;
-import com.example.Sim.Services.PlayerService;
-import com.example.Sim.Utilities.SaveAndLoadUtility;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.stage.WindowEvent;
-import javafx.util.Callback;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.Collection;
+import javafx.collections.FXCollections;
 import java.util.concurrent.TimeUnit;
+import java.util.Optional;
+import javafx.scene.control.TextInputDialog;
+import javafx.util.Callback;
+import java.util.ResourceBundle;
+import java.net.URL;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Config.ScreensConfiguration;
+import com.example.Sim.Model.SaveSlot;
+import javafx.scene.control.TableColumn;
+import javafx.stage.WindowEvent;
+import javafx.event.EventHandler;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Utilities.SaveAndLoadUtility;
+import com.example.Sim.Services.PlayerService;
+import javax.annotation.Resource;
+import com.example.Sim.Services.NpcService;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableView;
+import org.springframework.stereotype.Service;
+import com.example.Sim.FXML.DialogController;
+import javafx.fxml.Initializable;
 
 @Service
-public class SaveLoadController implements Initializable, DialogController {
+public class SaveLoadController implements Initializable, DialogController
+{
     @FXML
     public TableView loadGameTable;
     @Resource
@@ -40,14 +49,7 @@ public class SaveLoadController implements Initializable, DialogController {
     SaveAndLoadUtility saveAndLoadUtility;
     @Resource
     EndTurnService endTurnService;
-    EventHandler<WindowEvent> onShownEventHandler =
-            new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-                    refreshTable();
-
-                }
-            };
+    EventHandler<WindowEvent> onShownEventHandler;
     @FXML
     private TableColumn<SaveSlot, String> saveNameColumn;
     @FXML
@@ -56,156 +58,98 @@ public class SaveLoadController implements Initializable, DialogController {
     private TableColumn<SaveSlot, String> saveDateColumn;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-
-    public SaveLoadController(ScreensConfiguration screens) {
+    
+    public SaveLoadController(final ScreensConfiguration screens) {
+        this.onShownEventHandler = (EventHandler)new SaveLoadController$1(this);
         this.screens = screens;
     }
-
-    public void setDialog(FXMLDialog dialog) {
+    
+    public void setDialog(final FXMLDialog dialog) {
         this.dialog = dialog;
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        initializeSaveLoadTable();
-        dialog.setOnShown(onShownEventHandler);
-
+    
+    public void initialize(final URL location, final ResourceBundle resources) {
+        this.initializeSaveLoadTable();
+        this.dialog.setOnShown(this.onShownEventHandler);
     }
-
+    
     private void initializeSaveLoadTable() {
-        saveNameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getSaveData().getName()));
-
-        saveDateColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getSaveData().getDate()));
-
-        saveTurnColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getSaveData().getTurn().toString()));
-        TableColumn tableColumn = (TableColumn) loadGameTable.getColumns().get(3);
-        tableColumn.setCellFactory(
-                new Callback<TableColumn<SaveSlot, SaveSlot>, TableCell<SaveSlot, SaveSlot>>() {
-                    @Override
-                    public TableCell call(TableColumn<SaveSlot, SaveSlot> p) {
-                        return new ButtonCell("Overwrite");
-                    }
-                }
-        );
-        tableColumn = (TableColumn) loadGameTable.getColumns().get(4);
-        tableColumn.setCellFactory(
-                new Callback<TableColumn<SaveSlot, SaveSlot>, TableCell<SaveSlot, SaveSlot>>() {
-                    @Override
-                    public TableCell call(TableColumn<SaveSlot, SaveSlot> p) {
-                        return new ButtonCell("Load");
-                    }
-                }
-        );
+        this.saveNameColumn.setCellValueFactory(SaveLoadController::lambda$initializeSaveLoadTable$0);
+        this.saveDateColumn.setCellValueFactory(SaveLoadController::lambda$initializeSaveLoadTable$1);
+        this.saveTurnColumn.setCellValueFactory(SaveLoadController::lambda$initializeSaveLoadTable$2);
+        TableColumn tableColumn = (TableColumn)this.loadGameTable.getColumns().get(3);
+        tableColumn.setCellFactory((Callback)new SaveLoadController$2(this));
+        tableColumn = (TableColumn)this.loadGameTable.getColumns().get(4);
+        tableColumn.setCellFactory((Callback)new SaveLoadController$3(this));
     }
-
-
-
+    
     public void save() {
-        TextInputDialog dialog = new TextInputDialog("save name");
+        final TextInputDialog dialog = new TextInputDialog("save name");
         dialog.setTitle("Name your save");
         dialog.setHeaderText("Enter save name, or use default value.");
-
-        Optional<String> name = dialog.showAndWait();
-        save(name);
+        final Optional<String> name = (Optional<String>)dialog.showAndWait();
+        this.save(name);
     }
-    private void save(Optional<String> name) {
-        SaveSlot saveSlot = saveAndLoadUtility.createSaveSlot(name);
-        saveAndLoadUtility.saveGame(saveSlot);
+    
+    private void save(final Optional<String> name) {
+        final SaveSlot saveSlot = this.saveAndLoadUtility.createSaveSlot((Optional)name);
+        this.saveAndLoadUtility.saveGame(saveSlot);
         try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
+            TimeUnit.SECONDS.sleep(1L);
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
-        refreshTable();
+        this.refreshTable();
     }
-
+    
     public void refreshTable() {
-        List<SaveSlot> saveSlots = saveAndLoadUtility.getSavedGames();
-        ObservableList data = FXCollections.observableArrayList(saveSlots);
-        loadGameTable.getItems().remove(0, loadGameTable.getItems().size());
-        loadGameTable.setItems(data);
+        final List<SaveSlot> saveSlots = (List<SaveSlot>)this.saveAndLoadUtility.getSavedGames();
+        final ObservableList data = FXCollections.observableArrayList((Collection)saveSlots);
+        this.loadGameTable.getItems().remove(0, this.loadGameTable.getItems().size());
+        this.loadGameTable.setItems(data);
     }
-
+    
     public void goBack() {
-        dialog.close();
-        screens.hubDialog().show();
+        this.dialog.close();
+        this.screens.hubDialog().show();
     }
-
+    
     public void goToMain() {
-        dialog.close();
-        screens.startDialog().show();
+        this.dialog.close();
+        this.screens.startDialog().show();
     }
-
-    private class ButtonCell extends TableCell<SaveSlot, SaveSlot> {
+    
+    private class ButtonCell extends TableCell<SaveSlot, SaveSlot>
+    {
         private Button cellButton;
         private String customText;
-
-        ButtonCell(String type) {
-            cellButton = new Button();
-            customText = type;
+        
+        ButtonCell(final SaveLoadController this$0, final String type) {
+            this.this$0 = this$0;
+            this.cellButton = new Button();
+            this.customText = type;
             if ("Overwrite".equals(type)) {
-                cellButton.setOnAction(new EventHandler<ActionEvent>() {
-
-                    @Override
-                    public void handle(ActionEvent t) {
-                        SaveSlot currentSaveSlot = getTableView().getItems().get(getIndex());
-                        String name = currentSaveSlot.getSaveData().getName();
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle("Overfile");
-                        String s = "Are you sure you want to overwrite your save?";
-                        alert.setContentText(s);
-
-                        Optional<ButtonType> result = alert.showAndWait();
-
-                        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-                            save(Optional.of(name));
-                        }
-
-
-                    }
-                });
-            } else {
-
-
-                cellButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent t) {
-                        SaveSlot currentSaveSlot = getTableView().getItems().get(getIndex());
-                        String name = currentSaveSlot.getSaveData().getName();
-
-                        SaveSlot saveSlot = getTableView().getItems().get(getIndex());
-
-                        SaveData saveData = saveAndLoadUtility.readSaveFile(saveSlot.getSaveData().getName());
-                        playerService.setPlayer(saveData.getPlayer());
-                        npcService.setHirableNpcs(saveData.getHirableNpcs());
-                        npcService.setHiredNpcs(saveData.getHiredNpcs());
-                        npcService.setHired(saveData.getHired());
-                        endTurnService.setTurn(saveData.getTurn());
-                        dialog.close();
-                        screens.hubDialog().show();
-
-
-                    }
-                });
+                this.cellButton.setOnAction((EventHandler)new ButtonCell.SaveLoadController$ButtonCell$1(this, this$0));
             }
-
+            else {
+                this.cellButton.setOnAction((EventHandler)new ButtonCell.SaveLoadController$ButtonCell$2(this, this$0));
+            }
         }
-
-        @Override
-        protected void updateItem(SaveSlot record, boolean empty) {
-            super.updateItem(record, empty);
+        
+        protected void updateItem(final SaveSlot record, final boolean empty) {
+            super.updateItem((Object)record, empty);
             if (!empty) {
-                cellButton.setText(customText);
-                SaveSlot saveSlot = getTableView().getItems().get(getIndex());
+                this.cellButton.setText(this.customText);
+                final SaveSlot saveSlot = (SaveSlot)this.getTableView().getItems().get(this.getIndex());
                 if ("Empty slot".equals(saveSlot.getSaveData().getName())) {
-                    cellButton.setDisable(true);
+                    this.cellButton.setDisable(true);
                 }
-                setGraphic(cellButton);
-            } else {
-                setGraphic(null);
+                this.setGraphic((Node)this.cellButton);
+            }
+            else {
+                this.setGraphic((Node)null);
             }
         }
     }
-
 }

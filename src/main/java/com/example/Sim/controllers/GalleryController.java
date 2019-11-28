@@ -1,29 +1,41 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.controllers;
 
-import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Exceptions.ImageNotFound;
-import com.example.Sim.FXML.DialogController;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Services.NpcService;
-import com.example.Sim.Utilities.FileUtility;
-import com.example.Sim.Utilities.ImageHandler;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert;
 import com.example.Sim.controllers.Gallery.model.TableNpc;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.util.Callback;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TableColumn;
+import java.util.Collection;
+import javafx.collections.FXCollections;
+import java.util.ResourceBundle;
+import java.net.URL;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Config.ScreensConfiguration;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import org.springframework.stereotype.Service;
-
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Utilities.ImageHandler;
 import javax.annotation.Resource;
-import java.net.URL;
-import java.util.ResourceBundle;
+import com.example.Sim.Utilities.FileUtility;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableView;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import org.springframework.stereotype.Service;
+import com.example.Sim.FXML.DialogController;
+import javafx.fxml.Initializable;
 
 @Service
-public class GalleryController implements Initializable, DialogController {
+public class GalleryController implements Initializable, DialogController
+{
     @FXML
     public Button button;
     @FXML
@@ -44,87 +56,77 @@ public class GalleryController implements Initializable, DialogController {
     private ImageView imgView;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-    private Integer rowId = 0;
-
-
-    public GalleryController(ScreensConfiguration screens) {
+    private Integer rowId;
+    
+    public GalleryController(final ScreensConfiguration screens) {
+        this.rowId = 0;
         this.screens = screens;
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        initializeTable();
-        gifOnly.setDisable(true);
-
-
+    
+    public void initialize(final URL location, final ResourceBundle resources) {
+        this.npcService.createNpcs();
+        this.initializeTable();
+        this.gifOnly.setDisable(true);
     }
-
+    
     public void initializeTable() {
-        ObservableList data = FXCollections.observableArrayList(npcService.getNormalTableNpcs());
-
-        npcTable.setItems(data);
-        TableColumn tableColumn = (TableColumn) npcTable.getColumns().get(0);
-        tableColumn.setCellValueFactory(new PropertyValueFactory("displayName"));
-        tableColumn = (TableColumn) npcTable.getColumns().get(1);
-        tableColumn.setCellValueFactory(new PropertyValueFactory("folder"));
-
-        npcTable.getSelectionModel().selectFirst();
+        final ObservableList data = FXCollections.observableArrayList((Collection)this.npcService.getNormalTableNpcs());
+        this.npcTable.setItems(data);
+        TableColumn tableColumn = (TableColumn)this.npcTable.getColumns().get(0);
+        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("displayName"));
+        tableColumn = (TableColumn)this.npcTable.getColumns().get(1);
+        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("folder"));
+        this.npcTable.getSelectionModel().selectFirst();
     }
-
-    public void setComboboxItems(String path) {
-        ObservableList data = FXCollections.observableArrayList(fileUtility.checkNpcTypes(path));
-        imgType.setItems(data);
-        imgType.getSelectionModel().selectFirst();
+    
+    public void setComboboxItems(final String path) {
+        final ObservableList data = FXCollections.observableArrayList((Collection)this.fileUtility.checkNpcTypes(path));
+        this.imgType.setItems(data);
+        this.imgType.getSelectionModel().selectFirst();
     }
-
+    
     public void tableRowSelected() {
-
-        rowId = npcTable.getSelectionModel().getFocusedIndex();
-        TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
-        setComboboxItems(selectedTableNpc.getPath());
+        this.rowId = this.npcTable.getSelectionModel().getFocusedIndex();
+        final TableNpc selectedTableNpc = (TableNpc)this.npcTable.getSelectionModel().getSelectedItem();
+        this.setComboboxItems(selectedTableNpc.getPath());
         if (selectedTableNpc.getFolder().equals("Present")) {
             try {
-                imageHandler.setImage(imgView, selectedTableNpc.getPath(), null, gifOnly.isSelected());
-            } catch (ImageNotFound e) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+                this.imageHandler.setImage(this.imgView, selectedTableNpc.getPath(), (String)null, this.gifOnly.isSelected());
+            }
+            catch (ImageNotFound e) {
+                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
                 alert.showAndWait();
             }
         }
-
     }
-
+    
     public void categorySelected() {
-        if (imgType.getSelectionModel().getSelectedItem() != null) {
-            gifOnly.setSelected(false);
-            TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
-            String category = imgType.getSelectionModel().getSelectedItem().toString();
-            gifOnly.setDisable(!fileUtility.checkIfGifAvailable(selectedTableNpc.getPath(), category));
+        if (this.imgType.getSelectionModel().getSelectedItem() != null) {
+            this.gifOnly.setSelected(false);
+            final TableNpc selectedTableNpc = (TableNpc)this.npcTable.getSelectionModel().getSelectedItem();
+            final String category = this.imgType.getSelectionModel().getSelectedItem().toString();
+            this.gifOnly.setDisable(!this.fileUtility.checkIfGifAvailable(selectedTableNpc.getPath(), category));
         }
-
     }
-
+    
     public void buttonPress() {
-        TableNpc selectedTableNpc = (TableNpc) npcTable.getSelectionModel().getSelectedItem();
+        final TableNpc selectedTableNpc = (TableNpc)this.npcTable.getSelectionModel().getSelectedItem();
         try {
-            String category = imgType.getSelectionModel().getSelectedItem().toString();
-            imageHandler.setImage(imgView, selectedTableNpc.getPath(), category, gifOnly.isSelected());
-        } catch (ImageNotFound e) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
+            final String category = this.imgType.getSelectionModel().getSelectedItem().toString();
+            this.imageHandler.setImage(this.imgView, selectedTableNpc.getPath(), category, this.gifOnly.isSelected());
+        }
+        catch (ImageNotFound e) {
+            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
             alert.showAndWait();
         }
-
     }
-
+    
     public void goToBrothel() {
-
-        dialog.close();
-        screens.hubDialog().show();
-
+        this.dialog.close();
+        this.screens.hubDialog().show();
     }
-
-
-    public void setDialog(FXMLDialog dialog) {
+    
+    public void setDialog(final FXMLDialog dialog) {
         this.dialog = dialog;
     }
 }

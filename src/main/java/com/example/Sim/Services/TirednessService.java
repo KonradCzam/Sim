@@ -1,54 +1,49 @@
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
 package com.example.Sim.Services;
 
+import com.example.Sim.Model.TirednessSystem.WorkStatus;
 import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Model.NPC.Npc;
-import com.example.Sim.Model.TirednessSystem.WorkStatus;
 
-import javax.annotation.Resource;
-
-public class TirednessService {
-@Resource
-NpcService npcService;
-
-    public WorkStatus handleTiredness(Npc npc, Task task) {
-        Integer tempTiredness = npc.getStat("Tiredness").getEffectiveValue();
-        Integer tirednessChange = calculateDeltaTiredness(npc,task);
+public class TirednessService
+{
+    public WorkStatus handleTiredness(final Npc npc, final Task task) {
+        Integer tempTiredness = npc.getStat("Tiredness").getValue();
+        final Integer tirednessChange = this.calculateDeltaTiredness(npc, task);
         npc.getStat("Tiredness").changeValue(tirednessChange);
         tempTiredness += tirednessChange;
         if (tempTiredness >= 100) {
-            return handleOverwork(npc, tempTiredness);
+            return this.handleOverwork(npc, tempTiredness);
         }
         return WorkStatus.NORMAL;
     }
-
-    private Integer calculateDeltaTiredness(Npc npc, Task task) {
+    
+    private Integer calculateDeltaTiredness(final Npc npc, final Task task) {
         Integer change = 0;
-        Integer constitution = npc.getStat("Constitution").getEffectiveValue();
-        Integer tiring = task.getTiring();
-        change = tiring - constitution/10;
+        final Integer constitution = npc.getStat("Constitution").getValue();
+        final Integer tiring = task.getTiring();
+        change = tiring - constitution / 10;
         return change;
     }
-
-    private WorkStatus handleOverwork(Npc npc, Integer tempTiredness) {
+    
+    private WorkStatus handleOverwork(final Npc npc, final Integer tempTiredness) {
         Integer overwork = tempTiredness - 100;
-        Integer obedience = npc.getStat("Obedience").getEffectiveValue();
-        Integer health = npc.getStat("Health").getEffectiveValue();
-        if ((obedience ) > (100 - health)) {
-            overwork = Math.min(40,overwork);
-            npc.getStat("Health").changeValue(-overwork);
-        }else {
+        final Integer obedience = npc.getStat("Obedience").getValue();
+        final Integer health = npc.getStat("Health").getValue();
+        if (obedience <= 100 - health) {
             return WorkStatus.OVERWORK_REFUSE;
         }
-
-        if (npc.getStat("Health").getEffectiveValue() <= 0) {
-            npcService.killNpc(npc);
+        overwork = Math.min(40, overwork);
+        npc.getStat("Health").changeValue(Integer.valueOf(-overwork));
+        if (npc.getStat("Health").getValue() <= 0) {
             return WorkStatus.DEAD_TIRED;
-        } else {
-            if(npc.getStat("Health").getEffectiveValue() <= 40){
-                return WorkStatus.OVERWORKED_NEAR_DEATH;
-            }
-            return WorkStatus.OVERWORKED;
         }
-
+        if (npc.getStat("Health").getValue() <= 40) {
+            return WorkStatus.OVERWORKED_NEAR_DEATH;
+        }
+        return WorkStatus.OVERWORKED;
     }
 }
