@@ -27,9 +27,7 @@ package com.example.Sim.Config;
  */
 
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Scripts.ScriptGenerator.ScriptGeneratorController;
-import com.example.Sim.controllers.*;
-import com.example.Sim.controllers.library.LibraryController;
+import com.example.Sim.controllers.StartController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -53,67 +51,6 @@ public class ScreensConfiguration {
     }
 
     @Bean
-    public FXMLDialog loginDialog() {
-        return new FXMLDialog(controller(), getClass().getClassLoader().getResource("gallery.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    GalleryController controller() {
-        return new GalleryController(this);
-    }
-
-    @Bean
-
-    public FXMLDialog hubDialog() {
-        return new FXMLDialog(hubController(), getClass().getClassLoader().getResource("hub.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    HubController hubController() {
-        return new HubController(this);
-    }
-
-    @Bean
-    public FXMLDialog npcDetailsDialog() {
-        return new FXMLDialog(npcDetailController(), getClass().getClassLoader().getResource("npcDetails.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    NpcDetailsController npcDetailController() {
-        return new NpcDetailsController(this);
-    }
-
-    @Bean
-    public FXMLDialog hireDialog() {
-        return new FXMLDialog(hireController(), getClass().getClassLoader().getResource("hire.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    HireController hireController() {
-        return new HireController(this);
-    }
-
-    @Bean
-    public FXMLDialog playerDialog() {
-        return new FXMLDialog(playerController(), getClass().getClassLoader().getResource("playerDetails.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    PlayerDetailsController playerController() {
-        return new PlayerDetailsController(this);
-    }
-
-    @Bean
-    public FXMLDialog endTurnDialog() {
-        return new FXMLDialog(endTurnController(), getClass().getClassLoader().getResource("endTurn.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    EndTurnController endTurnController() {
-        return new EndTurnController(this);
-    }
-
-    @Bean
     public FXMLDialog startDialog() {
         return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED);
     }
@@ -122,65 +59,6 @@ public class ScreensConfiguration {
     StartController startController() {
         return new StartController(this);
     }
-
-    @Bean
-    public FXMLDialog saveLoadDialog() {
-        return new FXMLDialog(saveLoadController(), getClass().getClassLoader().getResource("saveLoad.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    SaveLoadController saveLoadController() {
-        return new SaveLoadController(this);
-    }
-
-    @Bean
-    public FXMLDialog optionsDialog() {
-        return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    OptionsController optionsController() {
-        return new OptionsController(this);
-    }
-
-    @Bean
-    public FXMLDialog libraryDialog() {
-        return new FXMLDialog(libraryController(), getClass().getClassLoader().getResource("library/library.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    LibraryController libraryController() {
-        return new LibraryController(this);
-    }
-
-    @Bean
-    public FXMLDialog interactionDialog() {
-        return new FXMLDialog(interactionController(), getClass().getClassLoader().getResource("interaction.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    InteractionController interactionController() {
-        return new InteractionController(this);
-    }
-
-    @Bean
-    public FXMLDialog achievementsDialog() {
-        return new FXMLDialog(achievementsController(), getClass().getClassLoader().getResource("achievements.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    AchievementsController achievementsController() {
-        return new AchievementsController(this);
-    }
-
-    @Bean
-    public FXMLDialog scriptGeneraorDialog() {
-        return new FXMLDialog(scriptGeneraorController(), getClass().getClassLoader().getResource("scriptGenerator.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    ScriptGeneratorController scriptGeneraorController() {
-        return new ScriptGeneratorController(this);
-    }
-
-
-
-
 
 
 }
