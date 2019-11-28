@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextArea editable="false" layoutX="20.0" layoutY="10.0" prefHeight="700.0" prefWidth="960.0" text="Only player has money at the moment. &#10;He can use it to buy new slaves.&#10;Slaves earn money by performing tasks, which are assigned to slaves by the player.&#10;How much money is earned depends on NPC's skills and money coefficient.&#10;The precise formula is :&#10;Average (Average( Relevant skills) + Average(Relevant stats)) * money coefficient&#10;&#10;Player can check which skills and stats the relevant to which task in the library.&#10;The library task page also contans the information about the tasks money coefficient." wrapText="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextArea>
+   </children>
+</AnchorPane>

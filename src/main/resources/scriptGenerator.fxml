@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.EndTurnController">
+   <children>
+      <Button layoutX="14.0" layoutY="676.0" mnemonicParsing="false"  prefHeight="30.0" prefWidth="75.0" text="Back" />
+      <Pane layoutX="651.0" layoutY="365.0" prefHeight="341.0" prefWidth="615.0">
+         <children>
+            <Label layoutY="4.0" text="Add option">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="param1Label" layoutX="17.0" layoutY="107.0" text="Type:" />
+            <Label fx:id="param2Label" layoutX="17.0" layoutY="140.0" text="Type:" />
+            <Label fx:id="param3Label" layoutX="17.0" layoutY="171.0" text="Type:" />
+            <Label fx:id="param4Label" layoutX="17.0" layoutY="203.0" text="Type:" />
+            <Label fx:id="param5Label" layoutX="17.0" layoutY="240.0" text="Type:" />
+            <TextField fx:id="param1Input" layoutX="105.0" layoutY="102.0" />
+            <TextField fx:id="param2Input" layoutX="106.0" layoutY="133.0" />
+            <TextField fx:id="param3Input" layoutX="105.0" layoutY="164.0" />
+            <TextField fx:id="param4Input" layoutX="106.0" layoutY="198.0" />
+            <TextField fx:id="param5Input" layoutX="105.0" layoutY="233.0" />
+            <Label layoutX="301.0" layoutY="39.0" text="Text:" />
+            <TextArea fx:id="textAreaInput" layoutX="340.0" layoutY="18.0" prefHeight="315.0" prefWidth="269.0" />
+            <Button fx:id="addNewButton" layoutX="14.0" layoutY="296.0" mnemonicParsing="false" text="Add new" />
+            <Button fx:id="clearButton" layoutX="106.0" layoutY="296.0" mnemonicParsing="false" text="Clear" />
+         </children>
+      </Pane>
+      <TreeTableView layoutX="14.0" layoutY="14.0" prefHeight="642.0" prefWidth="624.0">
+        <columns>
+          <TreeTableColumn prefWidth="75.0" text="C1" />
+          <TreeTableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TreeTableView>
+      <Pane layoutX="651.0" layoutY="14.0" prefHeight="341.0" prefWidth="615.0">
+         <children>
+            <Label layoutY="4.0" text="Add new node">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="39.0" text="Name:" />
+            <Label layoutX="17.0" layoutY="70.0" text="Type:" />
+            <TextField fx:id="newNodeNameInput" layoutX="62.0" layoutY="34.0" />
+            <ChoiceBox fx:id="newNodeTypeChoiceBox" layoutX="62.0" layoutY="65.0" prefWidth="150.0" />
+            <Label layoutX="301.0" layoutY="39.0" text="Text:" />
+            <TextArea fx:id="textAreaInput" layoutX="340.0" layoutY="18.0" prefHeight="315.0" prefWidth="269.0" />
+            <Button fx:id="addNewButton" layoutX="14.0" layoutY="296.0" mnemonicParsing="false" text="Add new" />
+            <Button fx:id="clearButton" layoutX="106.0" layoutY="296.0" mnemonicParsing="false" text="Clear" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

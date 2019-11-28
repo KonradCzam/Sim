@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane prefHeight="720.0" prefWidth="1259.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.InteractionController">
+   <children>
+      <TextArea fx:id="interText" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="398.0" prefWidth="790.0" wrapText="true" />
+      <TextArea fx:id="interOption1" editable="false" layoutX="10.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption2" editable="false" layoutX="320.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption3" editable="false" layoutX="630.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <TextArea fx:id="interOption4" editable="false" layoutX="940.0" layoutY="425.0" prefHeight="200.0" prefWidth="300.0" wrapText="true" />
+      <ImageView fx:id="interImage" fitHeight="398.0" fitWidth="429.0" layoutX="810.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>

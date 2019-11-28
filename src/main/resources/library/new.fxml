@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextArea editable="false" layoutX="300.0" layoutY="260.0" prefHeight="200.0" prefWidth="401.0" text="Welcome to the Library. Here you can learn more about the world of this world or the mechanics that govern it.&#10;" wrapText="true">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </TextArea>
+   </children>
+</AnchorPane>

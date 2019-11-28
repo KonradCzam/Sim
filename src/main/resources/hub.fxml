@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="brothelAnchor" maxHeight="720.0" maxWidth="1280.0" onMouseClicked="#tableRowSelected" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.HubController">
+    <children>
+        <TableView fx:id="hubTable" layoutX="14.0" layoutY="14.0" onMouseClicked="#tableRowSelected" prefHeight="370.0" prefWidth="947.0">
+            <columns>
+                <TableColumn editable="false" prefWidth="380.0" text="Name" />
+            <TableColumn fx:id="healthColumn" editable="false" minWidth="7.0" prefWidth="60.0" resizable="false" text="Health" />
+                <TableColumn fx:id="tirednessColumn" editable="false" prefWidth="60.0" resizable="false" text="Fatigue" />
+                <TableColumn fx:id="dayJobColumn" editable="false" prefWidth="140.0" resizable="false" text="Day Shift" />
+                <TableColumn fx:id="nightJobColumn" editable="false" prefWidth="140.0" resizable="false" text="Night Shift" />
+                <TableColumn fx:id="skillTableColumn" editable="false" minWidth="0.0" prefWidth="50.0" resizable="false" text="Skill" />
+            <TableColumn fx:id="skillTableColumn1" editable="false" minWidth="0.0" resizable="false" text="Value" />
+            <TableColumn fx:id="skillTableColumn11" minWidth="0.0" prefWidth="50.0" />
+            </columns>
+        </TableView>
+        <ImageView fx:id="hubImage" fitHeight="400.0" fitWidth="291.0" layoutX="977.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../../New%20folder/Yuna%20Shiina/profile%20(1).jpg" />
+            </image>
+        </ImageView>
+        <Button layoutX="1186.0" layoutY="681.0" mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
+        <Button layoutX="1089.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToSaveLoad" text="Save/Load" />
+      <Pane layoutX="961.0" layoutY="410.0" prefHeight="265.0" prefWidth="314.0">
+         <children>
+              <Button fx:id="goToNpcDetails" layoutX="195.0" layoutY="95.0" mnemonicParsing="false" onAction="#goToNpcDetails" prefHeight="30.0" prefWidth="106.0" text="Girl Details" />
+              <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToHire" prefHeight="30.0" text="Slave Market" />
+              <Button layoutX="195.0" layoutY="53.0" mnemonicParsing="false" onAction="#goToPlayer" prefHeight="30.0" prefWidth="106.0" text="Your Study" />
+              <Button layoutX="195.0" layoutY="14.0" mnemonicParsing="false" onAction="#gotoToLibrary" prefHeight="30.0" prefWidth="106.0" text="Library" />
+              <Button layoutX="21.0" layoutY="220.0" mnemonicParsing="false" onAction="#goToGallery" prefHeight="30.0" prefWidth="105.0" text="Gallery" />
+            <Button layoutX="152.0" layoutY="220.0" mnemonicParsing="false" onAction="#goToOldEndTurn" prefHeight="31.0" prefWidth="148.0" text="Review last Report" />
+            <Button layoutX="14.0" layoutY="53.0" mnemonicParsing="false" onAction="#sellNpcs" prefHeight="30.0" prefWidth="105.0" text="Sell Girls" />
+            <Label fx:id="goldLabel" layoutX="27.0" layoutY="154.0" text="Gold: ">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <TabPane fx:id="jobTabs" layoutX="14.0" layoutY="384.0" prefHeight="40.0" prefWidth="947.0" tabClosingPolicy="UNAVAILABLE" />
+      <TableView fx:id="taskTable" layoutX="14.0" layoutY="442.0" prefHeight="273.0" prefWidth="178.0">
+        <columns>
+          <TableColumn prefWidth="160.0" text="Task" />
+        </columns>
+      </TableView>
+        <Pane fx:id="jobButtonPane" layoutX="192.0" layoutY="448.0" prefHeight="148.0" prefWidth="142.0">
+            <children>
+                <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" onAction="#setDayJob" prefHeight="31.0" prefWidth="112.0" text="Set day shift" />
+                <Button layoutX="15.0" layoutY="54.0" mnemonicParsing="false" onAction="#setNightJob" text="Set night shift" />
+                <Button layoutX="15.0" layoutY="95.0" mnemonicParsing="false" onAction="#setBothJobs" prefHeight="31.0" prefWidth="112.0" text="Set both" />
+            </children>
+        </Pane>
+      <Accordion layoutX="380.0" layoutY="440.0" prefHeight="280.0" prefWidth="295.0" rotate="90.0">
+        <panes>
+          <TitledPane alignment="TOP_LEFT" animated="false" prefHeight="265.0" prefWidth="265.0" text="Day">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" rotate="-90.0">
+                     <children>
+                        <Pane layoutX="45.0" layoutY="-35.0" prefHeight="295.0" prefWidth="200.0">
+                           <children>
+                              <ProgressBar fx:id="progDay1" layoutY="20.0" prefWidth="200.0" progress="0.0" />
+                              <ProgressBar fx:id="progDay3" layoutY="100.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progDayLabel1" text="Label" />
+                              <Label fx:id="progDayLabel4" layoutY="120.0" text="Label" />
+                              <Label fx:id="progDayLabel6" layoutY="200.0" text="Label" />
+                              <Label fx:id="progDayLabel5" layoutY="160.0" text="Label" />
+                              <ProgressBar fx:id="progDay6" layoutY="220.0" prefWidth="200.0" progress="0.0" />
+                              <ProgressBar fx:id="progDay5" layoutY="180.0" prefWidth="200.0" progress="0.0" />
+                              <ProgressBar fx:id="progDay2" layoutY="60.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progDayLabel2" layoutY="40.0" text="Label" />
+                              <Label fx:id="progDayLabel3" layoutY="80.0" text="Label" />
+                              <ProgressBar fx:id="progDay4" layoutY="140.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progDayLabel7" layoutY="240.0" text="Label" />
+                              <ProgressBar fx:id="progDay7" layoutY="260.0" prefWidth="200.0" progress="0.0" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" prefWidth="295.0" text="Night">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="265.0" rotate="-90.0">
+                     <children>
+                        <Pane layoutX="45.0" layoutY="-35.0" prefHeight="300.0">
+                           <children>
+                              <ProgressBar fx:id="progNight6" layoutY="220.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progNightLabel3" layoutY="80.0" text="Label" />
+                              <Label fx:id="progNightLabel6" layoutY="200.0" text="Label" />
+                              <ProgressBar fx:id="progNight1" layoutY="20.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progNightLabel5" layoutY="160.0" text="Label" />
+                              <ProgressBar fx:id="progNight5" layoutY="180.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progNightLabel2" layoutY="40.0" text="Label" />
+                              <ProgressBar fx:id="progNight3" layoutY="100.0" prefWidth="200.0" progress="0.0" />
+                              <ProgressBar fx:id="progNight4" layoutY="140.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progNightLabel1" text="Label" />
+                              <ProgressBar fx:id="progNight2" layoutY="60.0" prefWidth="200.0" progress="0.0" />
+                              <Label fx:id="progNightLabel4" layoutY="120.0" text="Label" />
+                              <Label fx:id="progNightLabel7" layoutY="240.0" text="Label" />
+                              <ProgressBar fx:id="progNight7" layoutY="260.0" prefWidth="200.0" progress="0.0" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+      <Label fx:id="dayPopLabel" layoutX="691.0" layoutY="460.0" text="Day popularity: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="nightPopLabel" layoutX="691.0" layoutY="512.0" text="Night popularity:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>
