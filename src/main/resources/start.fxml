@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane fx:id="brothelAnchor" prefHeight="611.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.EndTurnController">
+
+<AnchorPane fx:id="brothelAnchor" prefHeight="530.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.StartController">
     <children>
-        <Button fx:id="newGameButton" layoutX="303.0" layoutY="73.0" mnemonicParsing="false" onAction="#startGame" prefHeight="88.0" prefWidth="143.0" text="New Game" />
-        <Button fx:id="loadGameButton" layoutX="303.0" layoutY="205.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="88.0" prefWidth="143.0" text="Load game" />
-        <Button fx:id="optionsButton" layoutX="303.0" layoutY="314.0" mnemonicParsing="false" onAction="#goToOptions" prefHeight="88.0" prefWidth="143.0" text="Options" />
-        <Button fx:id="quitButton" layoutX="303.0" layoutY="431.0" mnemonicParsing="false" onAction="#quit" prefHeight="88.0" prefWidth="143.0" text="Quit" />
-      <Button layoutX="482.0" layoutY="314.0" mnemonicParsing="false" onAction="#goToAch" prefHeight="88.0" prefWidth="143.0" text="Achievements" />
+        <Button fx:id="newGameButton" layoutX="484.0" layoutY="433.0" mnemonicParsing="false" onAction="#generatePDF" prefHeight="88.0" prefWidth="143.0" text="Daj PDF" />
+<Button fx:id="quitButton" layoutX="14.0" layoutY="433.0" mnemonicParsing="false" onAction="#quit" prefHeight="88.0" prefWidth="143.0" text="Wyjdz" />
+      <TextField fx:id="nameSurnameTextField" layoutX="20.0" layoutY="57.0" prefHeight="31.0" prefWidth="218.0" />
+      <Label layoutX="20.0" layoutY="36.0" text="Imie i Nazwisko" />
+      <Label layoutX="20.0" layoutY="98.0" text="Miesiac i rok, dzien jest niewazny" />
+      <DatePicker fx:id="datePicker" layoutX="20.0" layoutY="130.0" />
+      <Label layoutX="287.0" layoutY="100.0" text="Godziny pracy HHmm-HHmm" />
+      <TextField fx:id="worktimeTextField" layoutX="287.0" layoutY="132.0" text="0730-1505" />
+      <TextField fx:id="dyzurTextField" layoutX="20.0" layoutY="190.0" prefHeight="31.0" prefWidth="218.0" />
+      <Label layoutX="20.0" layoutY="169.0" text="Dni dyżurów oddzielone spacja" />
+      <Label layoutX="287.0" layoutY="38.0" text="Nazwa kom. organizacyjnej" />
+      <TextField fx:id="orgTextField" layoutX="287.0" layoutY="59.0" prefHeight="31.0" prefWidth="333.0" text="ODDZIAL GASTROENTEROLOGII" />
+      <Label layoutX="23.0" layoutY="289.0" text="Dodatkowe dni nieobecnosci oddzielone spacja" />
+      <TextField fx:id="extraDaysTextField" layoutX="23.0" layoutY="310.0" />
+      <TextField fx:id="extraCodesTextField" layoutX="23.0" layoutY="376.0" />
+      <Label layoutX="23.0" layoutY="355.0" text="Kody dodatkowych dni nieobecnosci oddzielone spacja" />
+      <CheckBox fx:id="LQuatro" layoutX="491.0" layoutY="399.0" mnemonicParsing="false" text="Caly miesiac L4" />
+      <Label layoutX="287.0" layoutY="171.0" text="Dni ustawowo wolne (swieta itp.) oddzielone spacja" />
+      <TextField fx:id="extraHolidaysTextField" layoutX="287.0" layoutY="192.0" />
+
     </children>
 </AnchorPane>
