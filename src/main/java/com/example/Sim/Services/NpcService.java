@@ -156,6 +156,7 @@ public class NpcService {
     }
 
     public void hireNpc(Npc npc) {
+        npc.setDefaultFactors();
         hiredNpcs.add(npc);
         hirableNpcs.remove(npc);
         hired += 1;

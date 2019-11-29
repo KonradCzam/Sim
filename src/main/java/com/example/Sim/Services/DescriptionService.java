@@ -12,8 +12,9 @@ import java.util.*;
 
 public class DescriptionService {
     @Resource
+    private
     FactorService factorService;
-    String description;
+    private String description;
 
     public NpcRoot addNpcRootDescription(NpcRoot npcRoot, Npc npc) {
         String npcName = npcRoot.getName();
@@ -46,7 +47,7 @@ public class DescriptionService {
         return npcRoot;
     }
 
-    public String addRefuseWorkDescription(NpcRoot npcRoot, WorkStatus workStatus, String name) {
+    private String addRefuseWorkDescription(NpcRoot npcRoot, WorkStatus workStatus, String name) {
         description = npcRoot.getDescription();
         if (workStatus == WorkStatus.OVERWORK_REFUSE) {
             return description + "\n" + name + " refused to work this week due to overwork. To avoid this in the future raise her obedience. High love stat also helps.\n";
@@ -57,7 +58,7 @@ public class DescriptionService {
         return null;
     }
 
-    public String addWorkDescription(Task task, String shift, NpcRoot npcRoot, WorkStatus workStatus) {
+    private String addWorkDescription(Task task, String shift, NpcRoot npcRoot, WorkStatus workStatus) {
         description = npcRoot.getDescription();
         if (workStatus.equals(WorkStatus.OVERWORKED)) {
             description += "WARNING: " + npcRoot.getName() + " is overworked and loosing health.\n";
@@ -84,13 +85,13 @@ public class DescriptionService {
         return description;
     }
 
-    public String addOverworkDeathDescription(String name) {
+    private String addOverworkDeathDescription(String name) {
         String response = "\n" + name + " has died this turn due to overwork!";
 
         return response;
     }
 
-    public String addSkillGainsDescription(NpcRoot root) {
+    private String addSkillGainsDescription(NpcRoot root) {
         Map<String, Integer> totalSkillGains = calculateTotalSkillGains(root);
         String name = root.getName();
         String description = root.getDescription();
@@ -104,7 +105,7 @@ public class DescriptionService {
         return description + response;
     }
 
-    public List<SingleEventRoot> addSingleRootNodeDescriptions(String name, List<SingleEventRoot> singleEventRoots) {
+    private List<SingleEventRoot> addSingleRootNodeDescriptions(String name, List<SingleEventRoot> singleEventRoots) {
         singleEventRoots.forEach(singleEventRoot -> {
             if (singleEventRoot.getSkillsGain() != null) {
                 singleEventRoot.setDescription(name + " has leveled up a skill: " + singleEventRoot.getSkill());
@@ -143,7 +144,7 @@ public class DescriptionService {
         return description;
     }
 
-    public String generateSingleFactorDesc(Npc npc, String factorId, Integer factorLvl) {
+    private String generateSingleFactorDesc(Npc npc, String factorId, Integer factorLvl) {
         FactorStatus factorEffects = factorService.checkFactorEffect(npc, factorId, factorLvl);
         String description = "\n\n" + npc.getName() + "'s " + factorId + " is set to " + factorEffects.getFactorLevelName() + " this will ";
 
@@ -151,13 +152,13 @@ public class DescriptionService {
         if (factorEffects.getLoveChange() == 0) {
             description += "have no effect on her Love";
         } else if (factorEffects.getLoveChange() > 0) {
-            if (factorEffects.getLoveAxisStatus().contains("Love")) {
+            if (npc.getStat("PCLove").getEffectiveValue() > 0) {
                 description += "increase her Love";
             } else {
                 description += "decrease her Fear";
             }
         } else {
-            if (factorEffects.getLoveAxisStatus().contains("Love")) {
+            if (npc.getStat("PCLove").getEffectiveValue() > 0) {
                 description += "decrease her Love";
             } else {
                 description += "increase her Fear";
@@ -166,13 +167,13 @@ public class DescriptionService {
         if (factorEffects.getLoveChange() == 0) {
             description += " and no effect on her Obedience";
         } else if (factorEffects.getObedienceChange() > 0) {
-            if (factorEffects.getObedienceAxisStatus().contains("Obedience")) {
+            if (npc.getStat("Obedience").getEffectiveValue() > 0) {
                 description += " and increase her Obedience";
             } else {
                 description += " and decrease her Rebelliousness";
             }
         } else {
-            if (factorEffects.getObedienceAxisStatus().contains("Obedience")) {
+            if (npc.getStat("Obedience").getEffectiveValue() > 0) {
                 description += " and decrease her Obedience.";
             } else {
                 description += " and increase her Rebelliousness.";
