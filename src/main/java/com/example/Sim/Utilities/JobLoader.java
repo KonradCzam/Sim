@@ -1,7 +1,6 @@
 package com.example.Sim.Utilities;
 
 import com.example.Sim.Model.Jobs.Job;
-import com.example.Sim.Model.Jobs.JobStat;
 import com.example.Sim.Model.Jobs.Task;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -29,7 +28,6 @@ public class JobLoader {
 
                 Job job = new Job(jobName);
                 job.setTasks(generateTasks(jobsList.item(i)));
-                job.setJobStats(generateJobStats(jobsList.item(i)));
                 jobs.add(job);
             }
         } catch (Exception e) {
@@ -51,18 +49,7 @@ public class JobLoader {
         return tasksList;
 
     }
-    public List<JobStat> generateJobStats(Node job) {
-        NodeList concerns = job.getChildNodes();
-        List<JobStat> jobStatList = new ArrayList<>();
-        for (int i = 1; i < concerns.getLength(); i++) {
-            if (concerns.item(i).getNodeType() == Node.ELEMENT_NODE && concerns.item(i).getNodeName().equals("Concern") ) {
-                JobStat jobStat = generateJobStat(concerns.item(i));
-                jobStatList.add(jobStat);
-            }
-        }
-        return jobStatList;
 
-    }
     public Task generateTask(Node taskNode) {
         String name = taskNode.getAttributes().getNamedItem("name").getNodeValue();
         String description = taskNode.getAttributes().getNamedItem("description").getNodeValue();
@@ -80,23 +67,7 @@ public class JobLoader {
         }
         return new Task(name, description, relevantSkills, relevantStats, type, tiring, moneyCoefficient, expGain, defaultCat, threshold, value);
     }
-    public JobStat generateJobStat(Node taskNode) {
-        String name = taskNode.getAttributes().getNamedItem("name").getNodeValue();
-        String tasks = taskNode.getAttributes().getNamedItem("tasks").getNodeValue();
-        String weights = taskNode.getAttributes().getNamedItem("weights").getNodeValue();
-        List<String> tasksList = new LinkedList<String>(Arrays.asList(tasks.split(",")));
-        List<String> weightsList = new LinkedList<String>(Arrays.asList(weights.split(",")));
-        Map<String,Integer> concernsMap = new HashMap<>();
-        String temp ="";
-        Integer temp2 = null;
-        Integer size = tasksList.size();
-        for (int i =0; i< size; i++){
-            temp = tasksList.remove(0);
-            temp2 = Integer.parseInt(weightsList.remove(0));
-            concernsMap.put(temp,temp2);
-        }
-        return new JobStat(name,concernsMap,0.0,0.0);
-    }
+
     private List<String> getRelevantStats(Node taskNode) {
         List<String> relevantStats = new ArrayList<>();
         NodeList statNodes = taskNode.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getChildNodes();

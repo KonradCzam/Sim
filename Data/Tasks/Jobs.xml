@@ -8,249 +8,6 @@
 				<Stat name="Health"/>
 			</RelevantStats>
 		</Task>
-		<Task name="Farm hand" description="Physical jobs at a nearby farm" type="single" tiring="20" moneyCoefficient="5.0" expGain="10" defaultCat="profile" threshold="50">
-			<RelevantSkills>
-				<Skill name="Obedience"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Constitution"/>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-	
-		<Task name="Doctor" description="Doctor at a nearby Clinic" type="single" tiring="5" moneyCoefficient="35.0" expGain="50" defaultCat="profile" threshold="140">
-			<RelevantSkills>
-				<Skill name="Medicine"/>
-				<Skill name="Herbalism"/>
-				<Skill name="Magic"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Nurse" description="Nurse at a nearby Clinic" type="single" tiring="8" moneyCoefficient="25.0" expGain="40" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Service"/>
-				<Skill name="Medicine"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-	</Job>
-	<!--<Job name="Crafting">
-		<Task name="Blacksmith" description="Blacksmith in your forge" type="single" tiring="10" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Crafting"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Taylor" description="Taylor in your workshop" type="single" tiring="5" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Crafting"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Jeweler " description="Jewler in your workshop" type="single" tiring="5" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Crafting"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Herb Gatherer" description="Gathering herbs for sale in the woods" type="single" tiring="8" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Herbalism"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-				<Stat name="Constitution"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Enchanter" description="Enchantling items in your workshop" type="single" tiring="5" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Crafting"/>
-				<Skill name="Magic"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Magic"/>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brewer" description="Brewing potions in your workshop" type="single" tiring="6" moneyCoefficient="25.0" expGain="50" defaultCat="profile" threshold="130">
-			<RelevantSkills>
-				<Skill name="Herbalism"/>
-				<Skill name="Brewing"/>
-				<Skill name="Crafting"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-	</Job>-->
-	<Job name="Gambling Den">
-		
-		<Concern name="Clenliness" tasks="Gamble Cleaning" weights="100"/>
-		<Concern name="Food" tasks="Gamble Cooking" weights="100"/>
-		<Concern name="Drink" tasks="Gamble Barmaid" weights="100"/>
-		<Concern name="Service" tasks="Gamble Dealer,Gamble Waitress" weights="50,50"/>
-		<Concern name="Flirt" tasks="Gamble Barmaid,Gamble Dealer,Gamble Waitress,Gamble Escort" weights="15,15,15,55"/>
-		<Concern name="Eye Candy" tasks="Gamble Barmaid,Gamble Dealer,Gamble Waitress,Gamble Escort" weights="25,25,25,25"/>
-		<Concern name="Gambling" tasks="Gamble Dealer" weights="100"/>
-	
-		<Task name="Gamble Cleaning" description="Cleans the floor of spilled drinks and food from the Excited Gamblers" type="single" tiring="8" moneyCoefficient="0.0" expGain="20" defaultCat="ecchi" threshold="60">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Constitution"/>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Gamble Cooking" description="Fixes food for customers and yourself" type="single" tiring="8" moneyCoefficient="15.0" expGain="20" defaultCat="ecchi" threshold="60">
-			<RelevantSkills>
-				<Skill name="Coocking"/>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Constitution"/>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Gamble Barmaid" description="Works behind the bar mixing the erotic drinks and spiced beer for the customes to spend much more." type="single" tiring="7" moneyCoefficient="15.0" expGain="20" defaultCat="ecchi" threshold="60">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Constitution"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Gamble Dealer" description="Game host at you gambling den" type="single" tiring="5" moneyCoefficient="60.0" expGain="30" defaultCat="ecchi" threshold="70">
-			<RelevantSkills>
-				<Skill name="Performance"/>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Charisma"/>
-				<Stat name="Inteligence"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Gamble Waitress" description="Waiting tables at you gambling den, gets pinches and slaps occasionally" type="single" tiring="10" moneyCoefficient="25.0" expGain="20" defaultCat="ecchi" threshold="70">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Charisma"/>
-				<Stat name="Constitution"/>
-				<Stat name="Obedience"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Gamble Escort" description="Be a companion to gambling den customers, sometimes a bit more physical" type="single" tiring="10" moneyCoefficient="35.0" expGain="30" defaultCat="sex" threshold="140">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Libido"/>
-				<Stat name="Charisma"/>
-			</RelevantStats>
-		</Task>
-	</Job>
-	<Job name ="Brothel">
-		
-		<Concern name="Clenliness" tasks="Brothel Cleaning" weights="100"/>
-		<Concern name="Drink" tasks="Brothel Barmaid" weights="100"/>
-		<Concern name="Flirt" tasks="Brothel Barmaid,Brothel Waitress" weights="15,15,15,55"/>
-		<Concern name="Eye Candy" tasks="Brothel Barmaid,Brothel Stripper,Brothel Whore,Brothel Waitress" weights="15,55,15,15"/>
-		<Concern name="Massage" tasks="Brothel Maseuse" weights="100"/>
-		<Concern name="Strip" tasks="Brothel Stripper" weights="100"/>
-		<Concern name="Sex" tasks="Brothel Whore" weights="100"/>
-		
-		<Task name="Brothel Maseuse" description="Massages for customers, sometimes with a happy ending" type="single" tiring="9" moneyCoefficient="20.0" expGain="30" defaultCat="ecchi" threshold="100">
-			<RelevantSkills>
-				<Skill name="Service"/>
-				<Skill name="Handjob"/>
-				<Skill name="BlowJob"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Fame"/>
-				<Stat name="Charisma"/>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Cleaner" description="Cleans the floor of spilled drinks and food from the excited customers" type="single" tiring="8" moneyCoefficient="10.0" expGain="20" defaultCat="ecchi" threshold="80">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Constitution"/>
-				<Stat name="Strength"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Barmaid" description="Works behind the bar mixing the erotic drinks and spiced beer for the customes to spend much more." type="single" tiring="8" moneyCoefficient="15.0" expGain="20" defaultCat="ecchi" threshold="120">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Intelligence"/>
-				<Stat name="Charisma"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Inviter" description="Promote the brothel on the streets by inviting customers in." type="single" tiring="7" moneyCoefficient="0.0" expGain="20" defaultCat="ecchi" threshold="130">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Fame"/>
-				<Stat name="Charisma"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Waitress" description="Serves the customers the very, very spiced drinks so they are more open to the immoral options." type="single" tiring="8" moneyCoefficient="30.0" expGain="20" defaultCat="ecchi" threshold="130">
-			<RelevantSkills>
-				<Skill name="Service"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Charisma"/>
-				<Stat name="Constitution"/>
-				<Stat name="Obedience"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Stripper" description="Strip in the brothel" type="single" tiring="10" moneyCoefficient="40.0" expGain="30" defaultCat="strip" threshold="150">
-			<RelevantSkills>
-				<Skill name="Stripping"/>
-				<Skill name="Performance"/>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Obedience"/>
-				<Stat name="Constitution"/>
-			</RelevantStats>
-		</Task>
-		<Task name="Brothel Whore" description="Gives the allowed sexual acts to the customes.  Such a nice Slut!" type="multiple" tiring="15" moneyCoefficient="7.0" expGain="50" defaultCat="sex" threshold="100">
-			<RelevantSkills>
-				<Skill name="Anal" />
-				<Skill name="Normal Sex" />
-				<Skill name="BDSM" />
-				<Skill name="Beastiality" />
-				<Skill name="Masturbation" />
-				<Skill name="Lesbian" />
-				<Skill name="Strip" />
-				<Skill name="Group Sex" />
-				<Skill name="Oral Sex" />
-				<Skill name="Titty Sex" />
-				<Skill name="Handjob" />
-				<Skill name="Footjob" />
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Libido"/>
-				<Stat name="Charisma"/>
-			</RelevantStats>
-		</Task>
-	</Job>
-	<Job name="Services">
 		<Task name="Hospital" description="Send her to the hospital to heal and rest" type="training" tiring="-50" moneyCoefficient="-1000" expGain="0" defaultCat="profile" threshold="50" value="25">
 			<RelevantSkills>
 			</RelevantSkills>
@@ -265,13 +22,7 @@
 				<Stat name="Charisma"/>
 			</RelevantStats>
 		</Task>
-		<Task name="Strength training" description="Send her to train strenght" type="training" tiring="20" moneyCoefficient="-2000.0" expGain="0" defaultCat="profile" threshold="100" value="2">
-			<RelevantSkills>
-			</RelevantSkills>
-			<RelevantStats>
-				<Stat name="Strenght"/>
-			</RelevantStats>
-		</Task>
+
 		<Task name="Constitution training" description="Send her to train constitution" type="training" tiring="20" moneyCoefficient="-2000.0" expGain="0" defaultCat="profile" threshold="100" value="2">
 			<RelevantSkills>
 			</RelevantSkills>
@@ -300,12 +51,50 @@
 				<Stat name="Libido"/>
 			</RelevantStats>
 		</Task>
-		<Task name="Magic training" description="Send her to train magic" type="training" tiring="20" moneyCoefficient="-2000.0" expGain="0" defaultCat="profile" threshold="100" value="2">
+	</Job>
+
+	<Job name ="Brothel">
+		
+		<Task name="Brothel Masseuse" description="Massages for customers, sometimes with a happy ending" type="single" tiring="9" moneyCoefficient="20.0" expGain="30" defaultCat="ecchi" threshold="100">
 			<RelevantSkills>
+				<Skill name="Service"/>
+				<Skill name="Handjob"/>
+				<Skill name="BlowJob"/>
 			</RelevantSkills>
 			<RelevantStats>
-				<Stat name="Magic"/>
+				<Stat name="Charisma"/>
+				<Stat name="Strength"/>
+			</RelevantStats>
+		</Task>
+		<Task name="Brothel Stripper" description="Strip in the brothel" type="single" tiring="10" moneyCoefficient="40.0" expGain="30" defaultCat="strip" threshold="150">
+			<RelevantSkills>
+				<Skill name="Stripping"/>
+				<Skill name="Performance"/>
+			</RelevantSkills>
+			<RelevantStats>
+				<Stat name="Obedience"/>
+				<Stat name="Constitution"/>
+			</RelevantStats>
+		</Task>
+		<Task name="Brothel Whore" description="Gives the allowed sexual acts to the customes.  Such a nice Slut!" type="multiple" tiring="15" moneyCoefficient="7.0" expGain="50" defaultCat="sex" threshold="100">
+			<RelevantSkills>
+				<Skill name="Anal" />
+				<Skill name="Normal Sex" />
+				<Skill name="BDSM" />
+				<Skill name="Masturbation" />
+				<Skill name="Lesbian" />
+				<Skill name="Strip" />
+				<Skill name="Group Sex" />
+				<Skill name="Oral Sex" />
+				<Skill name="Titty Sex" />
+				<Skill name="Handjob" />
+				<Skill name="Footjob" />
+			</RelevantSkills>
+			<RelevantStats>
+				<Stat name="Libido"/>
+				<Stat name="Charisma"/>
 			</RelevantStats>
 		</Task>
 	</Job>
+
 </Jobs>

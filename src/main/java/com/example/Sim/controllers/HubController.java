@@ -5,7 +5,6 @@ import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.Jobs.Job;
-import com.example.Sim.Model.Jobs.JobStat;
 import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Stat;
@@ -149,9 +148,6 @@ public class HubController implements Initializable, DialogController {
                     setGoldLabel();
                     goToNpcDetails.setDisable(true);
                     updateTable(npcService.getHiredNpcs());
-
-                    displayProgBars();
-                    setPopLabels();
                 }
             };
     private ScreensConfiguration screens;
@@ -250,16 +246,10 @@ public class HubController implements Initializable, DialogController {
 
     private void tabSelected() {
         currentJobName = jobTabs.getSelectionModel().getSelectedItem().getText();
-        displayProgBars();
-        setPopLabels();
         updateJobTab();
     }
 
-    private void displayProgBars() {
-        if(currentJobName != null) {
-                updateProgBars();
-        }
-    }
+
 
     private void updateJobTab() {
         Job currentJob = jobService.getJobByName(currentJobName);
@@ -270,41 +260,7 @@ public class HubController implements Initializable, DialogController {
 
     }
 
-    private void updateProgBars() {
-        Job job = jobService.getJobByName(currentJobName);
-        List<JobStat> jobStats = job.getJobStats();
 
-        for(int i = 0; i<jobStats.size();i++){
-            dayProgressBars.get(i).setProgress(jobStats.get(i).getDayValue()/100);
-            dayProgressLabels.get(i).setText(jobStats.get(i).getStatName());
-            nightProgressBars.get(i).setProgress(jobStats.get(i).getNightValue()/100);
-            nightProgressLabels.get(i).setText(jobStats.get(i).getStatName());
-            dayProgressBars.get(i).setVisible(true);
-            dayProgressLabels.get(i).setVisible(true);
-            nightProgressBars.get(i).setVisible(true);
-            nightProgressLabels.get(i).setVisible(true);
-        };
-        for (int i = jobStats.size(); i < 7; i++) {
-            dayProgressBars.get(i).setVisible(false);
-            dayProgressLabels.get(i).setVisible(false);
-            nightProgressBars.get(i).setVisible(false);
-            nightProgressLabels.get(i).setVisible(false);
-        }
-        if(jobStats == null || jobStats.size() == 0){
-            progNightLabel4.setText("No stats for this job");
-            progNightLabel4.setVisible(true);
-            progDayLabel4.setText("No stats for this job");
-            progDayLabel4.setVisible(true);
-        }
-
-
-    }
-
-    private void setPopLabels() {
-        Job job = jobService.getJobByName(currentJobName);
-        dayPopLabel.setText("Day popularity: " + job.getPopularityDayLow() + " | " + job.getPopularityDayMid()  + " | " + job.getPopularityDayHigh());
-        nightPopLabel.setText("Night popularity: " + job.getPopularityNightLow() + " | " + job.getPopularityNightMid()  + " | " + job.getPopularityNightHigh());
-    }
 
 
     private void initJobTab() {
@@ -351,8 +307,6 @@ public class HubController implements Initializable, DialogController {
             }
         }
         updateTable(npcService.getHiredNpcs());
-        jobService.calculateJobAllStats(selectedJob);
-        updateProgBars();
 
     }
 

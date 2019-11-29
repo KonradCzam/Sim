@@ -63,7 +63,6 @@ public class EndTurnService {
 
 
     private FinanceEndTurnRapport createFinanceEndTurnRapport() {
-        jobService.calculateAllJobsStats();
         customerService.generateAllCustomers();
         FinanceEndTurnRapport financeEndTurnRapport = prepareFinancialEndTurnRapport();
         return financeEndTurnRapport;
@@ -74,7 +73,6 @@ public class EndTurnService {
         Map<String, JobCustomers> customersDividedByTierAndShift = customerService.getDividedCustomersByPopularity();
         //Calculate happines and gold spent
         for(JobCustomers jobsCustomers : customersDividedByTierAndShift.values()){
-            jobsCustomers = jobService.handleEndTurn(jobsCustomers);
         }
         //Reformat to JobRoot nodes
         for (Map.Entry<String,JobCustomers> entry : customersDividedByTierAndShift.entrySet()) {
