@@ -13,7 +13,4 @@ public class Item implements Serializable {
     private String description;
     private String path;
 
-    public Item(String path) {
-        this.path = path;
-    }
 }

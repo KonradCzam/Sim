@@ -12,6 +12,7 @@ import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Model.Player;
+import com.example.Sim.Scripts.ScriptRunner;
 import com.example.Sim.Services.DescriptionService;
 import com.example.Sim.Services.NpcService;
 import com.example.Sim.Services.PlayerService;
@@ -118,6 +119,8 @@ public class NpcDetailsController implements Initializable, DialogController {
     private ImageHandler imageHandler;
     @Resource
     private DescriptionService descriptionService;
+    @Resource
+    private ScriptRunner scriptRunner;
     @Resource
     HousingFactor housingFactor;
     @Value("#{'${factors.housing.names}'.split(',')}")
@@ -502,5 +505,8 @@ public class NpcDetailsController implements Initializable, DialogController {
             index = 0;
         npcService.setCurrentNpc(npcService.getHiredNpcs().get(index));
         refresh();
+    }
+    public void goToScript(){
+        screens.interactionDialog().show();
     }
 }
