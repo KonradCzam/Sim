@@ -5,7 +5,6 @@ import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Model.NPC.Trait;
-import com.example.Sim.Services.FactorService;
 import com.example.Sim.Services.JobService;
 import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
@@ -33,8 +32,7 @@ public class NpcCreator {
     private List<String> heavyStats;
     @Resource
     private transient JobService jobService;
-    @Resource
-    private transient FactorService factorService;
+
     List<Trait> allTraits;
 
     public NpcCreator(TraitLoader traitLoader) {
@@ -55,7 +53,7 @@ public class NpcCreator {
     public Npc createNpc(String npcFile) throws NpcCreationException {
         try {
             String path = directory + npcFile;
-            Npc npc = new Npc(jobService,factorService);
+            Npc npc = new Npc(jobService);
             npc = createStatsAndSkills(npc);
             try {
                 Document doc = openDocument(path);
@@ -102,7 +100,7 @@ public class NpcCreator {
 
     public Npc createRandomNpc(String npcFile) throws NpcCreationException {
         try {
-            Npc npc = new Npc(jobService,factorService);
+            Npc npc = new Npc(jobService);
             String path = directory + npcFile;
             npc = createStatsAndSkills(npc);
             try {

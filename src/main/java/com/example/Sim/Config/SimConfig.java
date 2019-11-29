@@ -14,7 +14,7 @@ import java.util.List;
 
 @Configuration
 @ComponentScan("com.example.Sim")
-@Import({ScreensConfiguration.class, LibraryConfig.class, ScriptConfig.class, FactorConfig.class})
+@Import({ScreensConfiguration.class, LibraryConfig.class, ScriptConfig.class})
 @EnableAspectJAutoProxy
 public class SimConfig {
     @Bean

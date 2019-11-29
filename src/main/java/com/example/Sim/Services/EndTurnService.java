@@ -38,8 +38,6 @@ public class EndTurnService {
     private transient JobService jobService;
     @Resource
     private transient PlayerService playerService;
-    @Resource
-    private transient FactorService factorService;
 
     @Resource
     private transient CustomerService customerService;
@@ -115,8 +113,6 @@ public class EndTurnService {
         npcRoot.setNightWorkStatus(nightWorkStatus);
 
         handleShift(nightWorkStatus, npcRoot, npc, " night ");
-
-        factorService.handleEndTurnFactors(npc);
 
         descriptionService.addNpcRootDescription(npcRoot,npc);
 

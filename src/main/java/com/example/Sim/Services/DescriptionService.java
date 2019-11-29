@@ -1,19 +1,15 @@
 package com.example.Sim.Services;
 
-import com.example.Sim.Factors.FactorStatus;
 import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.Raport.NpcRoot;
 import com.example.Sim.Model.Raport.SingleEventRoot;
 import com.example.Sim.Model.TirednessSystem.WorkStatus;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 public class DescriptionService {
-    @Resource
-    private
-    FactorService factorService;
+
     private String description;
 
     public NpcRoot addNpcRootDescription(NpcRoot npcRoot, Npc npc) {
@@ -135,50 +131,4 @@ public class DescriptionService {
         return skillLvlUpped;
     }
 
-
-    public String genStatusDesc(Npc currentNpc) {
-        String description = "";
-        for (Map.Entry<String, Integer> entry : currentNpc.getFactors().entrySet()) {
-            description += generateSingleFactorDesc(currentNpc, entry.getKey(), entry.getValue());
-        }
-        return description;
-    }
-
-    private String generateSingleFactorDesc(Npc npc, String factorId, Integer factorLvl) {
-        FactorStatus factorEffects = factorService.checkFactorEffect(npc, factorId, factorLvl);
-        String description = "\n\n" + npc.getName() + "'s " + factorId + " is set to " + factorEffects.getFactorLevelName() + " this will ";
-
-
-        if (factorEffects.getLoveChange() == 0) {
-            description += "have no effect on her Love";
-        } else if (factorEffects.getLoveChange() > 0) {
-            if (npc.getStat("PCLove").getEffectiveValue() > 0) {
-                description += "increase her Love";
-            } else {
-                description += "decrease her Fear";
-            }
-        } else {
-            if (npc.getStat("PCLove").getEffectiveValue() > 0) {
-                description += "decrease her Love";
-            } else {
-                description += "increase her Fear";
-            }
-        }
-        if (factorEffects.getLoveChange() == 0) {
-            description += " and no effect on her Obedience";
-        } else if (factorEffects.getObedienceChange() > 0) {
-            if (npc.getStat("Obedience").getEffectiveValue() > 0) {
-                description += " and increase her Obedience";
-            } else {
-                description += " and decrease her Rebelliousness";
-            }
-        } else {
-            if (npc.getStat("Obedience").getEffectiveValue() > 0) {
-                description += " and decrease her Obedience.";
-            } else {
-                description += " and increase her Rebelliousness.";
-            }
-        }
-        return description;
-    }
 }

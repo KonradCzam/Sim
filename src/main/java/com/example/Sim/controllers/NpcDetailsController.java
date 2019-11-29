@@ -4,7 +4,6 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Factors.HousingFactor;
 import com.example.Sim.Model.DetailsInterface;
 import com.example.Sim.Model.Item;
 import com.example.Sim.Model.NPC.NPCTaskExpStats;
@@ -121,8 +120,7 @@ public class NpcDetailsController implements Initializable, DialogController {
     private DescriptionService descriptionService;
     @Resource
     private ScriptRunner scriptRunner;
-    @Resource
-    HousingFactor housingFactor;
+
     @Value("#{'${factors.housing.names}'.split(',')}")
     String[] names;
     private ScreensConfiguration screens;
@@ -148,7 +146,6 @@ public class NpcDetailsController implements Initializable, DialogController {
         player = playerService.getPlayer();
         initializeGrids();
         initializeTables();
-        initializeFactors();
         refreshTables();
         createJobExpPage();
     }
@@ -157,7 +154,7 @@ public class NpcDetailsController implements Initializable, DialogController {
     public void refresh() {
         currentNpc = npcService.getCurrentNpc();
 
-        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
+        descriptionText.setText(currentNpc.getDesc());
         ownerLabel.setText(currentNpc.getName() + "'s items");
         statsLabel.setText(currentNpc.getName() + "'s base skills");
         skillsLabel.setText(currentNpc.getName() + "'s base stats");
@@ -170,17 +167,10 @@ public class NpcDetailsController implements Initializable, DialogController {
             alert.showAndWait();
         }
         refreshTables();
-        refreshFactors();
         createJobExpPage();
 
     }
 
-
-    private void initializeFactors() {
-        ObservableList<String> options =
-                FXCollections.observableArrayList(names);
-        housingCombo.setItems(options);
-    }
 
     public void initializeTables() {
         initializeSkillsTable();
@@ -247,11 +237,6 @@ public class NpcDetailsController implements Initializable, DialogController {
         ObservableList data3 = FXCollections.observableArrayList(currentNpc.getTraits());
         traitsTable.setItems(data3);
 
-    }
-
-    private void refreshFactors() {
-        Integer index = currentNpc.getFactors().get("HousingFactor");
-        housingCombo.getSelectionModel().select(names[index]);
     }
 
     private void initializeSkillsTable() {
@@ -416,12 +401,6 @@ public class NpcDetailsController implements Initializable, DialogController {
         temp.setImage(target.getImage());
         target.setImage(source.getImage());
         source.setImage(temp.getImage());
-    }
-
-    public void housingSelected() {
-        Integer selectedIndex = housingCombo.getSelectionModel().getSelectedIndex();
-        currentNpc.getFactors().put("HousingFactor", selectedIndex);
-        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
     }
 
     public void setDialog(FXMLDialog dialog) {
