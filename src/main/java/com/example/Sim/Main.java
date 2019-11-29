@@ -25,10 +25,50 @@ public class Main extends Application {
         launch(args);
     }
 
+    private static void showError(Thread t, Throwable e) {
 
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+        String filename = sdf.format(cal.getTime()) + ".txt";
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(filename, "UTF-8");
+            writer.println(e.getClass() + ": " + e.getMessage());
+            for (int i = 0; i < e.getStackTrace().length; i++) {
+                writer.println(e.getStackTrace()[i].toString());
+
+            }
+            writer.println(e.getCause().getClass() + ": " + e.getCause().getMessage());
+            for (int i = 0; i < e.getCause().getStackTrace().length; i++) {
+                writer.println(e.getCause().getStackTrace()[i].toString());
+
+            }
+
+        } catch (FileNotFoundException | UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (writer != null)
+                writer.close();
+        }
+        if (Platform.isFxApplicationThread()) {
+            showErrorDialog(e);
+        } else {
+            System.err.println("An unexpected error occurred in " + t);
+
+        }
+    }
+
+    private static void showErrorDialog(Throwable e) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getMessage() + "\n\n" + e.getStackTrace().toString());
+        alert.showAndWait();
+        e.printStackTrace();
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
+        Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
 
         ApplicationContext context = new AnnotationConfigApplicationContext(SimConfig.class);
