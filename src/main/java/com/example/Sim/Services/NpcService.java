@@ -1,27 +1,27 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.Services;
 
-import java.util.Collections;
-
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import com.example.Sim.Model.NPC.Trait;
-import com.example.Sim.controllers.Gallery.model.TableNpc;
 import com.example.Sim.Exceptions.NpcCreationException;
-import java.util.ArrayList;
 import com.example.Sim.Model.NPC.Npc;
-import java.util.List;
+import com.example.Sim.Model.NPC.Trait;
 import com.example.Sim.Utilities.FileUtility;
-import javax.annotation.Resource;
 import com.example.Sim.Utilities.NpcCreator;
+import com.example.Sim.controllers.Gallery.model.TableNpc;
+import javafx.scene.control.Alert;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+@Getter
+@NoArgsConstructor
 @Service
-public class NpcService
-{
+public class NpcService {
+
     @Resource
     NpcCreator npcCreator;
     @Resource
@@ -30,244 +30,178 @@ public class NpcService
     private transient PlayerService playerService;
     @Resource
     private transient JobService jobService;
+
     String[] files;
-    List<Npc> normalNpcs;
-    List<Npc> randomNpcs;
-    List<String> randomTemplates;
-    List<Npc> hiredNpcs;
-    List<Npc> hirableNpcs;
+    List<Npc> normalNpcs = new ArrayList<Npc>();
+
+    List<String> randomTemplates = new ArrayList();
+    List<Npc> hiredNpcs = new ArrayList<Npc>();
+    List<Npc> hirableNpcs = new ArrayList<Npc>();
     String npcName;
     String folderPresent;
     Npc currentNpc;
-    private Integer hired;
-    
+    List<String> randomNpcTemplatesString = new ArrayList<>();
+    private Integer hired = 0;
+
+
     public void createNpcs() {
-        this.normalNpcs = new ArrayList();
-        this.randomNpcs = new ArrayList();
-        this.files = this.fileUtility.getFileArray();
-        for (int i = 0; i < this.files.length; ++i) {
-            if (this.files[i].endsWith(".girlsx")) {
-                this.addToNormalList(this.files[i]);
+        files = fileUtility.getFileArray();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].endsWith(".girlsx")) {
+                addToNormalList(files[i]);
             }
-            if (this.files[i].endsWith(".rgirlsx")) {
-                this.addToTemplateList(this.files[i]);
+            if (files[i].endsWith(".rgirlsx")) {
+                randomNpcTemplatesString.add(files[i]);
             }
         }
     }
-    
-    private void addToTemplateList(final String filePath) {
-        this.npcName = filePath.substring(0, filePath.length() - 8);
-        this.folderPresent = this.setFolder(this.files, this.npcName, true);
-        Npc randomNpc = null;
-        try {
-            randomNpc = this.npcCreator.createRandomNpc(filePath);
+
+    private List<Npc> createRandomHirableNpcs(Integer number) {
+        List<Npc> randomNpcs = new ArrayList<Npc>();
+        Random rand = new Random();
+        for(int i =0 ; i<number;i++) {
+            Integer random = rand.nextInt(randomNpcTemplatesString.size());
+            String filePath = randomNpcTemplatesString.get(random);
+            npcName = filePath.substring(0, filePath.length() - 8);
+            Npc randomNpc = null;
+            try {
+                randomNpc = npcCreator.createRandomNpc(filePath);
+            } catch (NpcCreationException e) {
+                showAlert(e, filePath);
+            }
+            npcName = generateRandomName();
+            randomNpc.setName(npcName);
+            randomNpc.setFolder(checkIfFolderPresent(files, randomNpc.getPath()));
+            randomNpc.setPrice(randomNpc.calculateValue());
+            randomNpcs.add(randomNpc);
         }
-        catch (NpcCreationException e) {
-            this.showAlert(e, filePath);
-        }
-        randomNpc.setName(this.npcName);
-        randomNpc.setFolder(this.folderPresent);
-        randomNpc.setPrice(randomNpc.calculateValue());
-        this.randomNpcs.add(randomNpc);
+        return randomNpcs;
     }
-    
-    private void addToNormalList(final String filePath) {
-        this.npcName = filePath.substring(0, filePath.length() - 7);
-        this.folderPresent = this.setFolder(this.files, this.npcName, true);
+
+    private String generateRandomName() {
+        String fullName;
+        String name = fileUtility.getRandomLine("Data/Resources/RandomGirlNames.txt");
+        String surname = fileUtility.getRandomLine("Data/Resources/RandomLastNames.txt");
+        fullName = name + " " + surname;
+        return fullName;
+    }
+
+    private void addToNormalList(String filePath) {
+        npcName = filePath.substring(0, filePath.length() - 7);
+
         Npc npc = null;
         try {
-            npc = this.npcCreator.createNpc(filePath);
+            npc = npcCreator.createNpc(filePath);
+        } catch (NpcCreationException e) {
+            showAlert(e,filePath);
         }
-        catch (NpcCreationException e) {
-            this.showAlert(e, filePath);
-        }
-        npc.setName(this.npcName);
-        npc.setFolder(this.folderPresent);
+        npc.setName(npcName);
+
+        npc.setFolder(checkIfFolderPresent(files, npc.getPath()));
         npc.setPrice(npc.calculateValue());
-        this.normalNpcs.add(npc);
+        normalNpcs.add(npc);
     }
-    
-    private void addToRandomList(final String filePath, final String npcName) {
-        this.folderPresent = this.setFolder(this.files, npcName, true);
-        Npc randomNpc = null;
-        try {
-            randomNpc = this.npcCreator.createRandomNpc(filePath);
-        }
-        catch (NpcCreationException e) {
-            this.showAlert(e, filePath);
-        }
-        randomNpc.setName(npcName);
-        randomNpc.setFolder(this.folderPresent);
-        randomNpc.setPrice(randomNpc.calculateValue());
-        this.randomNpcs.add(randomNpc);
-    }
-    
+
+
     public List<TableNpc> getNormalTableNpcs() {
-        final List<TableNpc> tableNpcs = new ArrayList<TableNpc>();
-        for (int i = 0; i < this.normalNpcs.size(); ++i) {
-            this.npcName = this.normalNpcs.get(i).getName();
-            this.folderPresent = this.normalNpcs.get(i).getFolder();
-            final String girlPath = this.normalNpcs.get(i).getPath();
-            final TableNpc tableNpc = new TableNpc(this.npcName, girlPath, this.folderPresent);
+        List<TableNpc> tableNpcs = new ArrayList<TableNpc>();
+        String girlPath;
+        for (int i = 0; i < normalNpcs.size(); i++) {
+            npcName = normalNpcs.get(i).getName();
+            folderPresent = normalNpcs.get(i).getFolder();
+            girlPath = normalNpcs.get(i).getPath();
+            TableNpc tableNpc = new TableNpc(npcName, girlPath, folderPresent);
             tableNpcs.add(tableNpc);
         }
         return tableNpcs;
     }
-    
-    public List<Trait> getTrait(final String nodename) {
-        return (List<Trait>)this.npcCreator.getTrait(nodename);
+
+    public List<Trait> getTrait(String nodename) {
+       return npcCreator.getTrait(nodename);
     }
-    
-    private String setFolder(final String[] files, final String girlName, final Boolean random) {
-        if (this.contains(files, girlName, true)) {
+
+    private String checkIfFolderPresent(String[] files, String girlName) {
+        if (contains(files, girlName))
             return "Present";
-        }
-        return "Missing";
+        else
+            return "Missing";
     }
-    
-    public void showAlert(final NpcCreationException e, final String filePath) {
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Failed to create npc with name: " + this.npcName + " and filepath: " + filePath + "\n\nThe error was: " + e.getMessage(), new ButtonType[0]);
+    public void showAlert(NpcCreationException e, String filePath){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Failed to create npc with name: "
+                + npcName +
+                " and filepath: " + filePath
+                + "\n\nThe error was: " + e.getMessage());
         alert.showAndWait();
         e.printStackTrace();
     }
-    
-    private boolean contains(final String[] array, final String v, final Boolean random) {
-        if (random) {
-            for (final String e : array) {
-                if (v != null && v.startsWith(e)) {
+    private boolean contains(String[] array, String v) {
+            for (String e : array)
+                if (v != null && e.endsWith(v))
                     return true;
-                }
-            }
             return false;
+
+    }
+
+    public List<Npc> getHirableNpcsList(Integer quantity, Integer numberOfUniqueGirls) {
+        hirableNpcs.clear();
+
+        for(int i = 0; i<numberOfUniqueGirls;i++){
+            Collections.shuffle(normalNpcs);
+            hirableNpcs.add(normalNpcs.get(0));
         }
-        for (final String e : array) {
-            if (v != null && v.endsWith(e)) {
-                return true;
-            }
-        }
-        return false;
+
+        hirableNpcs.addAll(createRandomHirableNpcs(quantity-numberOfUniqueGirls));
+
+        return hirableNpcs.subList(0, quantity - hired);
     }
-    
-    public List<Npc> getHirableNpcsList(final Integer quantity) {
-        if (this.hirableNpcs.isEmpty()) {
-            this.hirableNpcs.addAll(this.normalNpcs);
-            this.hirableNpcs.addAll(this.randomNpcs);
-            this.shuffleHirable();
-        }
-        return this.hirableNpcs.subList(0, quantity - this.hired);
+
+    public void hireNpc(Npc npc) {
+        hiredNpcs.add(npc);
+        hirableNpcs.remove(npc);
+        hired += 1;
     }
-    
-    public void hireNpc(final Npc npc) {
-        this.hiredNpcs.add(npc);
-        this.hirableNpcs.remove(npc);
-        ++this.hired;
+    public void hireNpcNoHiredChange(Npc npc) {
+        hiredNpcs.add(npc);
+        hirableNpcs.remove(npc);
     }
-    
-    public void hireNpcNoHiredChange(final Npc npc) {
-        this.hiredNpcs.add(npc);
-        this.hirableNpcs.remove(npc);
+    public void hireNpcs(List<Npc> npcs) {
+        npcs.forEach(npc -> hireNpc(npc));
     }
-    
-    public void hireNpcs(final List<Npc> npcs) {
-        npcs.forEach(this::lambda$hireNpcs$0);
+
+    public void killNpc(Npc npc) {
+        hiredNpcs.remove(npc);
     }
-    
-    public void killNpc(final Npc npc) {
-        this.hiredNpcs.remove(npc);
+    public void sellNpcs(List<Npc> npcList){
+        npcList.forEach(npc -> sellNpc(npc));
     }
-    
-    public void sellNpcs(final List<Npc> npcList) {
-        npcList.forEach(this::lambda$sellNpcs$1);
+    public void sellNpc (String npcName){
+        sellNpc(hiredNpcs.stream().filter(npc -> npc.getName().equals(npcName)).findAny().get());
+
     }
-    
-    public void sellNpc(final Npc npc) {
-        this.hiredNpcs.remove(npc);
-        this.hirableNpcs.add(npc);
-        this.playerService.changeGold(npc.calculateValue());
+    public void sellNpc (Npc npc){
+        hiredNpcs.remove(npc);
+        hirableNpcs.add(npc);
+        playerService.changeGold(npc.calculateValue());
     }
-    
     public void shuffleHirable() {
-        Collections.shuffle(this.hirableNpcs);
+        Collections.shuffle(hirableNpcs);
     }
-    
-    public void setCurrentNpc(final Npc npc) {
-        this.currentNpc = npc;
+    public void setCurrentNpc(Npc npc) {
+        currentNpc = npc;
     }
-    
-    public void setHired(final Integer hired) {
+    public void setHired(Integer hired) {
         this.hired = hired;
     }
-    
-    public void setHiredNpcs(final List<Npc> hiredNpcs) {
+
+    public void setHiredNpcs(List<Npc> hiredNpcs) {
         this.hiredNpcs = hiredNpcs;
     }
-    
-    public void setHirableNpcs(final List<Npc> hirableNpcs) {
+
+    public void setHirableNpcs(List<Npc> hirableNpcs) {
         this.hirableNpcs = hirableNpcs;
     }
-    
-    public NpcCreator getNpcCreator() {
-        return this.npcCreator;
-    }
-    
-    public FileUtility getFileUtility() {
-        return this.fileUtility;
-    }
-    
-    public PlayerService getPlayerService() {
-        return this.playerService;
-    }
-    
-    public JobService getJobService() {
-        return this.jobService;
-    }
-    
-    public String[] getFiles() {
-        return this.files;
-    }
-    
-    public List<Npc> getNormalNpcs() {
-        return (List<Npc>)this.normalNpcs;
-    }
-    
-    public List<Npc> getRandomNpcs() {
-        return (List<Npc>)this.randomNpcs;
-    }
-    
-    public List<String> getRandomTemplates() {
-        return (List<String>)this.randomTemplates;
-    }
-    
-    public List<Npc> getHiredNpcs() {
-        return (List<Npc>)this.hiredNpcs;
-    }
-    
-    public List<Npc> getHirableNpcs() {
-        return (List<Npc>)this.hirableNpcs;
-    }
-    
-    public String getNpcName() {
-        return this.npcName;
-    }
-    
-    public String getFolderPresent() {
-        return this.folderPresent;
-    }
-    
-    public Npc getCurrentNpc() {
-        return this.currentNpc;
-    }
-    
-    public Integer getHired() {
-        return this.hired;
-    }
-    
-    public NpcService() {
-        this.normalNpcs = new ArrayList();
-        this.randomNpcs = new ArrayList();
-        this.randomTemplates = new ArrayList();
-        this.hiredNpcs = new ArrayList();
-        this.hirableNpcs = new ArrayList();
-        this.hired = 0;
-    }
+
+
+
+
 }

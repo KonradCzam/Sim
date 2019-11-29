@@ -1,56 +1,39 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.controllers;
 
-import javafx.beans.Observable;
-import com.example.Sim.Model.Raport.CustomerRoot;
-import java.util.function.Predicate;
-import com.example.Sim.Model.NPC.Npc;
-import java.io.FileNotFoundException;
-import com.example.Sim.Exceptions.ImageNotFound;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import java.io.InputStream;
-import javafx.scene.image.Image;
-import java.io.FileInputStream;
-import java.io.File;
-import com.example.Sim.Model.Raport.SingleEventRoot;
-import com.example.Sim.Model.Raport.JobRoot;
-import java.util.function.Consumer;
-import java.util.Collection;
-import java.util.ArrayList;
-import javafx.scene.control.TreeItem;
-import com.example.Sim.Model.Raport.NpcRoot;
-import java.util.List;
-import com.example.Sim.Model.Raport.FinanceEndTurnRapport;
-import com.example.Sim.Model.Raport.GirlEndTurnRapport;
-import javafx.util.Callback;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.control.TreeTableColumn;
-import java.util.ResourceBundle;
-import java.net.URL;
-import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Config.ScreensConfiguration;
-import javafx.stage.WindowEvent;
-import javafx.event.EventHandler;
-import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Services.EndTurnService;
-import javax.annotation.Resource;
-import com.example.Sim.Services.NpcService;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.Button;
-import javafx.fxml.FXML;
-import javafx.scene.control.TreeTableView;
-import org.springframework.stereotype.Service;
+import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.Raport.*;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Utilities.ImageHandler;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @Service
-public class EndTurnController implements Initializable, DialogController
-{
+public class EndTurnController implements Initializable, DialogController {
+
+
     @FXML
     TreeTableView endTurnTable;
     @FXML
@@ -65,174 +48,250 @@ public class EndTurnController implements Initializable, DialogController
     ImageView endTurnImage2;
     @FXML
     TextArea descriptionBox2;
+    @FXML
+    VBox profileVBox;
     @Resource
     NpcService npcService;
     @Resource
     EndTurnService endTurnService;
     @Resource
     ImageHandler imageHandler;
-    EventHandler<WindowEvent> onShownEventHandler;
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    if(endTurnService.getPresentOld()){
+                        endTurnService.setPresentOld(false);
+                        return;
+                    }
+                    EndTurnRapport endTurnRapport = endTurnService.endTurn();
+                    GirlEndTurnRapport girlEndTurnRapport = endTurnRapport.getGirlEndTurnRapport();
+                    FinanceEndTurnRapport financeEndTurnRapport = endTurnRapport.getFinanceEndTurnRapport();
+                    List<NpcRoot> npcRoots = girlEndTurnRapport.getNpcRootList();
+
+                    createRootNode(npcRoots);
+                    createFinancialRootNode(financeEndTurnRapport);
+                    npcRoots.forEach(npcRoot -> createSingleProfileTab(npcRoot));
+                    endTurnTable.refresh();
+
+                }
+
+
+            };
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-    
-    public EndTurnController(final ScreensConfiguration screens) {
-        this.onShownEventHandler = (EventHandler)new EndTurnController$1(this);
+
+    public EndTurnController(ScreensConfiguration screens) {
         this.screens = screens;
     }
-    
-    public void setDialog(final FXMLDialog dialog) {
+
+    public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    
-    public void initialize(final URL location, final ResourceBundle resources) {
-        this.initializeTreeTable();
-        this.initializeFinanacialTreeTable();
-        this.dialog.setOnShown(this.onShownEventHandler);
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeTreeTable();
+        initializeFinanacialTreeTable();
+        dialog.setOnShown(onShownEventHandler);
     }
-    
+
     private void initializeTreeTable() {
-        final TreeTableColumn<GirlEndTurnRapport, String> nameColumn = (TreeTableColumn<GirlEndTurnRapport, String>)new TreeTableColumn("Name");
-        nameColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("Name"));
+        TreeTableColumn<GirlEndTurnRapport, String> nameColumn = new TreeTableColumn<>("Name");
+        nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("Name"));
         nameColumn.setPrefWidth(200.0);
-        final TreeTableColumn<GirlEndTurnRapport, Integer> jobColumn = (TreeTableColumn<GirlEndTurnRapport, Integer>)new TreeTableColumn("Job");
+
+        TreeTableColumn<GirlEndTurnRapport, Integer> jobColumn = new TreeTableColumn<>("Job");
         jobColumn.setPrefWidth(100.0);
-        jobColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("job"));
-        final TreeTableColumn<GirlEndTurnRapport, String> statusColumn = (TreeTableColumn<GirlEndTurnRapport, String>)new TreeTableColumn("Status");
-        statusColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("messageLevel"));
-        final TreeTableColumn<GirlEndTurnRapport, String> obedienceColumn = (TreeTableColumn<GirlEndTurnRapport, String>)new TreeTableColumn("Ob.");
+        jobColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("job"));
+
+        TreeTableColumn<GirlEndTurnRapport, String> statusColumn = new TreeTableColumn<>("Status");
+        statusColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("messageLevel"));
+
+        TreeTableColumn<GirlEndTurnRapport, String> obedienceColumn = new TreeTableColumn<>("Ob.");
         obedienceColumn.setPrefWidth(70.0);
-        obedienceColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("obedience"));
-        final TreeTableColumn<GirlEndTurnRapport, String> loveColumn = (TreeTableColumn<GirlEndTurnRapport, String>)new TreeTableColumn("Love");
+        obedienceColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("obedience"));
+
+        TreeTableColumn<GirlEndTurnRapport, String> loveColumn = new TreeTableColumn<>("Love");
         loveColumn.setPrefWidth(70.0);
-        loveColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("love"));
-        this.endTurnTable.getColumns().add((Object)nameColumn);
-        this.endTurnTable.getColumns().add((Object)jobColumn);
-        this.endTurnTable.getColumns().add((Object)statusColumn);
-        this.endTurnTable.getColumns().add((Object)obedienceColumn);
-        this.endTurnTable.getColumns().add((Object)loveColumn);
-        this.endTurnTable.getSelectionModel().selectedItemProperty().addListener(this::lambda$initializeTreeTable$0);
+        loveColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("love"));
+
+        endTurnTable.getColumns().add(nameColumn);
+        endTurnTable.getColumns().add(jobColumn);
+        endTurnTable.getColumns().add(statusColumn);
+        endTurnTable.getColumns().add(obedienceColumn);
+        endTurnTable.getColumns().add(loveColumn);
+        endTurnTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
+            tableRowSelected();
+        });
     }
-    
     private void initializeFinanacialTreeTable() {
-        final TreeTableColumn<FinanceEndTurnRapport, String> jobColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Job");
-        jobColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("name"));
+        TreeTableColumn<FinanceEndTurnRapport, String> jobColumn = new TreeTableColumn<>("Job");
+        jobColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
         jobColumn.setPrefWidth(180.0);
-        final TreeTableColumn<FinanceEndTurnRapport, Integer> moneyColumn = (TreeTableColumn<FinanceEndTurnRapport, Integer>)new TreeTableColumn("Spent");
+
+        TreeTableColumn<FinanceEndTurnRapport, Integer> moneyColumn = new TreeTableColumn<>("Spent");
         moneyColumn.setPrefWidth(40.0);
-        moneyColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("moneyEarned"));
-        final TreeTableColumn<FinanceEndTurnRapport, String> popularityColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Popularity");
-        popularityColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("popularity"));
-        final TreeTableColumn<FinanceEndTurnRapport, String> tierColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Tier");
-        tierColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("tier"));
-        final TreeTableColumn<FinanceEndTurnRapport, String> happinessColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Happiness");
-        happinessColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("happiness"));
-        final TreeTableColumn<FinanceEndTurnRapport, String> mainConcernColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Concern");
-        mainConcernColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("mainConcern"));
-        final TreeTableColumn<FinanceEndTurnRapport, String> secondaryConcernColumn = (TreeTableColumn<FinanceEndTurnRapport, String>)new TreeTableColumn("Secondary concern");
-        secondaryConcernColumn.setCellValueFactory((Callback)new TreeItemPropertyValueFactory("secondaryConcern"));
-        this.endTurnFinanceTable.getColumns().add((Object)jobColumn);
-        this.endTurnFinanceTable.getColumns().add((Object)tierColumn);
-        this.endTurnFinanceTable.getColumns().add((Object)mainConcernColumn);
-        this.endTurnFinanceTable.getColumns().add((Object)secondaryConcernColumn);
-        this.endTurnFinanceTable.getColumns().add((Object)happinessColumn);
-        this.endTurnFinanceTable.getColumns().add((Object)moneyColumn);
-        this.endTurnFinanceTable.getSelectionModel().selectedItemProperty().addListener(this::lambda$initializeFinanacialTreeTable$1);
+        moneyColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("moneyEarned"));
+
+        TreeTableColumn<FinanceEndTurnRapport, String> popularityColumn = new TreeTableColumn<>("Popularity");
+        popularityColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("popularity"));
+
+        TreeTableColumn<FinanceEndTurnRapport, String> tierColumn = new TreeTableColumn<>("Tier");
+        tierColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("tier"));
+
+        TreeTableColumn<FinanceEndTurnRapport, String> happinessColumn = new TreeTableColumn<>("Happiness");
+        happinessColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("happiness"));
+
+        TreeTableColumn<FinanceEndTurnRapport, String> mainConcernColumn = new TreeTableColumn<>("Concern");
+        mainConcernColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("mainConcern"));
+        TreeTableColumn<FinanceEndTurnRapport, String> secondaryConcernColumn = new TreeTableColumn<>("Secondary concern");
+        secondaryConcernColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("secondaryConcern"));
+
+        endTurnFinanceTable.getColumns().add(jobColumn);
+        endTurnFinanceTable.getColumns().add(tierColumn);
+        endTurnFinanceTable.getColumns().add(mainConcernColumn);
+        endTurnFinanceTable.getColumns().add(secondaryConcernColumn);
+        endTurnFinanceTable.getColumns().add(happinessColumn);
+        endTurnFinanceTable.getColumns().add(moneyColumn);
+        //endTurnFinanceTable.getColumns().add(popularityColumn);
+
+
+
+        endTurnFinanceTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
+            financialTableRowSelected();
+        });
     }
-    
+
     private void financialTableRowSelected() {
     }
-    
-    private void createRootNode(final List<NpcRoot> npcRoots) {
-        final NpcRoot endTurnRapport = new NpcRoot();
-        final TreeItem<GirlEndTurnRapport> rootNode = (TreeItem<GirlEndTurnRapport>)new TreeItem((Object)endTurnRapport);
-        final List<TreeItem<GirlEndTurnRapport>> treeItems = new ArrayList<TreeItem<GirlEndTurnRapport>>();
+
+    private void createRootNode(List<NpcRoot> npcRoots) {
+        NpcRoot endTurnRapport = new NpcRoot();
+        TreeItem<GirlEndTurnRapport> rootNode = new TreeItem<>(endTurnRapport);
+        List<TreeItem<GirlEndTurnRapport>> treeItems = new ArrayList<>();
+
         endTurnRapport.setName("Girls");
-        npcRoots.forEach(this::lambda$createRootNode$2);
+        npcRoots.forEach(jobRapport -> {
+            TreeItem<GirlEndTurnRapport> npcRoot = new TreeItem<GirlEndTurnRapport>(jobRapport);
+            npcRoot.getChildren().addAll(createNpcRootNode(jobRapport));
+            treeItems.add(npcRoot);
+        });
         rootNode.setExpanded(true);
-        rootNode.getChildren().addAll((Collection)treeItems);
-        this.endTurnTable.setRoot((TreeItem)rootNode);
+        rootNode.getChildren().addAll(treeItems);
+        endTurnTable.setRoot(rootNode);
     }
-    
-    private void createFinancialRootNode(final FinanceEndTurnRapport financeEndTurnRapport) {
+    private void createFinancialRootNode(FinanceEndTurnRapport financeEndTurnRapport) {
         financeEndTurnRapport.setName("Jobs");
-        final TreeItem<FinanceEndTurnRapport> rootNode = (TreeItem<FinanceEndTurnRapport>)new TreeItem((Object)financeEndTurnRapport);
-        final List<TreeItem<FinanceEndTurnRapport>> treeItems = new ArrayList<TreeItem<FinanceEndTurnRapport>>();
-        financeEndTurnRapport.getFinanceRootList().forEach(this::lambda$createFinancialRootNode$3);
+        TreeItem<FinanceEndTurnRapport> rootNode = new TreeItem<>(financeEndTurnRapport);
+        List<TreeItem<FinanceEndTurnRapport>> treeItems = new ArrayList<>();
+        financeEndTurnRapport.getFinanceRootList().forEach(financeRoot -> {
+            TreeItem<FinanceEndTurnRapport>  financeRootNode = new TreeItem<FinanceEndTurnRapport>(financeRoot);
+            financeRootNode.getChildren().addAll(createClientRootNode(financeRoot));
+            treeItems.add(financeRootNode);
+        });
         rootNode.setExpanded(true);
-        rootNode.getChildren().addAll((Collection)treeItems);
-        this.endTurnFinanceTable.setRoot((TreeItem)rootNode);
+        rootNode.getChildren().addAll(treeItems);
+        endTurnFinanceTable.setRoot(rootNode);
+
     }
-    
-    private List<TreeItem<FinanceEndTurnRapport>> createClientRootNode(final JobRoot financeRoot) {
-        final List<TreeItem<FinanceEndTurnRapport>> singleCustomerNodeList = new ArrayList<TreeItem<FinanceEndTurnRapport>>();
-        financeRoot.getAllCustomers().forEach(EndTurnController::lambda$createClientRootNode$4);
+
+    private List<TreeItem<FinanceEndTurnRapport>> createClientRootNode(JobRoot financeRoot) {
+        List<TreeItem<FinanceEndTurnRapport>> singleCustomerNodeList = new ArrayList<>();
+        financeRoot.getAllCustomers().forEach(customerRoot -> singleCustomerNodeList.add(new TreeItem<FinanceEndTurnRapport>(customerRoot)));
         return singleCustomerNodeList;
     }
-    
-    private List<TreeItem<GirlEndTurnRapport>> createNpcRootNode(final NpcRoot jobRapport) {
-        final List<TreeItem<GirlEndTurnRapport>> singleRapportNodeList = new ArrayList<TreeItem<GirlEndTurnRapport>>();
-        jobRapport.getDayShiftRapport().forEach(EndTurnController::lambda$createNpcRootNode$5);
-        jobRapport.getNightShiftRapport().forEach(EndTurnController::lambda$createNpcRootNode$6);
+
+    private List<TreeItem<GirlEndTurnRapport>> createNpcRootNode(NpcRoot jobRapport) {
+        List<TreeItem<GirlEndTurnRapport>> singleRapportNodeList = new ArrayList<>();
+        jobRapport.getDayShiftRapport().forEach(singleEventRoot -> {
+            singleRapportNodeList.add(new TreeItem<GirlEndTurnRapport>(singleEventRoot));
+        });
+        jobRapport.getNightShiftRapport().forEach(singleEventRoot -> {
+            singleRapportNodeList.add(new TreeItem<GirlEndTurnRapport>(singleEventRoot));
+        });
         return singleRapportNodeList;
     }
-    
+
     private void tableRowSelected() {
-        final TreeItem treeItem = (TreeItem)this.endTurnTable.getSelectionModel().getSelectedItem();
-        if (treeItem != null) {
-            GirlEndTurnRapport npcRoot = null;
-            if (treeItem.getValue().getClass() == NpcRoot.class) {
-                npcRoot = (GirlEndTurnRapport)treeItem.getValue();
-            }
-            else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
-                npcRoot = (GirlEndTurnRapport)treeItem.getValue();
-            }
-            if (npcRoot != null) {
+        setProfilePicture(endTurnImage,getSelectedGirlEndTurnRapport());
+    }
+
+    public void createSingleProfileTab(NpcRoot npcRoot) {
+
+        Pane profileTab = new Pane();
+        profileTab.setPrefSize(420, 150);
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(150);
+        setProfilePicture(imageView, npcRoot);
+        profileTab.getChildren().add(imageView);
+        Label label = new Label();
+        label.setText(npcRoot.getName());
+        label.setLayoutX(100.0);
+        profileTab.getChildren().add(label);
+        profileTab.getStyleClass().add("profileTab");
+        profileVBox.getChildren().add(profileTab);
+    }
+    private void setProfilePicture(ImageView endTurnImage, GirlEndTurnRapport npcRoot){
+
+            if (npcRoot != null)
                 try {
-                    if (npcRoot.getImagePath() != null) {
-                        final FileInputStream inputstream = new FileInputStream(new File(npcRoot.getImagePath()));
-                        this.endTurnImage.setImage(new Image((InputStream)inputstream));
+                    if(npcRoot.getImagePath() !=null){
+                        FileInputStream inputstream = new FileInputStream(new File(npcRoot.getImagePath()));
+                        endTurnImage.setImage(new Image(inputstream));
+                    }else {
+                        npcRoot.setImagePath(imageHandler.setImage(endTurnImage, npcRoot.getPath(), npcRoot.getCategory(), false));
                     }
-                    else {
-                        npcRoot.setImagePath(this.imageHandler.setImage(this.endTurnImage, npcRoot.getPath(), npcRoot.getCategory(), false));
-                    }
-                    this.descriptionBox.setText(npcRoot.getDescription());
-                }
-                catch (ImageNotFound e) {
-                    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
+                    descriptionBox.setText(npcRoot.getDescription());
+                } catch (ImageNotFound e) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
                     alert.showAndWait();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-                catch (FileNotFoundException e2) {
-                    e2.printStackTrace();
-                }
+
+
+    }
+    private GirlEndTurnRapport getSelectedGirlEndTurnRapport(){
+        TreeItem treeItem = (TreeItem) endTurnTable.getSelectionModel().getSelectedItem();
+        GirlEndTurnRapport npcRoot = null;
+        if (treeItem != null) {
+            if (treeItem.getValue().getClass() == NpcRoot.class) {
+                npcRoot = (NpcRoot) treeItem.getValue();
+            } else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
+                npcRoot = (SingleEventRoot) treeItem.getValue();
             }
         }
+        return npcRoot;
     }
-    
     public void goToHub() {
-        this.dialog.close();
-        this.screens.hubDialog().show();
+        dialog.close();
+        screens.hubDialog().show();
     }
-    
+
     public void goToSelected() {
-        final TreeItem treeItem = (TreeItem)this.endTurnTable.getSelectionModel().getSelectedItem();
+        TreeItem treeItem = (TreeItem) endTurnTable.getSelectionModel().getSelectedItem();
         if (treeItem != null) {
             GirlEndTurnRapport npcRoot = null;
             String npcName = null;
             if (treeItem.getValue().getClass() == NpcRoot.class) {
-                npcRoot = (GirlEndTurnRapport)treeItem.getValue();
+                npcRoot = (NpcRoot) treeItem.getValue();
                 npcName = ((NpcRoot)npcRoot).getName();
-            }
-            else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
-                npcRoot = (GirlEndTurnRapport)treeItem.getValue();
+
+            } else if (treeItem.getValue().getClass() == SingleEventRoot.class) {
+                npcRoot = (SingleEventRoot) treeItem.getValue();
                 npcName = ((SingleEventRoot)npcRoot).getNpcName();
             }
             if (npcRoot != null) {
-                final String finalNpcName = npcName;
-                final Npc selectedNpc = (Npc)this.npcService.getHiredNpcs().stream().filter(EndTurnController::lambda$goToSelected$7).findFirst().get();
-                this.npcService.setCurrentNpc(selectedNpc);
+                String finalNpcName = npcName;
+                Npc selectedNpc = (Npc) npcService.getHiredNpcs().stream().filter(npc -> npc.getName() == finalNpcName).findFirst().get();
+                npcService.setCurrentNpc(selectedNpc);
             }
         }
-        this.dialog.close();
-        this.screens.npcDetailsDialog().show();
+        dialog.close();
+        screens.npcDetailsDialog().show();
     }
+
+
 }

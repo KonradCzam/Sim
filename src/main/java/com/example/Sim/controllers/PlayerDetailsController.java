@@ -1,53 +1,75 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.controllers;
 
-import java.util.function.Consumer;
+import com.example.Sim.Config.ScreensConfiguration;
+import com.example.Sim.FXML.DialogController;
+import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.DetailsInterface;
-import java.util.List;
-import java.util.Map;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
 import com.example.Sim.Model.Item;
 import com.example.Sim.Model.NPC.Skill;
-import javafx.scene.control.cell.ProgressBarTableCell;
-import javafx.collections.ObservableList;
-import javafx.util.Callback;
-import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.Collection;
-import javafx.collections.FXCollections;
 import com.example.Sim.Model.NPC.Stat;
-import javafx.scene.control.TableColumn;
-import java.util.ResourceBundle;
-import java.net.URL;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.Utilities.ImageHandler;
-import javafx.stage.WindowEvent;
-import javax.annotation.Resource;
 import com.example.Sim.Services.PlayerService;
-import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
-import javafx.fxml.FXML;
-import javafx.scene.layout.GridPane;
-import javafx.scene.input.MouseEvent;
+import com.example.Sim.Utilities.ImageHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import org.springframework.stereotype.Service;
-import com.example.Sim.FXML.DialogController;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ProgressBarTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.WindowEvent;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @Service
-public class PlayerDetailsController implements Initializable, DialogController
-{
-    double orgSceneX;
-    double orgSceneY;
-    double orgTranslateX;
-    double orgTranslateY;
-    EventHandler<MouseEvent> onMouseReleasedEventHanlder;
-    EventHandler<MouseEvent> onMousePressedEventHandler;
-    EventHandler<MouseEvent> onMouseDraggedEventHandler;
+public class PlayerDetailsController implements Initializable, DialogController {
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
+    EventHandler<MouseEvent> onMouseReleasedEventHanlder =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    ((ImageView) (t.getSource())).setMouseTransparent(false);
+                    ((ImageView) (t.getSource())).setTranslateX(0);
+                    ((ImageView) (t.getSource())).setTranslateY(0);
+
+                }
+            };
+    EventHandler<MouseEvent> onMousePressedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    orgSceneX = t.getSceneX();
+                    orgSceneY = t.getSceneY();
+                    orgTranslateX = ((ImageView) (t.getSource())).getTranslateX();
+                    orgTranslateY = ((ImageView) (t.getSource())).getTranslateY();
+                    ((ImageView) (t.getSource())).setMouseTransparent(true);
+                    t.setDragDetect(true);
+                }
+            };
+    EventHandler<MouseEvent> onMouseDraggedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    double offsetX = t.getSceneX() - orgSceneX;
+                    double offsetY = t.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+                    ((ImageView) (t.getSource())).setTranslateX(newTranslateX);
+                    ((ImageView) (t.getSource())).setTranslateY(newTranslateY);
+                }
+            };
     @FXML
     private GridPane playerEqGrid;
     @FXML
@@ -62,165 +84,216 @@ public class PlayerDetailsController implements Initializable, DialogController
     private TableView playerStatsTable;
     @Resource
     private PlayerService playerService;
-    EventHandler<WindowEvent> onShownEventHandler;
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    refresh();
+                }
+            };
     @Resource
     private ImageHandler imageHandler;
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
-    
-    public PlayerDetailsController(final ScreensConfiguration screens) {
-        this.onMouseReleasedEventHanlder = (EventHandler)new PlayerDetailsController$1(this);
-        this.onMousePressedEventHandler = (EventHandler)new PlayerDetailsController$2(this);
-        this.onMouseDraggedEventHandler = (EventHandler)new PlayerDetailsController$3(this);
-        this.onShownEventHandler = (EventHandler)new PlayerDetailsController$4(this);
+
+    public PlayerDetailsController(ScreensConfiguration screens) {
         this.screens = screens;
     }
-    
-    public void initialize(final URL location, final ResourceBundle resources) {
-        this.dialog.setOnShown(this.onShownEventHandler);
-        this.initializeGrids();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        dialog.setOnShown(onShownEventHandler);
+        initializeGrids();
     }
-    
+
     public void refresh() {
-        this.initializeTables();
+        initializeTables();
     }
-    
+
     public void initializeTables() {
-        this.initializeSkillsTable();
-        this.initializeStatsTable();
-        this.initializeTraits();
+        initializeSkillsTable();
+        initializeStatsTable();
+        initializeTraits();
     }
-    
-    private <T> void addTooltipToColumnCells(final TableColumn<Stat, T> column) {
+
+    private <T> void addTooltipToColumnCells(TableColumn<Stat, T> column) {
+
+      /*  Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory
+                = column.getCellFactory();
+
+        column.setCellFactory(c -> {
+            TableCell<Stat, T> cell = existingCellFactory.call(c);
+
+            Tooltip tooltip = new Tooltip();
+            // can use arbitrary binding here to make text depend on cell
+            // in any way you need:
+            tooltip.textProperty().bind(cell.itemProperty().asString());
+
+            cell.setTooltip(tooltip);
+            return cell;
+        });*/
     }
-    
+
     private void initializeTraits() {
-        final ObservableList data = FXCollections.observableArrayList((Collection)this.playerService.getPlayer().getTraits());
-        this.playerTraitsTable.setItems(data);
-        final TableColumn tableColumn = (TableColumn)this.playerTraitsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getTraits());
+        playerTraitsTable.setItems(data);
+
+        TableColumn tableColumn = (TableColumn) playerTraitsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+
     }
-    
+
     private void initializeStatsTable() {
-        final ObservableList data = FXCollections.observableArrayList((Collection)this.playerService.getPlayer().getStats().values());
-        this.playerStatsTable.setItems(data);
-        TableColumn tableColumn = (TableColumn)this.playerStatsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.playerStatsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
-        final TableColumn<Stat, Double> tableCol = (TableColumn<Stat, Double>)new TableColumn("Progress");
-        tableCol.setPrefWidth(100.0);
-        tableCol.setCellValueFactory((Callback)new PropertyValueFactory("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.forTableColumn());
-        this.playerStatsTable.getColumns().addAll(new Object[] { tableCol });
-        this.playerStatsTable.setEditable(true);
-        this.setTooltips(this.playerStatsTable);
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getStats().values());
+        playerStatsTable.setItems(data);
+
+        TableColumn tableColumn = (TableColumn) playerStatsTable.getColumns().get(0);
+
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) playerStatsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
+        TableColumn<Stat, Double> tableCol = new TableColumn<>("Progress");
+        tableCol.setPrefWidth(100);
+        tableCol.setCellValueFactory(new PropertyValueFactory<Stat, Double>("progress"));
+        tableCol.setCellFactory(ProgressBarTableCell.<Stat>forTableColumn());
+        playerStatsTable.getColumns().addAll(tableCol);
+        playerStatsTable.setEditable(true);
+        setTooltips(playerStatsTable);
+
     }
-    
+
     private void initializeSkillsTable() {
-        final ObservableList data = FXCollections.observableArrayList((Collection)this.playerService.getPlayer().getSkills().values());
-        this.playerSkillsTable.setItems(data);
-        TableColumn tableColumn = (TableColumn)this.playerSkillsTable.getColumns().get(0);
+        ObservableList data = FXCollections.observableArrayList(playerService.getPlayer().getSkills().values());
+        playerSkillsTable.setItems(data);
+
+        TableColumn tableColumn = (TableColumn) playerSkillsTable.getColumns().get(0);
         tableColumn.setSortType(TableColumn.SortType.ASCENDING);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.playerSkillsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
-        final TableColumn<Skill, Double> tableCol = (TableColumn<Skill, Double>)new TableColumn("Progress");
-        tableCol.setCellValueFactory((Callback)new PropertyValueFactory("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.forTableColumn());
-        tableCol.setPrefWidth(100.0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) playerSkillsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
+
+        TableColumn<Skill, Double> tableCol = new TableColumn<>("Progress");
+
+        tableCol.setCellValueFactory(new PropertyValueFactory<Skill, Double>("progress"));
+        tableCol.setCellFactory(ProgressBarTableCell.<Skill>forTableColumn());
+        tableCol.setPrefWidth(100);
         tableCol.setResizable(false);
-        this.playerSkillsTable.getColumns().addAll(new Object[] { tableCol });
-        this.playerSkillsTable.setEditable(true);
-        this.setTooltips(this.playerSkillsTable);
+        playerSkillsTable.getColumns().addAll(tableCol);
+        playerSkillsTable.setEditable(true);
+        setTooltips(playerSkillsTable);
     }
-    
+
     public void initializeGrids() {
-        this.initializeEqGrid();
-        this.initializePlayerItemsGrid();
+        initializeEqGrid();
+        initializePlayerItemsGrid();
     }
-    
+
     public void initializeEqGrid() {
-        final Map<String, Item> inventory = (Map<String, Item>)this.playerService.getPlayer().getEquippedItems();
+        Map<String, Item> inventory = playerService.getPlayer().getEquippedItems();
         Integer index = 0;
-        for (int row = 0; row < 4; ++row) {
-            for (int column = 0; column < 3; ++column) {
+        for (int row = 0; row < 4; row++) {
+            for (int column = 0; column < 3; column++) {
                 if (index < inventory.size()) {
-                    final String imagePath = inventory.get(index).getPath();
-                    final Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.playerEqGrid.add((Node)imageView, column, row);
-                    ++index;
-                }
-                else {
-                    final String imagePath = "/UI/EqEmpty.png";
-                    final Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.playerEqGrid.add((Node)imageView, column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView  imageView = new ImageView(image);
+                    playerEqGrid.add(imageView, column, row);
+                    index++;
+                } else {
+                    String imagePath = "/UI/EqEmpty.png";
+
+                    Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    playerEqGrid.add(imageView, column, row);
                 }
             }
         }
     }
-    
+
     public void initializePlayerItemsGrid() {
-        final List<Item> inventory = (List<Item>)this.playerService.getPlayer().getInventory();
+        List<Item> inventory = playerService.getPlayer().getInventory();
+
         Integer index = 0;
-        for (int row = 0; row < 4; ++row) {
-            for (int column = 0; column < 15; ++column) {
+        for (int row = 0; row < 4; row++) {
+            for (int column = 0; column < 15; column++) {
                 if (index < inventory.size()) {
-                    final String imagePath = inventory.get(index).getPath();
-                    final Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.playerItemsGrid.add((Node)imageView, column, row);
-                    ++index;
-                }
-                else {
-                    final String imagePath = "/UI/EqEmpty.png";
-                    final Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.playerItemsGrid.add((Node)imageView, column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    playerItemsGrid.add(imageView, column, row);
+                    index++;
+                } else {
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(PlayerDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    playerItemsGrid.add(imageView, column, row);
                 }
             }
         }
     }
-    
-    private <T extends DetailsInterface> void setTooltips(final TableView tableView) {
+
+    private <T extends DetailsInterface> void setTooltips(TableView tableView) {
+       /* playerSkillsTable.setRowFactory(tv -> new TableRow<T>() {
+            private Tooltip tooltip = new Tooltip();
+
+            @Override
+            public void updateItem(T stat, boolean empty) {
+                super.updateItem(stat, empty);
+                if (stat == null) {
+                    setTooltip(null);
+                } else {
+
+                    tooltip.setText("Stat description. Progress: " + stat.getProgress() * 100 + "%");
+                    setTooltip(tooltip);
+                }
+            }*
+        });*/
     }
-    
+
     public void setDetectors() {
-        this.playerEqGrid.getChildren().stream().forEach(this::lambda$setDetectors$0);
-        this.playerItemsGrid.getChildren().stream().forEach(this::lambda$setDetectors$1);
+        playerEqGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
+        playerItemsGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
     }
-    
-    public void setDetector(final ImageView image) {
-        image.setOnMouseDragReleased((EventHandler)new PlayerDetailsController$5(this));
+
+    public void setDetector(ImageView image) {
+        image.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+            public void handle(MouseDragEvent event) {
+                replaceImages((ImageView) (event.getPickResult().getIntersectedNode()), (ImageView) event.getGestureSource());
+            }
+        });
     }
-    
+
     public void setDragables() {
-        this.playerEqGrid.getChildren().stream().forEach(this::lambda$setDragables$2);
-        this.playerItemsGrid.getChildren().stream().forEach(this::lambda$setDragables$3);
+        playerEqGrid.getChildren().stream().forEach(imageview -> setDragable((ImageView) imageview));
+        playerItemsGrid.getChildren().stream().forEach(imageview -> setDragable((ImageView) imageview));
     }
-    
-    public void setDragable(final ImageView image) {
-        image.setOnDragDetected((EventHandler)new PlayerDetailsController$6(this, image));
-        image.setOnMousePressed(this.onMousePressedEventHandler);
-        image.setOnMouseDragged(this.onMouseDraggedEventHandler);
-        image.setOnMouseReleased(this.onMouseReleasedEventHanlder);
+
+    public void setDragable(ImageView image) {
+        image.setOnDragDetected(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                image.startFullDrag();
+            }
+        });
+        image.setOnMousePressed(onMousePressedEventHandler);
+        image.setOnMouseDragged(onMouseDraggedEventHandler);
+        image.setOnMouseReleased(onMouseReleasedEventHanlder);
     }
-    
-    public void replaceImages(final ImageView source, final ImageView target) {
-        final ImageView temp = new ImageView();
+
+    public void replaceImages(ImageView source, ImageView target) {
+        ImageView temp = new ImageView();
         temp.setImage(target.getImage());
         target.setImage(source.getImage());
         source.setImage(temp.getImage());
     }
-    
-    public void setDialog(final FXMLDialog dialog) {
+
+    public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    
+
     public void goToHub() {
-        this.dialog.close();
-        this.screens.hubDialog().show();
+        dialog.close();
+        screens.hubDialog().show();
     }
+
+
 }

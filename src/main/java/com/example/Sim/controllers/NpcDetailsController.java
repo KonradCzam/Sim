@@ -1,74 +1,86 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.controllers;
 
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Tooltip;
-import java.util.TreeMap;
-import java.util.Iterator;
-import javafx.scene.control.Tab;
-import com.example.Sim.Model.NPC.NPCTaskExpStats;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.List;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import com.example.Sim.Model.Item;
+import com.example.Sim.Config.ScreensConfiguration;
+import com.example.Sim.Exceptions.ImageNotFound;
+import com.example.Sim.FXML.DialogController;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Factors.HousingFactor;
 import com.example.Sim.Model.DetailsInterface;
+import com.example.Sim.Model.Item;
+import com.example.Sim.Model.NPC.NPCTaskExpStats;
+import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Skill;
-import java.util.Collection;
-import java.util.ArrayList;
+import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Model.Player;
+import com.example.Sim.Services.DescriptionService;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
+import com.example.Sim.Utilities.ImageHandler;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableCell;
-import javafx.util.Callback;
-import com.example.Sim.Model.NPC.Stat;
-import javafx.scene.control.TableColumn;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
-import com.example.Sim.Exceptions.ImageNotFound;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import java.util.ResourceBundle;
-import java.net.URL;
-import javafx.stage.WindowEvent;
-import com.example.Sim.Model.NPC.Npc;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Config.ScreensConfiguration;
-import org.springframework.beans.factory.annotation.Value;
-import com.example.Sim.Factors.HousingFactor;
-import com.example.Sim.Services.DescriptionService;
-import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Model.Player;
-import com.example.Sim.Services.PlayerService;
-import javax.annotation.Resource;
-import com.example.Sim.Services.NpcService;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Label;
-import javafx.fxml.FXML;
-import javafx.scene.layout.GridPane;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.event.EventHandler;
+import javafx.scene.layout.GridPane;
+import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.example.Sim.FXML.DialogController;
-import javafx.fxml.Initializable;
+
+import javax.annotation.Resource;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @Service
-public class NpcDetailsController implements Initializable, DialogController
-{
-    double orgSceneX;
-    double orgSceneY;
-    double orgTranslateX;
-    double orgTranslateY;
-    EventHandler<MouseEvent> onMouseReleasedEventHanlder;
-    EventHandler<MouseEvent> onMousePressedEventHandler;
-    EventHandler<MouseEvent> onMouseDraggedEventHandler;
+public class NpcDetailsController implements Initializable, DialogController {
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
+    EventHandler<MouseEvent> onMouseReleasedEventHanlder =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    ((ImageView) (t.getSource())).setMouseTransparent(false);
+                    ((ImageView) (t.getSource())).setTranslateX(0);
+                    ((ImageView) (t.getSource())).setTranslateY(0);
+
+                }
+            };
+    EventHandler<MouseEvent> onMousePressedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    orgSceneX = t.getSceneX();
+                    orgSceneY = t.getSceneY();
+                    orgTranslateX = ((ImageView) (t.getSource())).getTranslateX();
+                    orgTranslateY = ((ImageView) (t.getSource())).getTranslateY();
+                    ((ImageView) (t.getSource())).setMouseTransparent(true);
+                    t.setDragDetect(true);
+                }
+            };
+    EventHandler<MouseEvent> onMouseDraggedEventHandler =
+            new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    double offsetX = t.getSceneX() - orgSceneX;
+                    double offsetY = t.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+                    ((ImageView) (t.getSource())).setTranslateX(newTranslateX);
+                    ((ImageView) (t.getSource())).setTranslateY(newTranslateY);
+                }
+            };
     @FXML
     private GridPane EqGrid;
     @FXML
@@ -113,288 +125,382 @@ public class NpcDetailsController implements Initializable, DialogController
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
     private Npc currentNpc;
-    EventHandler<WindowEvent> onShownEventHandler;
-    
-    public NpcDetailsController(final ScreensConfiguration screens) {
-        this.onMouseReleasedEventHanlder = (EventHandler)new NpcDetailsController$1(this);
-        this.onMousePressedEventHandler = (EventHandler)new NpcDetailsController$2(this);
-        this.onMouseDraggedEventHandler = (EventHandler)new NpcDetailsController$3(this);
-        this.onShownEventHandler = (EventHandler)new NpcDetailsController$4(this);
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    refresh();
+
+                }
+            };
+
+    public NpcDetailsController(ScreensConfiguration screens) {
         this.screens = screens;
     }
-    
-    public void initialize(final URL location, final ResourceBundle resources) {
-        this.currentNpc = this.npcService.getCurrentNpc();
-        this.dialog.setOnShown(this.onShownEventHandler);
-        this.player = this.playerService.getPlayer();
-        this.initializeGrids();
-        this.initializeTables();
-        this.initializeFactors();
-        this.refreshTables();
-        this.createJobExpPage();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        currentNpc = npcService.getCurrentNpc();
+        dialog.setOnShown(onShownEventHandler);
+        player = playerService.getPlayer();
+        initializeGrids();
+        initializeTables();
+        initializeFactors();
+        refreshTables();
+        createJobExpPage();
     }
-    
+
+
     public void refresh() {
-        this.currentNpc = this.npcService.getCurrentNpc();
-        this.descriptionText.setText(this.currentNpc.getDesc() + this.descriptionService.genStatusDesc(this.currentNpc));
-        this.ownerLabel.setText(this.currentNpc.getName() + "'s items");
-        this.statsLabel.setText(this.currentNpc.getName() + "'s base skills");
-        this.skillsLabel.setText(this.currentNpc.getName() + "'s base stats");
+        currentNpc = npcService.getCurrentNpc();
+
+        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
+        ownerLabel.setText(currentNpc.getName() + "'s items");
+        statsLabel.setText(currentNpc.getName() + "'s base skills");
+        skillsLabel.setText(currentNpc.getName() + "'s base stats");
+
+
         try {
-            this.imageHandler.setImage(this.detailsImage, this.currentNpc.getPath(), "profile", false);
-        }
-        catch (ImageNotFound e) {
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
+            imageHandler.setImage(detailsImage, currentNpc.getPath(), "profile", false);
+        } catch (ImageNotFound e) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
             alert.showAndWait();
         }
-        this.refreshTables();
-        this.refreshFactors();
-        this.createJobExpPage();
+        refreshTables();
+        refreshFactors();
+        createJobExpPage();
+
     }
-    
+
+
     private void initializeFactors() {
-        final ObservableList<String> options = (ObservableList<String>)FXCollections.observableArrayList((Object[])this.names);
-        this.housingCombo.setItems((ObservableList)options);
+        ObservableList<String> options =
+                FXCollections.observableArrayList(names);
+        housingCombo.setItems(options);
     }
-    
+
     public void initializeTables() {
-        this.initializeSkillsTable();
-        this.initializeStatsTable();
-        this.initializeTraitsTable();
+        initializeSkillsTable();
+        initializeStatsTable();
+        initializeTraitsTable();
     }
-    
-    private <T> void addTooltipToColumnCells(final TableColumn<Stat, T> column) {
-        final Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory = (Callback<TableColumn<Stat, T>, TableCell<Stat, T>>)column.getCellFactory();
-        column.setCellFactory(NpcDetailsController::lambda$addTooltipToColumnCells$0);
+
+    private <T> void addTooltipToColumnCells(TableColumn<Stat, T> column) {
+
+        Callback<TableColumn<Stat, T>, TableCell<Stat, T>> existingCellFactory
+                = column.getCellFactory();
+
+        column.setCellFactory(c -> {
+            TableCell<Stat, T> cell = existingCellFactory.call(c);
+
+            Tooltip tooltip = new Tooltip();
+            // can use arbitrary binding here to make text depend on cell
+            // in any way you need:
+            tooltip.textProperty().bind(cell.itemProperty().asString());
+
+            cell.setTooltip(tooltip);
+            return cell;
+        });
     }
-    
+
     private void initializeTraitsTable() {
-        TableColumn tableColumn = (TableColumn)this.traitsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.traitsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("effect"));
+
+
+        TableColumn tableColumn = (TableColumn) traitsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) traitsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("effect"));
+
     }
-    
+
     private void initializeStatsTable() {
-        TableColumn tableColumn = (TableColumn)this.statsTable.getColumns().get(0);
+
+        TableColumn tableColumn = (TableColumn) statsTable.getColumns().get(0);
         tableColumn.setSortType(TableColumn.SortType.ASCENDING);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.statsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
-        final TableColumn<Stat, Double> tableCol = (TableColumn<Stat, Double>)new TableColumn("Progress");
-        tableCol.setCellValueFactory((Callback)new PropertyValueFactory("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.forTableColumn());
-        this.statsTable.getColumns().addAll(new Object[] { tableCol });
-        this.statsTable.setEditable(false);
-        this.setTooltips(this.statsTable);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) statsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
+        TableColumn<Stat, Double> tableCol = new TableColumn<>("Progress");
+        tableCol.setCellValueFactory(new PropertyValueFactory<Stat, Double>("progress"));
+        tableCol.setCellFactory(ProgressBarTableCell.<Stat>forTableColumn());
+        statsTable.getColumns().addAll(tableCol);
+        statsTable.setEditable(false);
+        setTooltips(statsTable);
+
     }
-    
+
     public void refreshTables() {
-        this.skillsTable.getItems().remove(0, this.skillsTable.getItems().size());
-        final ObservableList data = FXCollections.observableArrayList((Collection)new ArrayList(this.currentNpc.getSkills().values()));
-        this.skillsTable.setItems(data);
-        this.setTooltips(this.skillsTable);
-        this.statsTable.getItems().remove(0, this.statsTable.getItems().size());
-        final ObservableList data2 = FXCollections.observableArrayList((Collection)new ArrayList(this.currentNpc.getStats().values()));
-        this.statsTable.setItems(data2);
-        this.setTooltips(this.statsTable);
-        this.traitsTable.getItems().remove(0, this.traitsTable.getItems().size());
-        final ObservableList data3 = FXCollections.observableArrayList((Collection)this.currentNpc.getTraits());
-        this.traitsTable.setItems(data3);
+        skillsTable.getItems().remove(0, skillsTable.getItems().size());
+        ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(currentNpc.getSkills().values()));
+        skillsTable.setItems(data);
+        setTooltips(skillsTable);
+
+        statsTable.getItems().remove(0, statsTable.getItems().size());
+        ObservableList data2 = FXCollections.observableArrayList(new ArrayList<Stat>(currentNpc.getStats().values()));
+        statsTable.setItems(data2);
+        setTooltips(statsTable);
+
+        traitsTable.getItems().remove(0, traitsTable.getItems().size());
+        ObservableList data3 = FXCollections.observableArrayList(currentNpc.getTraits());
+        traitsTable.setItems(data3);
+
     }
-    
+
     private void refreshFactors() {
-        final Integer index = this.currentNpc.getFactors().get("HousingFactor");
-        this.housingCombo.getSelectionModel().select((Object)this.names[index]);
+        Integer index = currentNpc.getFactors().get("HousingFactor");
+        housingCombo.getSelectionModel().select(names[index]);
     }
-    
+
     private void initializeSkillsTable() {
-        TableColumn tableColumn = (TableColumn)this.skillsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.skillsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
-        final TableColumn<Skill, Double> tableCol = (TableColumn<Skill, Double>)new TableColumn("Progress");
-        tableCol.setCellValueFactory((Callback)new PropertyValueFactory("progress"));
-        tableCol.setCellFactory(ProgressBarTableCell.forTableColumn());
-        tableCol.setPrefWidth(110.0);
+
+        TableColumn tableColumn = (TableColumn) skillsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) skillsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Skill, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Skill, String> p) {
+                // this callback returns property for just one cell, you can't use a loop here
+                // for first column we use key
+                if(p.getValue().getTraitBonus() != null && p.getValue().getTraitBonus() != 0)
+                    return new SimpleStringProperty(p.getValue().getValue().toString() + " + " + p.getValue().getTraitBonus().toString());
+                return new SimpleStringProperty(p.getValue().getValue().toString());
+
+            }
+        });
+        TableColumn<Skill, Double> tableCol = new TableColumn<>("Progress");
+        tableCol.setCellValueFactory(new PropertyValueFactory<Skill, Double>("progress"));
+        tableCol.setCellFactory(ProgressBarTableCell.<Skill>forTableColumn());
+        tableCol.setPrefWidth(110);
         tableCol.setResizable(false);
-        this.skillsTable.getColumns().addAll(new Object[] { tableCol });
-        this.skillsTable.setEditable(false);
+        skillsTable.getColumns().addAll(tableCol);
+        skillsTable.setEditable(false);
+
     }
-    
+
     public void initializeGrids() {
-        this.clearGrids();
-        this.initializeNpcGrid();
-        this.initializePlayerGrid();
-        this.initializeEqGrid();
-        this.setDragables();
-        this.setDetectors();
+        clearGrids();
+        initializeNpcGrid();
+        initializePlayerGrid();
+        initializeEqGrid();
+        setDragables();
+        setDetectors();
     }
-    
-    private <T extends DetailsInterface> void setTooltips(final TableView tableView) {
-        this.skillsTable.setRowFactory(this::lambda$setTooltips$1);
+
+    private <T extends DetailsInterface> void setTooltips(TableView tableView) {
+        skillsTable.setRowFactory(tv -> new TableRow<T>() {
+            private Tooltip tooltip = new Tooltip();
+
+            @Override
+            public void updateItem(T stat, boolean empty) {
+                super.updateItem(stat, empty);
+                if (stat == null) {
+                    setTooltip(null);
+                } else {
+
+                    tooltip.setText("Stat description. Progress: " + stat.getProgress() * 100 + "%");
+                    setTooltip(tooltip);
+                }
+            }
+        });
     }
-    
+
     private void clearGrids() {
-        this.PlayerEqGrid.getChildren().clear();
-        this.npcEqGrid.getChildren().clear();
-        this.EqGrid.getChildren().clear();
+        PlayerEqGrid.getChildren().clear();
+        npcEqGrid.getChildren().clear();
+        EqGrid.getChildren().clear();
     }
-    
+
     public void initializeNpcGrid() {
-        final List<Item> inventory = (List<Item>)this.currentNpc.getInventory();
+        List<Item> inventory = currentNpc.getInventory();
+
         Integer index = 0;
-        for (int row = 0; row < 4; ++row) {
-            for (int column = 0; column < 6; ++column) {
+        for (int row = 0; row < 4; row++) {
+            for (int column = 0; column < 6; column++) {
                 if (index < inventory.size()) {
-                    final String imagePath = inventory.get(index).getPath();
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.npcEqGrid.add((Node)imageView, column, row);
-                    ++index;
-                }
-                else {
-                    final String imagePath = "/UI/EqEmpty.png";
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.npcEqGrid.add((Node)imageView, column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    npcEqGrid.add(imageView, column, row);
+                    index++;
+                } else {
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    npcEqGrid.add(imageView, column, row);
                 }
             }
         }
     }
-    
+
     public void initializeEqGrid() {
-        final List<Item> inventory = (List<Item>)this.currentNpc.getInventory();
+        List<Item> inventory = currentNpc.getInventory();
         Integer index = 0;
-        for (int row = 0; row < 5; ++row) {
-            for (int column = 0; column < 3; ++column) {
+        for (int row = 0; row < 5; row++) {
+            for (int column = 0; column < 3; column++) {
                 if (index < inventory.size()) {
-                    final String imagePath = inventory.get(index).getPath();
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.EqGrid.add((Node)imageView, column, row);
-                    ++index;
-                }
-                else {
-                    final String imagePath = "/UI/EqEmpty.png";
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.EqGrid.add((Node)imageView, column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    EqGrid.add(imageView, column, row);
+                    index++;
+                } else {
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    EqGrid.add(imageView, column, row);
                 }
             }
         }
     }
-    
+
     public void initializePlayerGrid() {
-        final List<Item> inventory = (List<Item>)this.player.getInventory();
+
+        List<Item> inventory = player.getInventory();
+
         Integer index = 0;
-        for (int row = 0; row < 4; ++row) {
-            for (int column = 0; column < 6; ++column) {
+        for (int row = 0; row < 4; row++) {
+            for (int column = 0; column < 6; column++) {
                 if (index < inventory.size()) {
-                    final String imagePath = inventory.get(index).getPath();
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.PlayerEqGrid.add((Node)imageView, column, row);
-                    ++index;
-                }
-                else {
-                    final String imagePath = "/UI/EqEmpty.png";
-                    final Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
-                    final ImageView imageView = new ImageView(image);
-                    this.PlayerEqGrid.add((Node)imageView, column, row);
+                    String imagePath = inventory.get(index).getPath();
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    PlayerEqGrid.add(imageView, column, row);
+                    index++;
+                } else {
+                    String imagePath = "/UI/EqEmpty.png";
+                    Image image = new Image(NpcDetailsController.class.getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    PlayerEqGrid.add(imageView, column, row);
                 }
             }
         }
     }
-    
+
     public void setDetectors() {
-        this.EqGrid.getChildren().stream().forEach(this::lambda$setDetectors$2);
-        this.PlayerEqGrid.getChildren().stream().forEach(this::lambda$setDetectors$3);
-        this.npcEqGrid.getChildren().stream().forEach(this::lambda$setDetectors$4);
+        EqGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
+        PlayerEqGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
+        npcEqGrid.getChildren().stream().forEach(imageview -> setDetector((ImageView) imageview));
     }
-    
-    public void setDetector(final ImageView image) {
-        image.setOnMouseDragReleased((EventHandler)new NpcDetailsController$6(this));
+
+    public void setDetector(ImageView image) {
+        image.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+            public void handle(MouseDragEvent event) {
+                replaceImages((ImageView) (event.getPickResult().getIntersectedNode()), (ImageView) event.getGestureSource());
+            }
+        });
     }
-    
+
     public void setDragables() {
-        this.EqGrid.getChildren().stream().forEach(this::lambda$setDragables$5);
-        this.PlayerEqGrid.getChildren().stream().forEach(this::lambda$setDragables$6);
-        this.npcEqGrid.getChildren().stream().forEach(this::lambda$setDragables$7);
+        EqGrid.getChildren().stream().forEach(imageview -> setDragable((ImageView) imageview));
+        PlayerEqGrid.getChildren().stream().forEach(imageview -> setDragable((ImageView) imageview));
+        npcEqGrid.getChildren().stream().forEach(imageview -> setDragable((ImageView) imageview));
     }
-    
-    public void setDragable(final ImageView image) {
-        image.setOnDragDetected((EventHandler)new NpcDetailsController$7(this, image));
-        image.setOnMousePressed(this.onMousePressedEventHandler);
-        image.setOnMouseDragged(this.onMouseDraggedEventHandler);
-        image.setOnMouseReleased(this.onMouseReleasedEventHanlder);
+
+    public void setDragable(ImageView image) {
+        image.setOnDragDetected(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                image.startFullDrag();
+            }
+        });
+        image.setOnMousePressed(onMousePressedEventHandler);
+        image.setOnMouseDragged(onMouseDraggedEventHandler);
+        image.setOnMouseReleased(onMouseReleasedEventHanlder);
     }
-    
-    public void replaceImages(final ImageView source, final ImageView target) {
-        final ImageView temp = new ImageView();
+
+    public void replaceImages(ImageView source, ImageView target) {
+        ImageView temp = new ImageView();
         temp.setImage(target.getImage());
         target.setImage(source.getImage());
         source.setImage(temp.getImage());
     }
-    
+
     public void housingSelected() {
-        final Integer selectedIndex = this.housingCombo.getSelectionModel().getSelectedIndex();
-        this.currentNpc.getFactors().put("HousingFactor", selectedIndex);
-        this.descriptionText.setText(this.currentNpc.getDesc() + this.descriptionService.genStatusDesc(this.currentNpc));
+        Integer selectedIndex = housingCombo.getSelectionModel().getSelectedIndex();
+        currentNpc.getFactors().put("HousingFactor", selectedIndex);
+        descriptionText.setText(currentNpc.getDesc() + descriptionService.genStatusDesc(currentNpc));
     }
-    
-    public void setDialog(final FXMLDialog dialog) {
+
+    public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    
-    public void createJobExpPage() {
-        this.jobsTabsPane.getTabs().remove(0, this.jobsTabsPane.getTabs().size());
-        for (final Map.Entry<String, List<NPCTaskExpStats>> entry : this.currentNpc.getJobExperience().entrySet()) {
-            final Tab tab = new Tab();
-            tab.setText((String)entry.getKey());
-            tab.setContent((Node)this.createJobTable(entry.getValue()));
-            this.jobsTabsPane.getTabs().add((Object)tab);
+    public void createJobExpPage(){
+        jobsTabsPane.getTabs().remove(0,jobsTabsPane.getTabs().size());
+        for (Map.Entry<String,List<NPCTaskExpStats>> entry : currentNpc.getJobExperience().entrySet()) {
+            Tab tab = new Tab();
+            tab.setText(entry.getKey());
+            tab.setContent(createJobTable(entry.getValue()));
+            jobsTabsPane.getTabs().add(tab);
         }
     }
-    
-    private TableView createJobTable(final List<NPCTaskExpStats> npcTaskExpStatsList) {
-        final TableColumn<Map.Entry<String, Integer>, String> taskNameCol = (TableColumn<Map.Entry<String, Integer>, String>)new TableColumn("Task");
-        taskNameCol.setCellValueFactory((Callback)new NpcDetailsController$8(this));
-        final TableColumn<Map.Entry<String, Integer>, String> expCol = (TableColumn<Map.Entry<String, Integer>, String>)new TableColumn("Exp");
-        expCol.setCellValueFactory((Callback)new NpcDetailsController$9(this));
-        final TableView<Map.Entry<String, Integer>> table = (TableView<Map.Entry<String, Integer>>)new TableView(this.getJobsTableData(npcTaskExpStatsList));
-        table.getColumns().addAll((Object[])new TableColumn[] { taskNameCol, expCol });
+
+    private  TableView createJobTable(List<NPCTaskExpStats> npcTaskExpStatsList) {
+
+        // use fully detailed type for Map.Entry<String, String>
+        TableColumn<NPCTaskExpStats, String> taskNameCol = new TableColumn<>("Task");
+        taskNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // this callback returns property for just one cell, you can't use a loop here
+                // for first column we use key
+                return new SimpleStringProperty(p.getValue().getTaskName());
+            }
+        });
+
+        TableColumn<NPCTaskExpStats, String> expCol = new TableColumn<>("Exp");
+        expCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getExp().toString());
+            }
+        });
+        TableColumn<NPCTaskExpStats, String> rankCol = new TableColumn<>("Rank");
+        rankCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getRankLevel().toString());
+            }
+        });
+
+        TableColumn<NPCTaskExpStats, String> rankNameCol = new TableColumn<>("Rank name");
+        rankNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<NPCTaskExpStats, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<NPCTaskExpStats, String> p) {
+                // for second column we use value
+                return new SimpleStringProperty(p.getValue().getRank());
+            }
+        });
+        final TableView<NPCTaskExpStats> table = new TableView<NPCTaskExpStats>(FXCollections.observableArrayList(npcTaskExpStatsList));
+        table.getColumns().addAll(taskNameCol, expCol,rankCol,rankNameCol);
         return table;
     }
-    
-    public ObservableList<Map.Entry<String, Integer>> getJobsTableData(final List<NPCTaskExpStats> npcTaskExpStatsList) {
-        final Map<String, Integer> taskMap = new TreeMap<String, Integer>();
-        npcTaskExpStatsList.forEach(NpcDetailsController::lambda$getJobsTableData$8);
-        return (ObservableList<Map.Entry<String, Integer>>)FXCollections.observableArrayList((Collection)taskMap.entrySet());
-    }
-    
+
     public void goToHub() {
-        this.dialog.close();
-        this.screens.hubDialog().show();
+        dialog.close();
+        screens.hubDialog().show();
     }
-    
+
     public void goToPrev() {
-        Integer index = this.npcService.getHiredNpcs().indexOf(this.currentNpc);
-        --index;
-        if (index == -1) {
-            index = this.npcService.getHiredNpcs().size() - 1;
-        }
-        this.npcService.setCurrentNpc((Npc)this.npcService.getHiredNpcs().get(index));
-        this.refresh();
+        Integer index = npcService.getHiredNpcs().indexOf(currentNpc);
+        index -=1;
+        if(index ==-1)
+            index = npcService.getHiredNpcs().size()-1;
+        npcService.setCurrentNpc(npcService.getHiredNpcs().get(index));
+        refresh();
     }
-    
+
     public void goToNext() {
-        Integer index = this.npcService.getHiredNpcs().indexOf(this.currentNpc);
-        ++index;
-        if (index >= this.npcService.getHiredNpcs().size()) {
+        Integer index = npcService.getHiredNpcs().indexOf(currentNpc);
+        index +=1;
+        if(index >= npcService.getHiredNpcs().size())
             index = 0;
-        }
-        this.npcService.setCurrentNpc((Npc)this.npcService.getHiredNpcs().get(index));
-        this.refresh();
+        npcService.setCurrentNpc(npcService.getHiredNpcs().get(index));
+        refresh();
     }
 }

@@ -1,48 +1,41 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.controllers;
 
-import java.util.ArrayList;
-import com.example.Sim.Exceptions.ImageNotFound;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import javafx.collections.ObservableList;
-import java.util.Collection;
-import javafx.collections.FXCollections;
-import javafx.util.Callback;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableColumn;
-import java.util.ResourceBundle;
-import java.net.URL;
-import javafx.stage.WindowEvent;
-import javafx.event.EventHandler;
-import com.example.Sim.Model.NPC.Npc;
-import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.Utilities.ImageHandler;
-import com.example.Sim.Services.PlayerService;
-import javax.annotation.Resource;
-import com.example.Sim.Services.NpcService;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import org.springframework.stereotype.Service;
+import com.example.Sim.Exceptions.ImageNotFound;
 import com.example.Sim.FXML.DialogController;
+import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.NPC.Skill;
+import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
+import com.example.Sim.Utilities.ImageHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.stage.WindowEvent;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 @Service
-public class HireController implements Initializable, DialogController
-{
+public class HireController implements Initializable, DialogController {
+
     @FXML
     private Label hireStatsLabel;
     @FXML
     private Label hireSkillsLabel;
     @FXML
     private ImageView hireImage;
+
     @FXML
     private TableView hireSkillsTable;
     @FXML
@@ -53,119 +46,144 @@ public class HireController implements Initializable, DialogController
     private TableView hireTable;
     @FXML
     private Button hireBuy;
+
     @Resource
     private NpcService npcService;
     @Resource
     private PlayerService playerService;
     @Resource
     private ImageHandler imageHandler;
+
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
+
     private Npc currentNpc;
-    EventHandler<WindowEvent> onShownEventHandler;
-    
-    public HireController(final ScreensConfiguration screens) {
-        this.onShownEventHandler = (EventHandler)new HireController$1(this);
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    setHiraTableData();
+                    if (hireTable.getItems().isEmpty()) {
+                        hireBuy.setDisable(true);
+                    } else {
+                        hireBuy.setDisable(false);
+                        hireTable.getSelectionModel().selectFirst();
+                        currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
+                        tableRowSelected();
+                    }
+
+                }
+            };
+
+    public HireController(ScreensConfiguration screens) {
         this.screens = screens;
     }
-    
-    public void initialize(final URL location, final ResourceBundle resources) {
-        this.setHiraTableData();
-        this.initializeTables();
-        this.dialog.setOnShown(this.onShownEventHandler);
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setHiraTableData();
+        initializeTables();
+        dialog.setOnShown(onShownEventHandler);
+
     }
-    
+
     public void initializeTables() {
-        this.initializeHireTable();
-        this.initializeSkillsTable();
-        this.initializeStatsTable();
-        this.initializeTraitsTable();
+        initializeHireTable();
+        initializeSkillsTable();
+        initializeStatsTable();
+        initializeTraitsTable();
     }
-    
+
     public void initializeHireTable() {
-        TableColumn tableColumn = (TableColumn)this.hireTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.hireTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("price"));
-        this.hireTable.getSelectionModel().selectFirst();
+
+        TableColumn tableColumn = (TableColumn) hireTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) hireTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("price"));
+
+        hireTable.getSelectionModel().selectFirst();
     }
-    
+
     public void initializeSkillsTable() {
-        TableColumn tableColumn = (TableColumn)this.hireSkillsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.hireSkillsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
+        TableColumn tableColumn = (TableColumn) hireSkillsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) hireSkillsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
     }
-    
+
     public void initializeStatsTable() {
-        TableColumn tableColumn = (TableColumn)this.hireStatsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.hireStatsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("value"));
+        TableColumn tableColumn = (TableColumn) hireStatsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) hireStatsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("value"));
     }
-    
+
     public void initializeTraitsTable() {
-        TableColumn tableColumn = (TableColumn)this.hireTraitsTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        tableColumn = (TableColumn)this.hireTraitsTable.getColumns().get(1);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("effect"));
+        TableColumn tableColumn = (TableColumn) hireTraitsTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        tableColumn = (TableColumn) hireTraitsTable.getColumns().get(1);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("effect"));
     }
-    
-    public void setDialog(final FXMLDialog dialog) {
+
+    public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    
+
     public void setHiraTableData() {
-        final ObservableList data = FXCollections.observableArrayList((Collection)this.npcService.getHirableNpcsList(Integer.valueOf(5)));
-        this.hireTable.setItems(data);
+
+        ObservableList data = FXCollections.observableArrayList(npcService.getHirableNpcsList(5,3));
+        hireTable.setItems(data);
     }
-    
+
     public void buy() {
-        if (this.playerService.checkIfCanAfford(this.currentNpc.getPrice())) {
-            this.npcService.hireNpc(this.currentNpc);
-            this.hireTable.getItems().remove((Object)this.currentNpc);
-            if (this.hireTable.getItems().isEmpty()) {
-                this.hireBuy.setDisable(true);
+        if(playerService.checkIfCanAfford(currentNpc.getPrice())){
+            npcService.hireNpc(currentNpc);
+            hireTable.getItems().remove(currentNpc);
+            if (hireTable.getItems().isEmpty()) {
+                hireBuy.setDisable(true);
+            } else {
+                hireBuy.setDisable(false);
+                hireTable.getSelectionModel().selectFirst();
+                currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
             }
-            else {
-                this.hireBuy.setDisable(false);
-                this.hireTable.getSelectionModel().selectFirst();
-                this.currentNpc = (Npc)this.hireTable.getSelectionModel().getSelectedItem();
-            }
-            this.playerService.changeGold(Integer.valueOf(-this.currentNpc.getPrice()));
+            playerService.changeGold(-currentNpc.getPrice());
         }
-        else {
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You cant afford this slave.", new ButtonType[0]);
+        else{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You cant afford this slave.");
             alert.showAndWait();
         }
+
+
     }
-    
+
     public void tableRowSelected() {
-        this.currentNpc = (Npc)this.hireTable.getSelectionModel().getSelectedItem();
+        currentNpc = (Npc) hireTable.getSelectionModel().getSelectedItem();
         try {
-            this.imageHandler.setImage(this.hireImage, this.currentNpc.getPath(), "profile", false);
-        }
-        catch (ImageNotFound e) {
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
+            imageHandler.setImage(hireImage, currentNpc.getPath(), "profile", false);
+        } catch (ImageNotFound e) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
             alert.showAndWait();
         }
-        this.refreshNpcSelect(this.currentNpc);
+        refreshNpcSelect(currentNpc);
     }
-    
-    public void refreshNpcSelect(final Npc npc) {
-        this.currentNpc = npc;
-        this.hireSkillsLabel.setText(this.currentNpc.getName() + "'s base skills");
-        this.hireStatsLabel.setText(this.currentNpc.getName() + "'s  base stats");
-        ObservableList data = FXCollections.observableArrayList((Collection)new ArrayList(npc.getSkills().values()));
-        this.hireSkillsTable.setItems(data);
-        data = FXCollections.observableArrayList((Collection)new ArrayList(npc.getStats().values()));
-        this.hireStatsTable.setItems(data);
-        data = FXCollections.observableArrayList((Collection)npc.getTraits());
-        this.hireTraitsTable.setItems(data);
+
+    public void refreshNpcSelect(Npc npc) {
+        currentNpc = npc;
+        hireSkillsLabel.setText(currentNpc.getName() + "'s base skills");
+        hireStatsLabel.setText(currentNpc.getName() + "'s  base stats");
+        ObservableList data = FXCollections.observableArrayList(new ArrayList<Skill>(npc.getSkills().values()));
+        hireSkillsTable.setItems(data);
+        data = FXCollections.observableArrayList(new ArrayList<Stat>(npc.getStats().values()));
+        hireStatsTable.setItems(data);
+        data = FXCollections.observableArrayList(npc.getTraits());
+        hireTraitsTable.setItems(data);
+
     }
-    
+
     public void goToHub() {
-        this.dialog.close();
-        this.screens.hubDialog().show();
+        dialog.close();
+        screens.hubDialog().show();
     }
+
+
 }

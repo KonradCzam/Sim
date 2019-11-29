@@ -1,64 +1,46 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package com.example.Sim.controllers;
 
-import java.util.function.Function;
-import com.example.Sim.Model.NPC.Stat;
-import java.util.function.Predicate;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.Observable;
+import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Exceptions.ImageNotFound;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import com.example.Sim.Model.Jobs.Task;
-import com.example.Sim.Model.Jobs.JobStat;
-import javafx.collections.ObservableList;
+import com.example.Sim.FXML.DialogController;
+import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Model.Jobs.Job;
-import java.util.Collection;
+import com.example.Sim.Model.Jobs.JobStat;
+import com.example.Sim.Model.Jobs.Task;
+import com.example.Sim.Model.NPC.Npc;
+import com.example.Sim.Model.NPC.Stat;
+import com.example.Sim.Services.EndTurnService;
+import com.example.Sim.Services.JobService;
+import com.example.Sim.Services.NpcService;
+import com.example.Sim.Services.PlayerService;
+import com.example.Sim.Utilities.ImageHandler;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Tab;
-import java.util.function.Consumer;
-import javafx.scene.control.SelectionMode;
-import javafx.util.Callback;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.ResourceBundle;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.stage.WindowEvent;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.net.URL;
 import java.util.ArrayList;
-import com.example.Sim.FXML.FXMLDialog;
-import com.example.Sim.Config.ScreensConfiguration;
-import javafx.stage.WindowEvent;
-import javafx.event.EventHandler;
 import java.util.List;
-import com.example.Sim.Services.EndTurnService;
-import com.example.Sim.Services.PlayerService;
-import com.example.Sim.Services.NpcService;
-import com.example.Sim.Services.JobService;
-import javax.annotation.Resource;
-import com.example.Sim.Utilities.ImageHandler;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import com.example.Sim.Model.NPC.Npc;
-import javafx.scene.control.TableColumn;
-import javafx.scene.image.ImageView;
-import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
-import org.springframework.stereotype.Service;
-import com.example.Sim.FXML.DialogController;
-import javafx.fxml.Initializable;
+import java.util.ResourceBundle;
 
 @Service
-public class HubController implements Initializable, DialogController
-{
+public class HubController implements Initializable, DialogController {
+
     @FXML
     public TableView hubTable;
     @FXML
     public ImageView hubImage;
+
     @FXML
     private TableColumn<Npc, String> dayJobColumn;
     @FXML
@@ -69,10 +51,12 @@ public class HubController implements Initializable, DialogController
     private TableColumn<Npc, String> skillTableColumn;
     @FXML
     private TableColumn<Npc, String> healthColumn;
+
     @FXML
     private Pane jobButtonPane;
     @FXML
     private Button goToNpcDetails;
+
     @FXML
     private Label goldLabel;
     @FXML
@@ -137,10 +121,12 @@ public class HubController implements Initializable, DialogController
     private Label nightPopLabel;
     @FXML
     private Label dayPopLabel;
+
     @FXML
     private TabPane jobTabs;
     @FXML
     private TableView taskTable;
+
     @Resource
     ImageHandler imageHandler;
     @Resource
@@ -151,268 +137,301 @@ public class HubController implements Initializable, DialogController
     PlayerService playerService;
     @Resource
     EndTurnService endTurnService;
-    Npc selectedHubNpc;
-    List<ProgressBar> dayProgressBars;
-    List<Label> dayProgressLabels;
-    List<ProgressBar> nightProgressBars;
-    List<Label> nightProgressLabels;
-    EventHandler<WindowEvent> onShownEventHandler;
+    Npc selectedHubNpc = null;
+    List<ProgressBar> dayProgressBars = new ArrayList<>();
+    List<Label> dayProgressLabels = new ArrayList<>();
+    List<ProgressBar> nightProgressBars = new ArrayList<>();
+    List<Label> nightProgressLabels = new ArrayList<>();
+    EventHandler<WindowEvent> onShownEventHandler =
+            new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent t) {
+                    setGoldLabel();
+                    goToNpcDetails.setDisable(true);
+                    updateTable(npcService.getHiredNpcs());
+
+                    displayProgBars();
+                    setPopLabels();
+                }
+            };
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
     private String currentJobName;
-    
-    public HubController(final ScreensConfiguration screens) {
-        this.selectedHubNpc = null;
-        this.dayProgressBars = new ArrayList();
-        this.dayProgressLabels = new ArrayList();
-        this.nightProgressBars = new ArrayList();
-        this.nightProgressLabels = new ArrayList();
-        this.onShownEventHandler = (EventHandler)new HubController$1(this);
+    public HubController(ScreensConfiguration screens) {
         this.screens = screens;
     }
-    
-    public void setDialog(final FXMLDialog dialog) {
+
+    public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    
-    public void initialize(final URL location, final ResourceBundle resources) {
-        this.dialog.setOnShown(this.onShownEventHandler);
-        this.initiateTable();
-        this.initJobTab();
-        this.initiateJobTabs();
-        this.createProgBarsList();
-        this.jobButtonPane.setDisable(true);
-        this.jobTabs.getSelectionModel().select(0);
-        this.tabSelected();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        dialog.setOnShown(onShownEventHandler);
+        initiateTable();
+        initJobTab();
+        initiateJobTabs();
+        createProgBarsList();
+        jobButtonPane.setDisable(true);
+        jobTabs.getSelectionModel().select(0);
+        tabSelected();
     }
-    
+
     private void createProgBarsList() {
-        this.dayProgressBars.add(this.progDay1);
-        this.dayProgressBars.add(this.progDay2);
-        this.dayProgressBars.add(this.progDay3);
-        this.dayProgressBars.add(this.progDay4);
-        this.dayProgressBars.add(this.progDay5);
-        this.dayProgressBars.add(this.progDay6);
-        this.dayProgressBars.add(this.progDay7);
-        this.dayProgressLabels.add(this.progDayLabel1);
-        this.dayProgressLabels.add(this.progDayLabel2);
-        this.dayProgressLabels.add(this.progDayLabel3);
-        this.dayProgressLabels.add(this.progDayLabel4);
-        this.dayProgressLabels.add(this.progDayLabel5);
-        this.dayProgressLabels.add(this.progDayLabel6);
-        this.dayProgressLabels.add(this.progDayLabel7);
-        this.nightProgressBars.add(this.progNight1);
-        this.nightProgressBars.add(this.progNight2);
-        this.nightProgressBars.add(this.progNight3);
-        this.nightProgressBars.add(this.progNight4);
-        this.nightProgressBars.add(this.progNight5);
-        this.nightProgressBars.add(this.progNight6);
-        this.nightProgressBars.add(this.progNight7);
-        this.nightProgressLabels.add(this.progNightLabel1);
-        this.nightProgressLabels.add(this.progNightLabel2);
-        this.nightProgressLabels.add(this.progNightLabel3);
-        this.nightProgressLabels.add(this.progNightLabel4);
-        this.nightProgressLabels.add(this.progNightLabel5);
-        this.nightProgressLabels.add(this.progNightLabel6);
-        this.nightProgressLabels.add(this.progNightLabel7);
+        
+        dayProgressBars.add(progDay1);
+        dayProgressBars.add(progDay2);
+        dayProgressBars.add(progDay3);
+        dayProgressBars.add(progDay4);
+        dayProgressBars.add(progDay5);
+        dayProgressBars.add(progDay6);
+        dayProgressBars.add(progDay7);
+
+        dayProgressLabels.add(progDayLabel1);
+        dayProgressLabels.add(progDayLabel2);
+        dayProgressLabels.add(progDayLabel3);
+        dayProgressLabels.add(progDayLabel4);
+        dayProgressLabels.add(progDayLabel5);
+        dayProgressLabels.add(progDayLabel6);
+        dayProgressLabels.add(progDayLabel7);
+        
+        nightProgressBars.add(progNight1);
+        nightProgressBars.add(progNight2);
+        nightProgressBars.add(progNight3);
+        nightProgressBars.add(progNight4);
+        nightProgressBars.add(progNight5);
+        nightProgressBars.add(progNight6);
+        nightProgressBars.add(progNight7);
+
+        nightProgressLabels.add(progNightLabel1);
+        nightProgressLabels.add(progNightLabel2);
+        nightProgressLabels.add(progNightLabel3);
+        nightProgressLabels.add(progNightLabel4);
+        nightProgressLabels.add(progNightLabel5);
+        nightProgressLabels.add(progNightLabel6);
+        nightProgressLabels.add(progNightLabel7);
     }
-    
+
+
     public void initiateTable() {
-        this.hubTable.getSelectionModel().selectedItemProperty().addListener(this::lambda$initiateTable$0);
-        final TableColumn tableColumn = (TableColumn)this.hubTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        this.dayJobColumn.setCellValueFactory(HubController::lambda$initiateTable$1);
-        this.nightJobColumn.setCellValueFactory(HubController::lambda$initiateTable$2);
-        this.tirednessColumn.setCellValueFactory(HubController::lambda$initiateTable$4);
-        this.healthColumn.setCellValueFactory(HubController::lambda$initiateTable$6);
-        this.skillTableColumn.setCellValueFactory(this::lambda$initiateTable$7);
-        this.hubTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        hubTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
+            tableRowSelected();
+        });
+        TableColumn tableColumn = (TableColumn) hubTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+
+        dayJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDayShift().getName()));
+        nightJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNightShift().getName()));
+        tirednessColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
+                .filter(stat -> "Tiredness".equals(stat.getName()))
+                .map(Stat::getEffectiveValue)
+                .findAny()
+                .orElse(0).toString()));
+        healthColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
+                .filter(stat -> "Health".equals(stat.getName()))
+                .map(Stat::getEffectiveValue)
+                .findAny()
+                .orElse(0).toString()));
+        skillTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(jobService.calculateAverageProficiencyScore(cellData.getValue())));
+        hubTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
-    
-    public void initiateJobTabs() {
-        this.jobService.getJobList().forEach(this::lambda$initiateJobTabs$8);
-        this.jobTabs.getSelectionModel().selectedItemProperty().addListener(this::lambda$initiateJobTabs$9);
-        this.jobTabs.getSelectionModel().select(0);
+    public void initiateJobTabs(){
+        jobService.getJobList().forEach(job -> {
+            Tab tab = new Tab();
+            tab.setText(job.getName());
+            jobTabs.getTabs().add(tab);
+        });
+        jobTabs.getSelectionModel().selectedItemProperty().addListener((obs) -> {
+            tabSelected();
+        });
+        jobTabs.getSelectionModel().select(0);
     }
-    
+
     private void tabSelected() {
-        this.currentJobName = ((Tab)this.jobTabs.getSelectionModel().getSelectedItem()).getText();
-        this.displayProgBars();
-        this.setPopLabels();
-        this.updateJobTab();
+        currentJobName = jobTabs.getSelectionModel().getSelectedItem().getText();
+        displayProgBars();
+        setPopLabels();
+        updateJobTab();
     }
-    
+
     private void displayProgBars() {
-        if (this.currentJobName != null) {
-            this.updateProgBars();
+        if(currentJobName != null) {
+                updateProgBars();
         }
     }
-    
+
     private void updateJobTab() {
-        final Job currentJob = this.jobService.getJobByName(this.currentJobName);
-        final ObservableList data = FXCollections.observableArrayList((Collection)currentJob.getTasks());
-        this.taskTable.getItems().remove(0, this.taskTable.getItems().size());
-        this.taskTable.setItems(data);
+        Job currentJob = jobService.getJobByName(currentJobName);
+        ObservableList data = FXCollections.observableArrayList((currentJob.getTasks()));
+        taskTable.getItems().remove(0, taskTable.getItems().size());
+        taskTable.setItems(data);
+
+
     }
-    
+
     private void updateProgBars() {
-        final Job job = this.jobService.getJobByName(this.currentJobName);
-        final List<JobStat> jobStats = (List<JobStat>)job.getJobStats();
-        for (int i = 0; i < jobStats.size(); ++i) {
-            this.dayProgressBars.get(i).setProgress(jobStats.get(i).getDayValue() / 100.0);
-            this.dayProgressLabels.get(i).setText(jobStats.get(i).getStatName());
-            this.nightProgressBars.get(i).setProgress(jobStats.get(i).getNightValue() / 100.0);
-            this.nightProgressLabels.get(i).setText(jobStats.get(i).getStatName());
-            this.dayProgressBars.get(i).setVisible(true);
-            this.dayProgressLabels.get(i).setVisible(true);
-            this.nightProgressBars.get(i).setVisible(true);
-            this.nightProgressLabels.get(i).setVisible(true);
+        Job job = jobService.getJobByName(currentJobName);
+        List<JobStat> jobStats = job.getJobStats();
+
+        for(int i = 0; i<jobStats.size();i++){
+            dayProgressBars.get(i).setProgress(jobStats.get(i).getDayValue()/100);
+            dayProgressLabels.get(i).setText(jobStats.get(i).getStatName());
+            nightProgressBars.get(i).setProgress(jobStats.get(i).getNightValue()/100);
+            nightProgressLabels.get(i).setText(jobStats.get(i).getStatName());
+            dayProgressBars.get(i).setVisible(true);
+            dayProgressLabels.get(i).setVisible(true);
+            nightProgressBars.get(i).setVisible(true);
+            nightProgressLabels.get(i).setVisible(true);
+        };
+        for (int i = jobStats.size(); i < 7; i++) {
+            dayProgressBars.get(i).setVisible(false);
+            dayProgressLabels.get(i).setVisible(false);
+            nightProgressBars.get(i).setVisible(false);
+            nightProgressLabels.get(i).setVisible(false);
         }
-        for (int i = jobStats.size(); i < 7; ++i) {
-            this.dayProgressBars.get(i).setVisible(false);
-            this.dayProgressLabels.get(i).setVisible(false);
-            this.nightProgressBars.get(i).setVisible(false);
-            this.nightProgressLabels.get(i).setVisible(false);
+        if(jobStats == null || jobStats.size() == 0){
+            progNightLabel4.setText("No stats for this job");
+            progNightLabel4.setVisible(true);
+            progDayLabel4.setText("No stats for this job");
+            progDayLabel4.setVisible(true);
         }
-        if (jobStats == null || jobStats.size() == 0) {
-            this.progNightLabel4.setText("No stats for this job");
-            this.progNightLabel4.setVisible(true);
-            this.progDayLabel4.setText("No stats for this job");
-            this.progDayLabel4.setVisible(true);
-        }
+
+
     }
-    
+
     private void setPopLabels() {
-        final Job job = this.jobService.getJobByName(this.currentJobName);
-        this.dayPopLabel.setText("Day popularity: " + job.getPopularityDayLow() + " | " + job.getPopularityDayMid() + " | " + job.getPopularityDayHigh());
-        this.nightPopLabel.setText("Night popularity: " + job.getPopularityNightLow() + " | " + job.getPopularityNightMid() + " | " + job.getPopularityNightHigh());
+        Job job = jobService.getJobByName(currentJobName);
+        dayPopLabel.setText("Day popularity: " + job.getPopularityDayLow() + " | " + job.getPopularityDayMid()  + " | " + job.getPopularityDayHigh());
+        nightPopLabel.setText("Night popularity: " + job.getPopularityNightLow() + " | " + job.getPopularityNightMid()  + " | " + job.getPopularityNightHigh());
     }
-    
+
+
     private void initJobTab() {
-        final TableColumn tableColumn = (TableColumn)this.taskTable.getColumns().get(0);
-        tableColumn.setCellValueFactory((Callback)new PropertyValueFactory("name"));
-        this.taskTable.getSelectionModel().selectedItemProperty().addListener(this::lambda$initJobTab$10);
+        TableColumn tableColumn = (TableColumn)taskTable.getColumns().get(0);
+        tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
+        taskTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
+            taskSelected();
+        });
     }
-    
-    public void updateTable(final List<Npc> list) {
-        final ObservableList data = FXCollections.observableArrayList((Collection)list);
-        this.hubTable.getItems().remove(0, this.hubTable.getItems().size());
-        this.hubTable.setItems(data);
+
+    public void updateTable(List<Npc> list) {
+        ObservableList data = FXCollections.observableArrayList(list);
+        hubTable.getItems().remove(0, hubTable.getItems().size());
+        hubTable.setItems(data);
+
     }
-    
+
+
+
     public void setDayJob() {
-        this.setJobs(true, false);
+        setJobs(true, false);
     }
-    
+
     public void setNightJob() {
-        this.setJobs(false, true);
+        setJobs(false, true);
     }
-    
+
     public void setBothJobs() {
-        this.setJobs(true, true);
+        setJobs(true, true);
     }
-    
-    public void setJobs(final Boolean day, final Boolean night) {
-        final Task selectedTask = (Task)this.taskTable.getSelectionModel().getSelectedItem();
-        final Job selectedJob = this.jobService.getJobByName(this.currentJobName);
-        final ObservableList selectedIndices = this.hubTable.getSelectionModel().getSelectedItems();
-        for (int i = 0; i < selectedIndices.size(); ++i) {
-            final Integer index = this.npcService.getHiredNpcs().indexOf(selectedIndices.get(i));
+
+    public void setJobs(Boolean day, Boolean night) {
+        Task selectedTask = (Task) taskTable.getSelectionModel().getSelectedItem();
+        Job selectedJob = (Job) jobService.getJobByName(currentJobName);
+        ObservableList selectedIndices = hubTable.getSelectionModel().getSelectedItems();
+
+        for (int i = 0; i < selectedIndices.size(); i++) {
+            Integer index = npcService.getHiredNpcs().indexOf(selectedIndices.get(i));
             if (index != -1) {
-                if (day) {
-                    this.npcService.getHiredNpcs().get(index).setDayShift(selectedTask);
-                }
-                if (night) {
-                    this.npcService.getHiredNpcs().get(index).setNightShift(selectedTask);
-                }
+                if (day)
+                    npcService.getHiredNpcs().get(index).setDayShift(selectedTask);
+                if (night)
+                    npcService.getHiredNpcs().get(index).setNightShift(selectedTask);
             }
         }
-        this.updateTable(this.npcService.getHiredNpcs());
-        this.jobService.calculateJobAllStats(selectedJob);
-        this.updateProgBars();
+        updateTable(npcService.getHiredNpcs());
+        jobService.calculateJobAllStats(selectedJob);
+        updateProgBars();
+
     }
-    
+
     public void tableRowSelected() {
-        this.selectedHubNpc = (Npc)this.hubTable.getSelectionModel().getSelectedItem();
-        if (this.selectedHubNpc != null) {
-            this.goToNpcDetails.setDisable(false);
-            this.taskTable.getSelectionModel().select((Object)this.selectedHubNpc.getDayShift());
-            this.updateJobButtonPane();
+        selectedHubNpc = (Npc) hubTable.getSelectionModel().getSelectedItem();
+        if (selectedHubNpc != null) {
+            goToNpcDetails.setDisable(false);
+            taskTable.getSelectionModel().select(selectedHubNpc.getDayShift());
+            updateJobButtonPane();
             try {
-                this.imageHandler.setImage(this.hubImage, this.selectedHubNpc.getPath(), "profile", false);
-            }
-            catch (ImageNotFound e) {
-                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage(), new ButtonType[0]);
+                imageHandler.setImage(hubImage, selectedHubNpc.getPath(), "profile", false);
+            } catch (ImageNotFound e) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, e.getTextMessage());
                 alert.showAndWait();
             }
         }
     }
-    
+
     private void taskSelected() {
-        this.updateJobButtonPane();
+        updateJobButtonPane();
     }
-    
     public void updateJobButtonPane() {
-        final Task selectedTask = (Task)this.taskTable.getSelectionModel().getSelectedItem();
-        final ObservableList selectedIndices = this.hubTable.getSelectionModel().getSelectedItems();
-        if (selectedTask != null && !selectedIndices.isEmpty()) {
-            this.jobButtonPane.setDisable(false);
-        }
-        else {
-            this.jobButtonPane.setDisable(true);
-        }
+        Task selectedTask = (Task) taskTable.getSelectionModel().getSelectedItem();
+        ObservableList selectedIndices = hubTable.getSelectionModel().getSelectedItems();
+        if (selectedTask != null && !selectedIndices.isEmpty())
+            jobButtonPane.setDisable(false);
+        else
+            jobButtonPane.setDisable(true);
     }
-    
-    public void setGoldLabel() {
-        this.goldLabel.setText("Gold: " + this.playerService.getPlayerGold());
+    public void setGoldLabel(){
+        goldLabel.setText("Gold: " + playerService.getPlayerGold());
     }
-    
-    public void sellNpcs() {
-        final ObservableList selectedNpcs = this.hubTable.getSelectionModel().getSelectedItems();
-        this.npcService.sellNpcs((List)selectedNpcs);
-        this.updateTable(this.npcService.getHiredNpcs());
+
+    public void sellNpcs(){
+        ObservableList selectedNpcs = hubTable.getSelectionModel().getSelectedItems();
+        npcService.sellNpcs(selectedNpcs);
+        updateTable(npcService.getHiredNpcs());
     }
-    
+    //------------------------------------Navigation
     public void goToGallery() {
-        this.dialog.close();
-        this.screens.loginDialog().show();
+        dialog.close();
+        screens.loginDialog().show();
     }
-    
+
     public void goToNpcDetails() {
-        final Npc selectedNpc = (Npc)this.hubTable.getSelectionModel().getSelectedItem();
-        this.npcService.setCurrentNpc(selectedNpc);
-        this.dialog.close();
-        this.screens.npcDetailsDialog().show();
+        Npc selectedNpc = ((Npc) hubTable.getSelectionModel().getSelectedItem());
+        npcService.setCurrentNpc(selectedNpc);
+        dialog.close();
+
+        screens.npcDetailsDialog().show();
     }
-    
+
     public void goToHire() {
-        this.dialog.close();
-        this.screens.hireDialog().show();
+        dialog.close();
+        screens.hireDialog().show();
     }
-    
+
     public void goToPlayer() {
-        this.dialog.close();
-        this.screens.playerDialog().show();
+        dialog.close();
+        screens.playerDialog().show();
     }
-    
+
     public void goToSaveLoad() {
-        this.dialog.close();
-        this.screens.saveLoadDialog().show();
+        dialog.close();
+        screens.saveLoadDialog().show();
     }
-    
     public void gotoToLibrary() {
-        this.dialog.close();
-        this.screens.libraryDialog().show();
+        dialog.close();
+        screens.libraryDialog().show();
     }
-    
     public void goToOldEndTurn() {
-        this.endTurnService.setPresentOld(Boolean.valueOf(true));
-        this.dialog.close();
-        this.screens.endTurnDialog().show();
+        endTurnService.setPresentOld(true);
+        dialog.close();
+        screens.endTurnDialog().show();
     }
-    
     public void endTurn() {
-        this.dialog.close();
-        this.screens.endTurnDialog().show();
+        dialog.close();
+        screens.endTurnDialog().show();
     }
+
 }
+
