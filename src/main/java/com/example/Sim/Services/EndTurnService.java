@@ -20,10 +20,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 public class EndTurnService {
     Integer turn;
-    Task dayTask;
-    Task nightTask;
     Boolean presentOld = false;
-    Integer earnedLastTurn ;
+    Integer earnedLastTurn;
     @Resource
     private NpcService npcService;
     @Resource
@@ -53,37 +51,14 @@ public class EndTurnService {
         turn += 1;
         npcService.shuffleHirable();
         npcService.setHired(0);
+
         GirlEndTurnRapport girlEndTurnRapport = createGirlEndTurnRapport();
-        FinanceEndTurnRapport financeEndTurnRapport = createFinanceEndTurnRapport();
-        this.earnedLastTurn = calcTotalEarned(financeEndTurnRapport.getFinanceRootList());
-        playerService.changeGold(earnedLastTurn);
-        return new EndTurnRapport(financeEndTurnRapport,girlEndTurnRapport);
-    }
-
-
-
-    private FinanceEndTurnRapport createFinanceEndTurnRapport() {
         customerService.generateAllCustomers();
-        FinanceEndTurnRapport financeEndTurnRapport = prepareFinancialEndTurnRapport();
-        return financeEndTurnRapport;
-    }
+        this.earnedLastTurn = calcTotalEarned();
 
-    private FinanceEndTurnRapport prepareFinancialEndTurnRapport() {
-        List<JobRoot> jobRoots = new ArrayList<>();
-        Map<String, JobCustomers> customersDividedByTierAndShift = customerService.getDividedCustomersByPopularity();
-        //Calculate happines and gold spent
-        for(JobCustomers jobsCustomers : customersDividedByTierAndShift.values()){
-        }
-        //Reformat to JobRoot nodes
-        for (Map.Entry<String,JobCustomers> entry : customersDividedByTierAndShift.entrySet()) {
-            JobRoot jobRoot = new JobRoot(entry.getKey(),entry.getValue());
-            jobRoots.add(jobRoot);
-        }
-        FinanceEndTurnRapport financeEndTurnRapport = new FinanceEndTurnRapport();
-        financeEndTurnRapport.setFinanceRootList(jobRoots);
-        return financeEndTurnRapport;
+        playerService.changeGold(earnedLastTurn);
+        return new EndTurnRapport(girlEndTurnRapport);
     }
-
 
     private GirlEndTurnRapport createGirlEndTurnRapport() {
         List<NpcRoot> npcRootList = new ArrayList<>();
@@ -99,52 +74,43 @@ public class EndTurnService {
         npcRoot.setName(npc.getName());
         npcRoot.setPath(npc.getPath());
         npcRoot.setDescription("");
-        dayTask = npc.getDayShift();
-        nightTask = npc.getNightShift();
 
-        WorkStatus dayWorkStatus = calcWorkStatus(npc, dayTask);
-        npcRoot.setDayWorkStatus(dayWorkStatus);
+        WorkStatus workStatus = calcWorkStatus(npc);
+        npcRoot.setWorkStatus(workStatus);
 
-        handleShift(dayWorkStatus, npcRoot, npc, " day ");
+        handleShift(npcRoot, npc);
 
-        WorkStatus nightWorkStatus = calcWorkStatus(npc, nightTask);
-        npcRoot.setNightWorkStatus(nightWorkStatus);
-
-        handleShift(nightWorkStatus, npcRoot, npc, " night ");
-
-        descriptionService.addNpcRootDescription(npcRoot,npc);
+        descriptionService.addNpcRootDescription(npcRoot, npc);
 
         return npcRoot;
     }
 
-    private NpcRoot handleShift(WorkStatus workStatus,  NpcRoot npcRoot, Npc npc, String shift) {
-
+    private NpcRoot handleShift(NpcRoot npcRoot, Npc npc) {
+        WorkStatus workStatus = npcRoot.getWorkStatus();
         npcRoot.setMessageLevel(workStatus.getLevel());
 
-        if (workStatus == WorkStatus.DEAD_TIRED){
+        if (workStatus == WorkStatus.DEAD_TIRED) {
             setNoWork(npcRoot);
             return npcRoot;
         }
         if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
-            npcRoot = handleNormalWork(npcRoot, npc, shift);
-        } else{
+            npcRoot = handleNormalWork(npcRoot, npc);
+        } else {
             setNoWork(npcRoot);
         }
 
         return npcRoot;
     }
-    private NpcRoot handleNormalWork(NpcRoot npcRoot, Npc npc, String shift) {
-        if (" day ".equals(shift)) {
-            npcRoot.setDayShiftRapport(createEventRoots(npc, dayTask));
-        } else {
-            npcRoot.setNightShiftRapport(createEventRoots(npc, nightTask));
-        }
+
+    private NpcRoot handleNormalWork(NpcRoot npcRoot, Npc npc) {
+        npcRoot.setShiftRapport(createEventRoots(npc));
         return npcRoot;
     }
-    private WorkStatus calcWorkStatus(Npc npc, Task task) {
-        WorkStatus response = obedienceService.calculateIfRefuse(npc, task);
+
+    private WorkStatus calcWorkStatus(Npc npc) {
+        WorkStatus response = obedienceService.calculateIfRefuse(npc);
         if (response == WorkStatus.NORMAL)
-            return tirednessService.handleTiredness(npc,task);
+            return tirednessService.handleTiredness(npc);
         else
             return response;
 
@@ -152,18 +118,13 @@ public class EndTurnService {
 
     private NpcRoot setNoWork(NpcRoot npcRoot) {
         npcRoot.setMoneyEarned(0);
-        npcRoot.setDayMoneyEarned(0);
-        npcRoot.setNightMoneyEarned(0);
-        npcRoot.setNightExpGain(0);
-        npcRoot.setDayExpGain(0);
-        npcRoot.setDayShiftRapport(new ArrayList<SingleEventRoot>());
-        npcRoot.setNightShiftRapport(new ArrayList<SingleEventRoot>());
-
+        npcRoot.setExpGain(0);
+        npcRoot.setShiftRapport(new ArrayList<>());
         return npcRoot;
     }
 
-    private List<SingleEventRoot> createEventRoots(Npc npc, Task task) {
-
+    private List<SingleEventRoot> createEventRoots(Npc npc) {
+        Task task = npc.getTask();
         List<SingleEventRoot> singleEventRootList = new ArrayList<>();
         Integer noOfCustomers = 1;
 
@@ -174,7 +135,7 @@ public class EndTurnService {
             }
         }
         String jobName = jobService.getJobNameByTask(task);
-        npc.addJobExp(jobName,task,noOfCustomers);
+        npc.addJobExp(jobName, task, noOfCustomers);
         for (int i = 0; i < noOfCustomers; i++) {
             SingleEventRoot singleEventRoot = new SingleEventRoot();
             singleEventRoot = createSingleEventRoot(npc, task, singleEventRoot);
@@ -182,7 +143,6 @@ public class EndTurnService {
         }
         return singleEventRootList;
     }
-
 
 
     private SingleEventRoot createSingleEventRoot(Npc npc, Task task, SingleEventRoot singleEventRoot) {
@@ -211,7 +171,6 @@ public class EndTurnService {
         singleEventRoot.setStatProgress(statProgress);
         return singleEventRoot;
     }
-
 
 
     private SingleEventRoot selectCategory(Npc npc, Task task, SingleEventRoot singleEventRoot) {
@@ -257,7 +216,6 @@ public class EndTurnService {
                 trainedSkill.changeProgress(progress);
 
                 if (trainedSkill.checkSkillLvlUp(category)) {
-
                     singleEventRoot.setSkillsGain(skillName);
                 }
             }
@@ -270,10 +228,23 @@ public class EndTurnService {
         this.turn = turn;
     }
 
-    private Integer calcTotalEarned(List<JobRoot> financeRootList) {
+    private Integer calcTotalEarned() {
+        List<JobRoot> jobRoots = new ArrayList<>();
+        Map<String, JobCustomers> allCustomers = customerService.getCustomersMap();
+        //Calculate happines and gold spent
+        for (JobCustomers jobsCustomers : allCustomers.values()) {
+            jobsCustomers = this.jobService.handleEndTurn(jobsCustomers);
+        }
+        //Reformat to JobRoot nodes
+        for (Map.Entry<String, JobCustomers> entry : allCustomers.entrySet()) {
+            JobRoot jobRoot = new JobRoot(entry.getKey(), entry.getValue());
+            jobRoots.add(jobRoot);
+        }
+
         Integer result = 0;
-        for(JobRoot jobRoot : financeRootList){
-            result+=jobRoot.getMoneyEarned();
+
+        for (JobRoot jobRoot : jobRoots) {
+            result += jobRoot.getMoneyEarned();
         }
         return result;
     }

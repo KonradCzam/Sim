@@ -1,6 +1,8 @@
 package com.example.Sim.Services;
 
+import com.example.Sim.Model.Jobs.Customer;
 import com.example.Sim.Model.Jobs.Job;
+import com.example.Sim.Model.Jobs.JobCustomers;
 import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.NPC.Skill;
@@ -53,7 +55,14 @@ public class JobService {
         jobList.forEach(job -> job.getTasks().forEach(task -> allTasks.put(task.getName(),task)));
         return allTasks;
     }
-
+    public JobCustomers handleEndTurn(JobCustomers jobCustomers){
+        List<Customer> customers = jobCustomers.getCustomesList();
+        for(Customer customer : customers){
+            customer.setMoneySpent(5);
+        }
+        jobCustomers.setCustomesList(customers);
+        return jobCustomers;
+    }
     public static Double calculateTaskPerformance(Npc npc, String taskName) {
         return calculateTaskPerformance(npc, allTasks.get(taskName), null);
     }
@@ -104,12 +113,10 @@ public class JobService {
     public String calculateAverageProficiencyScore(Npc npc) {
 
 
-        List<String> relevantSkillsNight = npc.getNightShift().getRelevantSkills();
-        List<String> relevantStatsNight = npc.getNightShift().getRelevantStats();
+        List<String> relevantSkillsNight = npc.getTask().getRelevantSkills();
 
 
         OptionalDouble averageSkillNight = calculateAverageSkill(npc,relevantSkillsNight);
-        OptionalDouble averageStatNight = calculateAverageStat(npc,relevantStatsNight);
 
         return "Not a number";
     }

@@ -217,8 +217,7 @@ public class HubController implements Initializable, DialogController {
         TableColumn tableColumn = (TableColumn) hubTable.getColumns().get(0);
         tableColumn.setCellValueFactory(new PropertyValueFactory("name"));
 
-        dayJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDayShift().getName()));
-        nightJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNightShift().getName()));
+        dayJobColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTask().getName()));
         tirednessColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(new ArrayList<Stat>(cellData.getValue().getStats().values()).stream()
                 .filter(stat -> "Tiredness".equals(stat.getName()))
                 .map(Stat::getEffectiveValue)
@@ -301,9 +300,8 @@ public class HubController implements Initializable, DialogController {
             Integer index = npcService.getHiredNpcs().indexOf(selectedIndices.get(i));
             if (index != -1) {
                 if (day)
-                    npcService.getHiredNpcs().get(index).setDayShift(selectedTask);
-                if (night)
-                    npcService.getHiredNpcs().get(index).setNightShift(selectedTask);
+                    npcService.getHiredNpcs().get(index).setTask(selectedTask);
+
             }
         }
         updateTable(npcService.getHiredNpcs());
@@ -314,7 +312,7 @@ public class HubController implements Initializable, DialogController {
         selectedHubNpc = (Npc) hubTable.getSelectionModel().getSelectedItem();
         if (selectedHubNpc != null) {
             goToNpcDetails.setDisable(false);
-            taskTable.getSelectionModel().select(selectedHubNpc.getDayShift());
+            taskTable.getSelectionModel().select(selectedHubNpc.getTask());
             updateJobButtonPane();
             try {
                 imageHandler.setImage(hubImage, selectedHubNpc.getPath(), "profile", false);

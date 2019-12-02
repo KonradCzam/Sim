@@ -10,9 +10,9 @@ public class TirednessService {
 @Resource
 NpcService npcService;
 
-    public WorkStatus handleTiredness(Npc npc, Task task) {
+    public WorkStatus handleTiredness(Npc npc) {
         Integer tempTiredness = npc.getStat("Tiredness").getEffectiveValue();
-        Integer tirednessChange = calculateDeltaTiredness(npc,task);
+        Integer tirednessChange = calculateDeltaTiredness(npc);
         npc.getStat("Tiredness").changeValue(tirednessChange);
         tempTiredness += tirednessChange;
         if (tempTiredness >= 100) {
@@ -21,10 +21,10 @@ NpcService npcService;
         return WorkStatus.NORMAL;
     }
 
-    private Integer calculateDeltaTiredness(Npc npc, Task task) {
+    private Integer calculateDeltaTiredness(Npc npc) {
         Integer change = 0;
         Integer constitution = npc.getStat("Constitution").getEffectiveValue();
-        Integer tiring = task.getTiring();
+        Integer tiring = npc.getTask().getTiring();
         change = tiring - constitution/10;
         return change;
     }

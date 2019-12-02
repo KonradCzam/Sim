@@ -42,8 +42,7 @@ public class EndTurnController implements Initializable, DialogController {
     ImageView endTurnImage;
     @FXML
     TextArea descriptionBox;
-    @FXML
-    TreeTableView endTurnFinanceTable;
+
     @FXML
     ImageView endTurnImage2;
     @FXML
@@ -66,12 +65,10 @@ public class EndTurnController implements Initializable, DialogController {
                     }
                     EndTurnRapport endTurnRapport = endTurnService.endTurn();
                     GirlEndTurnRapport girlEndTurnRapport = endTurnRapport.getGirlEndTurnRapport();
-                    FinanceEndTurnRapport financeEndTurnRapport = endTurnRapport.getFinanceEndTurnRapport();
                     List<NpcRoot> npcRoots = girlEndTurnRapport.getNpcRootList();
 
                     createRootNode(npcRoots);
-                    createFinancialRootNode(financeEndTurnRapport);
-                    npcRoots.forEach(npcRoot -> createSingleProfileTab(npcRoot));
+                   // npcRoots.forEach(npcRoot -> createSingleProfileTab(npcRoot));
                     endTurnTable.refresh();
 
                 }
@@ -92,7 +89,6 @@ public class EndTurnController implements Initializable, DialogController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeTreeTable();
-        initializeFinanacialTreeTable();
         dialog.setOnShown(onShownEventHandler);
     }
 
@@ -125,43 +121,7 @@ public class EndTurnController implements Initializable, DialogController {
             tableRowSelected();
         });
     }
-    private void initializeFinanacialTreeTable() {
-        TreeTableColumn<FinanceEndTurnRapport, String> jobColumn = new TreeTableColumn<>("Job");
-        jobColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
-        jobColumn.setPrefWidth(180.0);
 
-        TreeTableColumn<FinanceEndTurnRapport, Integer> moneyColumn = new TreeTableColumn<>("Spent");
-        moneyColumn.setPrefWidth(40.0);
-        moneyColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("moneyEarned"));
-
-        TreeTableColumn<FinanceEndTurnRapport, String> popularityColumn = new TreeTableColumn<>("Popularity");
-        popularityColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("popularity"));
-
-        TreeTableColumn<FinanceEndTurnRapport, String> tierColumn = new TreeTableColumn<>("Tier");
-        tierColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("tier"));
-
-        TreeTableColumn<FinanceEndTurnRapport, String> happinessColumn = new TreeTableColumn<>("Happiness");
-        happinessColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("happiness"));
-
-        TreeTableColumn<FinanceEndTurnRapport, String> mainConcernColumn = new TreeTableColumn<>("Concern");
-        mainConcernColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("mainConcern"));
-        TreeTableColumn<FinanceEndTurnRapport, String> secondaryConcernColumn = new TreeTableColumn<>("Secondary concern");
-        secondaryConcernColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("secondaryConcern"));
-
-        endTurnFinanceTable.getColumns().add(jobColumn);
-        endTurnFinanceTable.getColumns().add(tierColumn);
-        endTurnFinanceTable.getColumns().add(mainConcernColumn);
-        endTurnFinanceTable.getColumns().add(secondaryConcernColumn);
-        endTurnFinanceTable.getColumns().add(happinessColumn);
-        endTurnFinanceTable.getColumns().add(moneyColumn);
-        //endTurnFinanceTable.getColumns().add(popularityColumn);
-
-
-
-        endTurnFinanceTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {
-            financialTableRowSelected();
-        });
-    }
 
     private void financialTableRowSelected() {
     }
@@ -181,20 +141,7 @@ public class EndTurnController implements Initializable, DialogController {
         rootNode.getChildren().addAll(treeItems);
         endTurnTable.setRoot(rootNode);
     }
-    private void createFinancialRootNode(FinanceEndTurnRapport financeEndTurnRapport) {
-        financeEndTurnRapport.setName("Jobs");
-        TreeItem<FinanceEndTurnRapport> rootNode = new TreeItem<>(financeEndTurnRapport);
-        List<TreeItem<FinanceEndTurnRapport>> treeItems = new ArrayList<>();
-        financeEndTurnRapport.getFinanceRootList().forEach(financeRoot -> {
-            TreeItem<FinanceEndTurnRapport>  financeRootNode = new TreeItem<FinanceEndTurnRapport>(financeRoot);
-            financeRootNode.getChildren().addAll(createClientRootNode(financeRoot));
-            treeItems.add(financeRootNode);
-        });
-        rootNode.setExpanded(true);
-        rootNode.getChildren().addAll(treeItems);
-        endTurnFinanceTable.setRoot(rootNode);
 
-    }
 
     private List<TreeItem<FinanceEndTurnRapport>> createClientRootNode(JobRoot financeRoot) {
         List<TreeItem<FinanceEndTurnRapport>> singleCustomerNodeList = new ArrayList<>();
@@ -204,11 +151,8 @@ public class EndTurnController implements Initializable, DialogController {
 
     private List<TreeItem<GirlEndTurnRapport>> createNpcRootNode(NpcRoot jobRapport) {
         List<TreeItem<GirlEndTurnRapport>> singleRapportNodeList = new ArrayList<>();
-        jobRapport.getDayShiftRapport().forEach(singleEventRoot -> {
-            singleRapportNodeList.add(new TreeItem<GirlEndTurnRapport>(singleEventRoot));
-        });
-        jobRapport.getNightShiftRapport().forEach(singleEventRoot -> {
-            singleRapportNodeList.add(new TreeItem<GirlEndTurnRapport>(singleEventRoot));
+        jobRapport.getShiftRapport().forEach(singleEventRoot -> {
+            singleRapportNodeList.add(new TreeItem<>(singleEventRoot));
         });
         return singleRapportNodeList;
     }
@@ -231,7 +175,7 @@ public class EndTurnController implements Initializable, DialogController {
         label.setLayoutX(100.0);
         profileTab.getChildren().add(label);
         profileTab.getStyleClass().add("profileTab");
-        profileVBox.getChildren().add(profileTab);
+        //profileVBox.getChildren().add(profileTab);
     }
     private void setProfilePicture(ImageView endTurnImage, GirlEndTurnRapport npcRoot){
 

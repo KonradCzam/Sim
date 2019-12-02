@@ -14,19 +14,14 @@ import java.util.List;
 public class NpcRoot extends GirlEndTurnRapport {
     String name;
     String messageLevel;
-    Integer dayMoneyEarned;
-    Integer nightMoneyEarned;
-    Integer dayExpGain;
-    Integer nightExpGain;
     Integer moneyEarned;
+    Integer expGain;
     String description;
     String statChange;
     String path;
     String category = "profile";
-    WorkStatus dayWorkStatus;
-    WorkStatus nightWorkStatus;
-    List<SingleEventRoot> dayShiftRapport;
-    List<SingleEventRoot> nightShiftRapport;
+    WorkStatus workStatus;
+    List<SingleEventRoot> shiftRapport;
     Integer obedience;
     Integer love;
 }

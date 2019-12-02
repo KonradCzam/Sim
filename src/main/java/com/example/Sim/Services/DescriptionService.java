@@ -14,30 +14,21 @@ public class DescriptionService {
 
     public NpcRoot addNpcRootDescription(NpcRoot npcRoot, Npc npc) {
         String npcName = npcRoot.getName();
-        WorkStatus dayWorkStatus = npcRoot.getDayWorkStatus();
-        WorkStatus nightWorkStatus = npcRoot.getNightWorkStatus();
-        Task dayTask = npc.getDayShift();
-        Task nightTask = npc.getNightShift();
+        WorkStatus workStatus = npcRoot.getWorkStatus();
+        Task task = npc.getTask();
 
-        if (dayWorkStatus == WorkStatus.DEAD_TIRED || nightWorkStatus == WorkStatus.DEAD_TIRED) {
+        if (workStatus == WorkStatus.DEAD_TIRED ) {
             npcRoot.setDescription(addOverworkDeathDescription(npcName));
             return npcRoot;
         }
-        if (dayWorkStatus == WorkStatus.NORMAL || dayWorkStatus == WorkStatus.OVERWORKED || dayWorkStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
-            npcRoot.setDescription(addWorkDescription(dayTask, " day ", npcRoot, dayWorkStatus));
+        if (workStatus == WorkStatus.NORMAL || workStatus == WorkStatus.OVERWORKED || workStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
+            npcRoot.setDescription(addWorkDescription(task, " day ", npcRoot, workStatus));
         } else {
-            npcRoot.setDescription(addRefuseWorkDescription(npcRoot, dayWorkStatus, npcName));
+            npcRoot.setDescription(addRefuseWorkDescription(npcRoot, workStatus, npcName));
         }
 
-        if (nightWorkStatus == WorkStatus.NORMAL || nightWorkStatus == WorkStatus.OVERWORKED || nightWorkStatus == WorkStatus.OVERWORKED_NEAR_DEATH) {
-            npcRoot.setDescription(addWorkDescription(nightTask, " night ", npcRoot, nightWorkStatus));
-        } else {
-            npcRoot.setDescription(addRefuseWorkDescription(npcRoot, nightWorkStatus, npcName));
-        }
 
-        addSingleRootNodeDescriptions(npcName, npcRoot.getDayShiftRapport());
-
-        addSingleRootNodeDescriptions(npcName, npcRoot.getNightShiftRapport());
+        addSingleRootNodeDescriptions(npcName, npcRoot.getShiftRapport());
 
         npcRoot.setDescription(addSkillGainsDescription(npcRoot));
         return npcRoot;
@@ -64,13 +55,10 @@ public class DescriptionService {
         }
         Integer moneyEarned = null;
         Integer expEarned = null;
-        if (" day ".equals(shift)) {
-            moneyEarned = npcRoot.getDayMoneyEarned();
-            expEarned = npcRoot.getDayExpGain();
-        } else {
-            moneyEarned = npcRoot.getNightMoneyEarned();
-            expEarned = npcRoot.getNightExpGain();
-        }
+
+        moneyEarned = npcRoot.getMoneyEarned();
+        expEarned = npcRoot.getExpGain();
+
 
 
         description += "This week during the" + shift + npcRoot.getName() + " worked as a " + task.getName()
@@ -112,8 +100,7 @@ public class DescriptionService {
 
     private Map<String, Integer> calculateTotalSkillGains(NpcRoot npcRoot) {
         Map<String, Integer> totalSkillGains = null;
-        totalSkillGains = calculateShiftSkillGains(npcRoot.getDayShiftRapport());
-        totalSkillGains.putAll(calculateShiftSkillGains(npcRoot.getNightShiftRapport()));
+        totalSkillGains = calculateShiftSkillGains(npcRoot.getShiftRapport());
         return totalSkillGains;
     }
 
