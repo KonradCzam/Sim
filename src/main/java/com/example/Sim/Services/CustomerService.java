@@ -1,5 +1,6 @@
 package com.example.Sim.Services;
 
+import com.example.Sim.Model.CustomerTemplate;
 import com.example.Sim.Model.Jobs.Customer;
 import com.example.Sim.Model.Jobs.JobCustomers;
 import lombok.Getter;

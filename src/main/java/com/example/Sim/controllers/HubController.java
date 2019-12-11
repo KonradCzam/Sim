@@ -43,8 +43,6 @@ public class HubController implements Initializable, DialogController {
     @FXML
     private TableColumn<Npc, String> dayJobColumn;
     @FXML
-    private TableColumn<Npc, String> nightJobColumn;
-    @FXML
     private TableColumn<Npc, String> tirednessColumn;
     @FXML
     private TableColumn<Npc, String> skillTableColumn;
@@ -58,68 +56,6 @@ public class HubController implements Initializable, DialogController {
 
     @FXML
     private Label goldLabel;
-    @FXML
-    private ProgressBar cleanConcern;
-    @FXML
-    private ProgressBar progDay1;
-    @FXML
-    private ProgressBar progDay2;
-    @FXML
-    private ProgressBar progDay3;
-    @FXML
-    private ProgressBar progDay4;
-    @FXML
-    private ProgressBar progDay5;
-    @FXML
-    private ProgressBar progDay6;
-    @FXML
-    private ProgressBar progDay7;
-    @FXML
-    private ProgressBar progNight1;
-    @FXML
-    private ProgressBar progNight2;
-    @FXML
-    private ProgressBar progNight3;
-    @FXML
-    private ProgressBar progNight4;
-    @FXML
-    private ProgressBar progNight5;
-    @FXML
-    private ProgressBar progNight6;
-    @FXML
-    private ProgressBar progNight7;
-    @FXML
-    private Label progDayLabel1;
-    @FXML
-    private Label progDayLabel2;
-    @FXML
-    private Label progDayLabel3;
-    @FXML
-    private Label progDayLabel4;
-    @FXML
-    private Label progDayLabel5;
-    @FXML
-    private Label progDayLabel6;
-    @FXML
-    private Label progDayLabel7;
-    @FXML
-    private Label progNightLabel1;
-    @FXML
-    private Label progNightLabel2;
-    @FXML
-    private Label progNightLabel3;
-    @FXML
-    private Label progNightLabel4;
-    @FXML
-    private Label progNightLabel5;
-    @FXML
-    private Label progNightLabel6;
-    @FXML
-    private Label progNightLabel7;
-    @FXML
-    private Label nightPopLabel;
-    @FXML
-    private Label dayPopLabel;
 
     @FXML
     private TabPane jobTabs;
@@ -168,47 +104,10 @@ public class HubController implements Initializable, DialogController {
         initiateTable();
         initJobTab();
         initiateJobTabs();
-        createProgBarsList();
         jobButtonPane.setDisable(true);
         jobTabs.getSelectionModel().select(0);
         tabSelected();
     }
-
-    private void createProgBarsList() {
-        
-        dayProgressBars.add(progDay1);
-        dayProgressBars.add(progDay2);
-        dayProgressBars.add(progDay3);
-        dayProgressBars.add(progDay4);
-        dayProgressBars.add(progDay5);
-        dayProgressBars.add(progDay6);
-        dayProgressBars.add(progDay7);
-
-        dayProgressLabels.add(progDayLabel1);
-        dayProgressLabels.add(progDayLabel2);
-        dayProgressLabels.add(progDayLabel3);
-        dayProgressLabels.add(progDayLabel4);
-        dayProgressLabels.add(progDayLabel5);
-        dayProgressLabels.add(progDayLabel6);
-        dayProgressLabels.add(progDayLabel7);
-        
-        nightProgressBars.add(progNight1);
-        nightProgressBars.add(progNight2);
-        nightProgressBars.add(progNight3);
-        nightProgressBars.add(progNight4);
-        nightProgressBars.add(progNight5);
-        nightProgressBars.add(progNight6);
-        nightProgressBars.add(progNight7);
-
-        nightProgressLabels.add(progNightLabel1);
-        nightProgressLabels.add(progNightLabel2);
-        nightProgressLabels.add(progNightLabel3);
-        nightProgressLabels.add(progNightLabel4);
-        nightProgressLabels.add(progNightLabel5);
-        nightProgressLabels.add(progNightLabel6);
-        nightProgressLabels.add(progNightLabel7);
-    }
-
 
     public void initiateTable() {
         hubTable.getSelectionModel().selectedItemProperty().addListener((obs) -> {

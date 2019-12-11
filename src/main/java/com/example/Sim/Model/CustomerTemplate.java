@@ -1,4 +1,4 @@
-package com.example.Sim.Services;
+package com.example.Sim.Model;
 
 import lombok.Getter;
 
