@@ -1,6 +1,5 @@
 package com.example.Sim.Services;
 
-import com.example.Sim.Model.Item;
 import com.example.Sim.Model.NPC.Skill;
 import com.example.Sim.Model.NPC.Stat;
 import com.example.Sim.Model.NPC.Trait;

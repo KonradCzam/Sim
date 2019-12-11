@@ -1,6 +1,5 @@
 package com.example.Sim.Services;
 
-import com.example.Sim.Model.Jobs.Task;
 import com.example.Sim.Model.NPC.Npc;
 import com.example.Sim.Model.TirednessSystem.WorkStatus;
 
