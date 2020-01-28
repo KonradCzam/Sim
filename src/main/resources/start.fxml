@@ -7,8 +7,9 @@
 
 <AnchorPane fx:id="brothelAnchor" prefHeight="530.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.StartController">
     <children>
-        <Button fx:id="newGameButton" layoutX="484.0" layoutY="433.0" mnemonicParsing="false" onAction="#generatePDF" prefHeight="88.0" prefWidth="143.0" text="Daj PDF" />
+        <Button fx:id="newGameButton" layoutX="484.0" layoutY="433.0" mnemonicParsing="false" onAction="#dajPdf" prefHeight="88.0" prefWidth="143.0" text="Daj PDF" />
 <Button fx:id="quitButton" layoutX="14.0" layoutY="433.0" mnemonicParsing="false" onAction="#quit" prefHeight="88.0" prefWidth="143.0" text="Wyjdz" />
+      <Button fx:id="editButton" layoutX="200.0" layoutY="433.0" mnemonicParsing="false" onAction="#customEdit" prefHeight="88.0" prefWidth="143.0" text="Edytuj" />
       <TextField fx:id="nameSurnameTextField" layoutX="20.0" layoutY="57.0" prefHeight="31.0" prefWidth="218.0" />
       <Label layoutX="20.0" layoutY="36.0" text="Imie i Nazwisko" />
       <Label layoutX="20.0" layoutY="98.0" text="Miesiac i rok, dzien jest niewazny" />

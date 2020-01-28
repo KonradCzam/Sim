@@ -28,6 +28,7 @@ package com.example.Sim.Config;
 
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.controllers.StartController;
+import com.example.Sim.controllers.SummaryController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -49,15 +50,22 @@ public class ScreensConfiguration {
         primaryStage.setScene(new Scene(screen, 1000, 800));
         primaryStage.show();
     }
-
+    @Bean
+    StartController startController() {
+        return new StartController(this);
+    }
     @Bean
     public FXMLDialog startDialog() {
         return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
     @Bean
-    StartController startController() {
-        return new StartController(this);
+    SummaryController summaryController() {
+        return new SummaryController(this);
+    }
+    @Bean
+    public FXMLDialog summaryDialog() {
+        return new FXMLDialog(summaryController(), getClass().getClassLoader().getResource("summary.fxml"), primaryStage, StageStyle.DECORATED);
     }
 
 

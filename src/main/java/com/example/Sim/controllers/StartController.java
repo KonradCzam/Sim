@@ -13,14 +13,21 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.joda.time.Duration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -74,7 +81,8 @@ public class StartController implements Initializable, DialogController {
             "UM - urlop macierzyński\n" +
             "MD - matka/dziecko\n";
 
-
+    @Autowired
+    SummaryController summaryController;
     public StartController(ScreensConfiguration screens) {
         this.screens = screens;
     }
@@ -92,8 +100,15 @@ public class StartController implements Initializable, DialogController {
         datePicker.setValue(localDate);
 
     }
-
-    public void generatePDF() {
+    public void dajPdf(){
+        Month currentMonth = generateMonthsData();
+        generatePDF(currentMonth);
+    }
+    public void customEdit() throws IOException {
+        summaryController.initData(generateMonthsData());
+        screens.summaryDialog().show();
+    }
+    public void generatePDF(Month currentMonth) {
 
         try {
             Document document = new Document(PageSize.A4, 20f, 20f, 20f, 20f);
@@ -116,7 +131,8 @@ public class StartController implements Initializable, DialogController {
             table.setPaddingTop(3);
             addDocumentHeader(document);
             addTableHeader(table);
-            fillTable(table);
+
+            fillTable(table, currentMonth);
             document.add(table);
             addFooter(document);
 
@@ -156,7 +172,13 @@ public class StartController implements Initializable, DialogController {
 
     }
 
-    private void fillTable(PdfPTable table) {
+    private void fillTable(PdfPTable table, Month currentMonth) {
+
+
+        currentMonth.getRowDataList().stream().forEach(row -> addRow(table, row));
+    }
+
+    private Month generateMonthsData() {
         DataGenerator dataGenerator = new DataGenerator();
         List<Integer> dyzurList = new ArrayList<>();
         List<Integer> extraFreeList = new ArrayList<>();
@@ -174,10 +196,8 @@ public class StartController implements Initializable, DialogController {
         }
 
         YearMonth yearMonthObject = YearMonth.of(datePicker.getValue().getYear(), datePicker.getValue().getMonth());
-        Month currentMonth = dataGenerator.generateMonth(yearMonthObject, worktimeTextField.getText(), dyzurList,missedDayList,extraFreeList,LQuatro.isSelected());
-        currentMonth.getRowDataList().stream().forEach(row -> addRow(table, row));
+        return dataGenerator.generateMonth(yearMonthObject, worktimeTextField.getText(), dyzurList,missedDayList,extraFreeList,LQuatro.isSelected());
     }
-
 
 
     private List<MissedDay> createMissedDayList() {
