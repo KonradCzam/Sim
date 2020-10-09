@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,7 +30,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class SaveLoadController implements Initializable, DialogController {
+@NoArgsConstructor
+public class SaveLoadController {
     @FXML
     public TableView loadGameTable;
     @Resource
@@ -65,7 +67,7 @@ public class SaveLoadController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
 
         initializeSaveLoadTable();
@@ -128,13 +130,11 @@ public class SaveLoadController implements Initializable, DialogController {
     }
 
     public void goBack() {
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 
     public void goToMain() {
-        dialog.close();
-        screens.startDialog().show();
+        screens.activate("start");
     }
 
     private class ButtonCell extends TableCell<SaveSlot, SaveSlot> {
@@ -182,8 +182,7 @@ public class SaveLoadController implements Initializable, DialogController {
                         npcService.setHiredNpcs(saveData.getHiredNpcs());
                         npcService.setHired(saveData.getHired());
                         endTurnService.setTurn(saveData.getTurn());
-                        dialog.close();
-                        screens.hubDialog().show();
+                        screens.activate("hub");
 
 
                     }

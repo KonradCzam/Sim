@@ -28,159 +28,202 @@ package com.example.Sim.Config;
 
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Scripts.ScriptGenerator.ScriptGeneratorController;
+import com.example.Sim.Services.NpcService;
 import com.example.Sim.controllers.*;
 import com.example.Sim.controllers.library.LibraryController;
-import javafx.scene.Parent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Getter;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 @Configuration
 @Lazy
 @PropertySource("application.properties")
 @EnableAspectJAutoProxy
-public class ScreensConfiguration {
-    private Stage primaryStage;
-
+@Getter
+public class ScreensConfiguration implements ApplicationContextAware {
+    ApplicationContext context;
+    public Stage primaryStage;
+    @Lazy
+    @Autowired
+    private List<Pane> createBeans;
+    private HashMap<String, Pane> screenMap = new HashMap<>();
+    private Scene scene;
     public void setPrimaryStage(Stage primaryStage) {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("start.fxml"));
+        try {
+            Pane pane = loader.load();
+            primaryStage.setScene(new Scene(pane));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.primaryStage = primaryStage;
     }
-
-    public void showScreen(Parent screen) {
-        primaryStage.setScene(new Scene(screen, 1000, 800));
-        primaryStage.show();
+    @Bean
+    Pane galleryPane() throws IOException {
+        Pane pane = loadPane("gallery.fxml",galleryController(this));
+        return pane;
+    }
+    @Bean
+    GalleryController galleryController(ScreensConfiguration sc) {
+        return new GalleryController(sc);
     }
 
     @Bean
-    public FXMLDialog loginDialog() {
-        return new FXMLDialog(controller(), getClass().getClassLoader().getResource("gallery.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane hubPane() throws IOException {
+        Pane pane = loadPane("hub.fxml",hubController(this));
+        return pane;
+    }
+    @Bean
+    HubController hubController(ScreensConfiguration sc) {
+        return new HubController(sc);
     }
 
     @Bean
-    GalleryController controller() {
-        return new GalleryController(this);
+    Pane npcDetailsPane() throws IOException {
+        Pane pane = loadPane("npcDetails.fxml",npcDetailController(this));
+        return pane;
+    }
+    @Bean
+    NpcDetailsController npcDetailController(ScreensConfiguration sc) {
+        return new NpcDetailsController(sc);
+    }
+    @Bean
+    Pane hirePane() throws IOException {
+        Pane pane = loadPane("hire.fxml",hireController(this));
+        return pane;
+    }
+    @Bean
+    HireController hireController(ScreensConfiguration sc) {
+        return new HireController(sc);
     }
 
     @Bean
-
-    public FXMLDialog hubDialog() {
-        return new FXMLDialog(hubController(), getClass().getClassLoader().getResource("hub.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane playerPane() throws IOException {
+        Pane pane = loadPane("playerDetail.fxml",playerController(this));
+        return pane;
+    }
+    @Bean
+    PlayerDetailsController playerController(ScreensConfiguration sc) {
+        return new PlayerDetailsController(sc);
     }
 
     @Bean
-    HubController hubController() {
-        return new HubController(this);
+    Pane endTurnPane() throws IOException {
+        Pane pane = loadPane("endTurn.fxml",playerController(this));
+        return pane;
+    }
+    @Bean
+    EndTurnController endTurnController(ScreensConfiguration sc) {
+        return new EndTurnController(sc);
     }
 
     @Bean
-    public FXMLDialog npcDetailsDialog() {
-        return new FXMLDialog(npcDetailController(), getClass().getClassLoader().getResource("npcDetails.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane startPane() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("startNoController.fxml"));
+        loader.setController(startController(this));
+        Pane pane = loader.load();
+        addScreen("start",pane);
+        return pane;
+    }
+    @Bean
+    StartController startController(ScreensConfiguration sc) {
+        return new StartController(sc);
+    }
+
+    @Lazy
+    @Bean
+    Pane saveLoadPane() throws IOException {
+        Pane pane = loadPane("saveLoad.fxml",saveLoadController(this));
+        return pane;
+    }
+    @Bean
+    SaveLoadController saveLoadController(ScreensConfiguration sc) {
+        return new SaveLoadController(sc);
     }
 
     @Bean
-    NpcDetailsController npcDetailController() {
-        return new NpcDetailsController(this);
+    Pane optionsPane() throws IOException {
+        Pane pane = loadPane("options.fxml",optionsController(this));
+        return pane;
+    }
+    @Bean
+    OptionsController optionsController(ScreensConfiguration sc) {
+        return new OptionsController(sc);
     }
 
     @Bean
-    public FXMLDialog hireDialog() {
-        return new FXMLDialog(hireController(), getClass().getClassLoader().getResource("hire.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane libraryPane() throws IOException {
+        Pane pane = loadPane("library.fxml",libraryController(this));
+        return pane;
+    }
+    @Bean
+    LibraryController libraryController(ScreensConfiguration sc) {
+        return new LibraryController(sc);
     }
 
     @Bean
-    HireController hireController() {
-        return new HireController(this);
+    Pane interactionPane() throws IOException {
+        Pane pane = loadPane("interaction.fxml",interactionController(this));
+        return pane;
+    }
+    @Bean
+    InteractionController interactionController(ScreensConfiguration sc) {
+        return new InteractionController(sc);
     }
 
     @Bean
-    public FXMLDialog playerDialog() {
-        return new FXMLDialog(playerController(), getClass().getClassLoader().getResource("playerDetails.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    PlayerDetailsController playerController() {
-        return new PlayerDetailsController(this);
-    }
-
-    @Bean
-    public FXMLDialog endTurnDialog() {
-        return new FXMLDialog(endTurnController(), getClass().getClassLoader().getResource("endTurn.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    EndTurnController endTurnController() {
-        return new EndTurnController(this);
-    }
-
-    @Bean
-    public FXMLDialog startDialog() {
-        return new FXMLDialog(startController(), getClass().getClassLoader().getResource("start.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    StartController startController() {
-        return new StartController(this);
-    }
-
-    @Bean
-    public FXMLDialog saveLoadDialog() {
-        return new FXMLDialog(saveLoadController(), getClass().getClassLoader().getResource("saveLoad.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-
-    @Bean
-    SaveLoadController saveLoadController() {
-        return new SaveLoadController(this);
-    }
-
-    @Bean
-    public FXMLDialog optionsDialog() {
-        return new FXMLDialog(optionsController(), getClass().getClassLoader().getResource("options.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane achievementsPane() throws IOException {
+        Pane pane = loadPane("achievements.fxml",achievementsController(this));
+        return pane;
     }
     @Bean
-    OptionsController optionsController() {
-        return new OptionsController(this);
-    }
-
-    @Bean
-    public FXMLDialog libraryDialog() {
-        return new FXMLDialog(libraryController(), getClass().getClassLoader().getResource("library/library.fxml"), primaryStage, StageStyle.DECORATED);
+    AchievementsController achievementsController(ScreensConfiguration sc) {
+        return new AchievementsController(sc);
     }
     @Bean
-    LibraryController libraryController() {
-        return new LibraryController(this);
-    }
-
-    @Bean
-    public FXMLDialog interactionDialog() {
-        return new FXMLDialog(interactionController(), getClass().getClassLoader().getResource("interaction.fxml"), primaryStage, StageStyle.DECORATED);
+    Pane criptGeneraorPane() throws IOException {
+        Pane pane = loadPane("criptGeneraor.fxml",scriptGeneraorController(this));
+        return pane;
     }
     @Bean
-    InteractionController interactionController() {
-        return new InteractionController(this);
+    ScriptGeneratorController scriptGeneraorController(ScreensConfiguration sc) {
+        return new ScriptGeneratorController(sc);
+    }
+    protected void addScreen(String name, Pane pane) {
+        screenMap.put(name, pane);
     }
 
-    @Bean
-    public FXMLDialog achievementsDialog() {
-        return new FXMLDialog(achievementsController(), getClass().getClassLoader().getResource("achievements.fxml"), primaryStage, StageStyle.DECORATED);
-    }
-    @Bean
-    AchievementsController achievementsController() {
-        return new AchievementsController(this);
+    public Scene getScene() {
+        return scene;
     }
 
-    @Bean
-    public FXMLDialog scriptGeneraorDialog() {
-        return new FXMLDialog(scriptGeneraorController(), getClass().getClassLoader().getResource("scriptGenerator.fxml"), primaryStage, StageStyle.DECORATED);
+    public void activate(String name) {
+
+        primaryStage.getScene().setRoot((Pane)context.getBean(name+"Pane"));
     }
-    @Bean
-    ScriptGeneratorController scriptGeneraorController() {
-        return new ScriptGeneratorController(this);
+    private Pane loadPane(String path,Object controller) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path));
+        loader.setController(controller);
+        Pane pane = loader.load();
+        addScreen(path.substring(0,path.length()-5),pane);
+        return pane;
     }
 
-
-
-
-
-
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 }

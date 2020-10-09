@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Service
-public class HubController implements Initializable, DialogController {
+public class HubController {
 
     @FXML
     public TableView hubTable;
@@ -89,6 +89,10 @@ public class HubController implements Initializable, DialogController {
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
     private String currentJobName;
+
+    public HubController() {
+    }
+
     public HubController(ScreensConfiguration screens) {
         this.screens = screens;
     }
@@ -97,10 +101,10 @@ public class HubController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
 
-        dialog.setOnShown(onShownEventHandler);
+    public void initialize(URL location, ResourceBundle resources) {
+        npcService.createNpcs();
+        npcService.shuffleHirable();
         initiateTable();
         initJobTab();
         initiateJobTabs();
@@ -244,44 +248,36 @@ public class HubController implements Initializable, DialogController {
     }
     //------------------------------------Navigation
     public void goToGallery() {
-        dialog.close();
-        screens.loginDialog().show();
+       screens.activate("gallery");
     }
 
     public void goToNpcDetails() {
         Npc selectedNpc = ((Npc) hubTable.getSelectionModel().getSelectedItem());
         npcService.setCurrentNpc(selectedNpc);
-        dialog.close();
 
-        screens.npcDetailsDialog().show();
+        screens.activate("npcDetails");
     }
 
     public void goToHire() {
-        dialog.close();
-        screens.hireDialog().show();
+        screens.activate("hire");
     }
 
     public void goToPlayer() {
-        dialog.close();
-        screens.playerDialog().show();
+        screens.activate("playerDetails");
     }
 
     public void goToSaveLoad() {
-        dialog.close();
-        screens.saveLoadDialog().show();
+        screens.activate("saveLoad");
     }
     public void gotoToLibrary() {
-        dialog.close();
-        screens.libraryDialog().show();
+        screens.activate("library");
     }
     public void goToOldEndTurn() {
         endTurnService.setPresentOld(true);
-        dialog.close();
-        screens.endTurnDialog().show();
+        screens.activate("endTurn");
     }
     public void endTurn() {
-        dialog.close();
-        screens.endTurnDialog().show();
+        screens.activate("endTurn");
     }
 
 }

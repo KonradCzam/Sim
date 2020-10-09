@@ -5,6 +5,7 @@ import com.example.Sim.FXML.DialogController;
 import com.example.Sim.FXML.FXMLDialog;
 import com.example.Sim.Services.NpcService;
 import javafx.fxml.Initializable;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,7 +13,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @Service
-public class OptionsController implements Initializable, DialogController {
+@NoArgsConstructor
+public class OptionsController {
 
     @Resource
     NpcService npcService;
@@ -28,13 +30,12 @@ public class OptionsController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
 
     }
     public void goToStart(){
         dialog.close();
-        screens.startDialog().show();
     }
 
 }

@@ -24,6 +24,9 @@ import java.util.ResourceBundle;
 
 @Service
 public class GalleryController implements Initializable, DialogController {
+    public GalleryController() {
+    }
+
     @FXML
     public Button button;
     @FXML
@@ -54,7 +57,7 @@ public class GalleryController implements Initializable, DialogController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        initializeTable();
+      //  initializeTable();
         gifOnly.setDisable(true);
 
 
@@ -117,10 +120,7 @@ public class GalleryController implements Initializable, DialogController {
     }
 
     public void goToBrothel() {
-
-        dialog.close();
-        screens.hubDialog().show();
-
+       screens.activate("hub");
     }
 
 

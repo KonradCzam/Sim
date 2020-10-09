@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +24,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Service
-public class LibraryController implements Initializable, DialogController {
+@NoArgsConstructor
+public class LibraryController  {
 
     @FXML
     private AnchorPane targetPane;
@@ -39,8 +41,7 @@ public class LibraryController implements Initializable, DialogController {
 
     private List<String> allCategories;
     public void handleButtonAction() {
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 
     private ScreensConfiguration screens;
@@ -54,7 +55,7 @@ public class LibraryController implements Initializable, DialogController {
     public void setDialog(FXMLDialog dialog) {
         this.dialog = dialog;
     }
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
         changeTargetPane("library/new.fxml");
         ObservableList data = FXCollections.observableArrayList(topics);

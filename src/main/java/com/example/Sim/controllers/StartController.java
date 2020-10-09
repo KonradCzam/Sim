@@ -1,23 +1,26 @@
 package com.example.Sim.controllers;
 
 import com.example.Sim.Config.ScreensConfiguration;
-import com.example.Sim.FXML.DialogController;
-import com.example.Sim.FXML.FXMLDialog;
+import com.example.Sim.Config.SimConfig;
 import com.example.Sim.Services.NpcService;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 @Service
-public class StartController implements Initializable, DialogController {
+@NoArgsConstructor
+public class StartController {
 
     @Resource
     NpcService npcService;
+    @Resource
+    Pane hubPane;
     @FXML
     private Button newGameButton;
     @FXML
@@ -27,32 +30,17 @@ public class StartController implements Initializable, DialogController {
     @FXML
     private Button quitButton;
     private ScreensConfiguration screens;
-    private FXMLDialog dialog;
 
 
-    public StartController(ScreensConfiguration screens) {
-        this.screens = screens;
+    public StartController(ScreensConfiguration sc) {
+    this.screens = sc;
     }
-
-    public void setDialog(FXMLDialog dialog) {
-        this.dialog = dialog;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
     public void startGame() {
-        npcService.createNpcs();
-        npcService.shuffleHirable();
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 
     public void loadGame() {
-        dialog.close();
-        screens.saveLoadDialog().show();
+        screens.activate("saveLoad");
     }
 
     public void quit() {
@@ -60,11 +48,9 @@ public class StartController implements Initializable, DialogController {
     }
 
     public void goToOptions() {
-        dialog.close();
-        screens.interactionDialog().show();
+        screens.activate("interaction");
     }
     public void goToAch(){
-        dialog.close();
-        screens.scriptGeneraorDialog().show();
+        screens.activate("scriptGenerator");
     }
 }

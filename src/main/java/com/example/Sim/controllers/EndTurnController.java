@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Service
-public class EndTurnController implements Initializable, DialogController {
+public class EndTurnController  {
 
 
     @FXML
@@ -86,7 +86,7 @@ public class EndTurnController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
         initializeTreeTable();
         dialog.setOnShown(onShownEventHandler);
@@ -177,6 +177,10 @@ public class EndTurnController implements Initializable, DialogController {
         profileTab.getStyleClass().add("profileTab");
         //profileVBox.getChildren().add(profileTab);
     }
+
+    public EndTurnController() {
+    }
+
     private void setProfilePicture(ImageView endTurnImage, GirlEndTurnRapport npcRoot){
 
             if (npcRoot != null)
@@ -210,8 +214,7 @@ public class EndTurnController implements Initializable, DialogController {
         return npcRoot;
     }
     public void goToHub() {
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 
     public void goToSelected() {
@@ -233,8 +236,7 @@ public class EndTurnController implements Initializable, DialogController {
                 npcService.setCurrentNpc(selectedNpc);
             }
         }
-        dialog.close();
-        screens.npcDetailsDialog().show();
+        screens.activate("npcDetails");
     }
 
 

@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Service
-public class NpcDetailsController implements Initializable, DialogController {
+public class NpcDetailsController {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     EventHandler<MouseEvent> onMouseReleasedEventHanlder =
@@ -135,20 +135,23 @@ public class NpcDetailsController implements Initializable, DialogController {
                 }
             };
 
+    public NpcDetailsController() {
+    }
+
     public NpcDetailsController(ScreensConfiguration screens) {
         this.screens = screens;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        currentNpc = npcService.getCurrentNpc();
-        dialog.setOnShown(onShownEventHandler);
-        player = playerService.getPlayer();
-        initializeGrids();
-        initializeTables();
-        refreshTables();
-        createJobExpPage();
-    }
+//    @Override
+//    public void initialize(URL location, ResourceBundle resources) {
+///*        currentNpc = npcService.getCurrentNpc();
+//        dialog.setOnShown(onShownEventHandler);
+//        player = playerService.getPlayer();
+//        initializeGrids();
+//        initializeTables();
+//        refreshTables();
+//        createJobExpPage();*/
+//    }
 
 
     public void refresh() {
@@ -465,7 +468,6 @@ public class NpcDetailsController implements Initializable, DialogController {
 
     public void goToHub() {
         dialog.close();
-        screens.hubDialog().show();
     }
 
     public void goToPrev() {
@@ -486,6 +488,5 @@ public class NpcDetailsController implements Initializable, DialogController {
         refresh();
     }
     public void goToScript(){
-        screens.interactionDialog().show();
     }
 }

@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Service
-public class InteractionController implements Initializable, DialogController {
+public class InteractionController  {
+    public InteractionController() {
+    }
 
     @FXML
     private TextArea interText;
@@ -57,8 +59,7 @@ public class InteractionController implements Initializable, DialogController {
                     TextArea selectedArea = (TextArea)t.getSource();
                     Node nextNode = scriptRunner.run(selectedArea.getText(), currentNode);
                     if("End".equals(currentNode.getName())){
-                        dialog.close();
-                        screens.playerDialog().show();
+                        screens.activate("playerDetails");
                     }else{
                         currentNode = nextNode;
                         setTexts(currentNode);
@@ -83,7 +84,7 @@ public class InteractionController implements Initializable, DialogController {
         this.screens = screens;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
 
         currentNode = scriptRunner.startScript("Data/Scripts/product.xml");

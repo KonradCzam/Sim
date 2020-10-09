@@ -109,7 +109,7 @@ public class Npc implements Serializable {
         }
         for (Map.Entry<String, Integer> entry : traitskillEffects.entrySet())
         {
-            if(!entry.getKey().equals("")){
+            if(!entry.getKey().equals("") && !entry.getKey().equals("Beastiality")){
                 if(add)
                     this.getSkill(entry.getKey()).changeTraitBonus(entry.getValue());
                 else

@@ -7,13 +7,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 @Service
-public class UpgradesController implements Initializable, DialogController {
+@NoArgsConstructor
+public class UpgradesController {
 
     @FXML
     TableView upgradesTableView;
@@ -32,14 +34,8 @@ public class UpgradesController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
 
     public void goToHub() {
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 }

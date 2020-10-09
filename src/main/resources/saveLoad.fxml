@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.SaveLoadController">
+<AnchorPane fx:id="brothelAnchor" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <TableView fx:id="loadGameTable" layoutX="14.0" layoutY="14.0" prefHeight="639.0" prefWidth="1260.0">
             <columns>

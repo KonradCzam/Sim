@@ -4,7 +4,9 @@ import com.example.Sim.Config.ScreensConfiguration;
 import com.example.Sim.Config.SimConfig;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +21,6 @@ import java.util.Calendar;
 
 @EnableConfigurationProperties
 public class Main extends Application {
-
 
     public static void main(String[] args) {
         launch(args);
@@ -72,9 +73,11 @@ public class Main extends Application {
 
 
         ApplicationContext context = new AnnotationConfigApplicationContext(SimConfig.class);
-        ScreensConfiguration screens = context.getBean(ScreensConfiguration.class);
-        screens.setPrimaryStage(stage);
-        screens.startDialog().show();
+        Pane startPane = (Pane)context.getBean("startPane");
+        Scene scene = new Scene(startPane);
+        context.getBean(ScreensConfiguration.class).setPrimaryStage(stage);
+        stage.setScene(scene);
+        stage.show();
 
     }
 }

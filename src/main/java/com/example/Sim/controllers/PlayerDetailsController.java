@@ -24,6 +24,7 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,7 +34,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Service
-public class PlayerDetailsController implements Initializable, DialogController {
+@NoArgsConstructor
+public class PlayerDetailsController{
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     EventHandler<MouseEvent> onMouseReleasedEventHanlder =
@@ -100,7 +102,7 @@ public class PlayerDetailsController implements Initializable, DialogController 
         this.screens = screens;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
         dialog.setOnShown(onShownEventHandler);
         initializeGrids();
@@ -292,7 +294,6 @@ public class PlayerDetailsController implements Initializable, DialogController 
 
     public void goToHub() {
         dialog.close();
-        screens.hubDialog().show();
     }
 
 

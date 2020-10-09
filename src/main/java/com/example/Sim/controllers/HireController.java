@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 @Service
-public class HireController implements Initializable, DialogController {
+public class HireController {
+    public HireController() {
+    }
 
     @FXML
     private Label hireStatsLabel;
@@ -79,12 +81,10 @@ public class HireController implements Initializable, DialogController {
         this.screens = screens;
     }
 
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         setHiraTableData();
         initializeTables();
         dialog.setOnShown(onShownEventHandler);
-
     }
 
     public void initializeTables() {
@@ -181,8 +181,7 @@ public class HireController implements Initializable, DialogController {
     }
 
     public void goToHub() {
-        dialog.close();
-        screens.hubDialog().show();
+        screens.activate("hub");
     }
 
 

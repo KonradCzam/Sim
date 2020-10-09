@@ -7,6 +7,7 @@ import com.example.Sim.Scripts.ScriptGenerator.FunctionCalls.ChangeGoldNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
@@ -15,10 +16,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Service
-public class ScriptGeneratorController implements Initializable, DialogController {
-    private ScreensConfiguration screens;
-    private FXMLDialog dialog;
-
+@NoArgsConstructor
+public class ScriptGeneratorController  {
+    ScreensConfiguration screens;
+    public ScriptGeneratorController(ScreensConfiguration sc){
+        this.screens = sc;
+    }
     @FXML
     Label param1Label;
     @FXML
@@ -50,13 +53,6 @@ public class ScriptGeneratorController implements Initializable, DialogControlle
     @FXML
     TableView nodeTable;
 
-    public ScriptGeneratorController(ScreensConfiguration screens) {
-        this.screens = screens;
-    }
-    public void setDialog(FXMLDialog dialog) {
-        this.dialog = dialog;
-    }
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         List<FunctionCall> options = new ArrayList<>();
         FunctionCall functionCall = new ChangeGoldNode("Name1","Text fc1","10");

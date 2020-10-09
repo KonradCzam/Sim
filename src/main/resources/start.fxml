@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane fx:id="brothelAnchor" prefHeight="611.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.EndTurnController">
+<AnchorPane fx:id="brothelAnchor" prefHeight="611.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Sim.controllers.StartController">
     <children>
         <Button fx:id="newGameButton" layoutX="303.0" layoutY="73.0" mnemonicParsing="false" onAction="#startGame" prefHeight="88.0" prefWidth="143.0" text="New Game" />
         <Button fx:id="loadGameButton" layoutX="303.0" layoutY="205.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="88.0" prefWidth="143.0" text="Load game" />

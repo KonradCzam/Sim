@@ -21,8 +21,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Service
-public class AchievementsController implements Initializable, DialogController {
+public class AchievementsController  {
 
+    public AchievementsController() {
+    }
 
     private ScreensConfiguration screens;
     private FXMLDialog dialog;
@@ -39,7 +41,7 @@ public class AchievementsController implements Initializable, DialogController {
         this.dialog = dialog;
     }
 
-    @Override
+
     public void initialize(URL location, ResourceBundle resources) {
         initGrid();
     }
@@ -82,6 +84,6 @@ public class AchievementsController implements Initializable, DialogController {
     }
     public void goToStart(){
         dialog.close();
-        screens.startDialog().show();
+       // screens.startDialog().show();
     }
 }
